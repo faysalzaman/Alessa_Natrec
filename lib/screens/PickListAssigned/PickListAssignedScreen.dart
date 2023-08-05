@@ -11,6 +11,7 @@ import '../../../../widgets/AppBarWidget.dart';
 import '../../../../widgets/TextFormField.dart';
 import '../../../../widgets/TextWidget.dart';
 
+// ignore: must_be_immutable
 class PickListAssignedScreen extends StatefulWidget {
   String? pickedQty;
 
