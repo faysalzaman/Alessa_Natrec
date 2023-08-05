@@ -645,7 +645,7 @@ class _PickListAssingedScreen2State extends State<PickListAssingedScreen2> {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
                                   content: TextWidget(
-                                    text: "Cannot pick more than remaining qty",
+                                    text: "Cannot pick more than remaining qty",
                                     color: Colors.white,
                                     textAlign: TextAlign.start,
                                   ),
@@ -1086,6 +1086,13 @@ class _PickListAssingedScreen2State extends State<PickListAssingedScreen2> {
                       data,
                       widget.PICKINGROUTEID,
                     ).then((value) {
+                      Navigator.pop(context);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text("Data Inserted Successfully"),
+                          backgroundColor: Colors.green,
+                        ),
+                      );
                       setState(() {
                         widget.QTY = (int.parse(widget.QTY.toString()) -
                                 int.parse(widget.QTYPICKED.toString()))
@@ -1094,19 +1101,13 @@ class _PickListAssingedScreen2State extends State<PickListAssingedScreen2> {
                         table2.clear();
                         result2 = "0";
                       });
+
                       Navigator.pushReplacement(context, MaterialPageRoute(
                         builder: (context) {
                           return PickListAssignedScreen(
-                              pickedQty: widget.QTYPICKED);
+                              pickedQty: widget.PICKINGROUTEID);
                         },
                       ));
-                      Navigator.pop(context);
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text("Data Inserted Successfully"),
-                          backgroundColor: Colors.green,
-                        ),
-                      );
                     }).onError((error, stackTrace) {
                       Navigator.pop(context);
                       ScaffoldMessenger.of(context).showSnackBar(
