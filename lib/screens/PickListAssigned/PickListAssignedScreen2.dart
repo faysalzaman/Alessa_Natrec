@@ -1,3 +1,5 @@
+import 'package:alessa_v2/screens/PickListAssigned/PickListAssignedScreen.dart';
+
 import '../../controllers/BinToBinFromAXAPTA/getmapBarcodeDataByItemCodeController.dart';
 import '../../controllers/PickListAssigned/GetAllTblDZonesController.dart';
 import '../../controllers/PickListAssigned/GetFirstTableData.dart';
@@ -1084,13 +1086,6 @@ class _PickListAssingedScreen2State extends State<PickListAssingedScreen2> {
                       data,
                       widget.PICKINGROUTEID,
                     ).then((value) {
-                      Navigator.pop(context);
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text("Data Inserted Successfully"),
-                          backgroundColor: Colors.green,
-                        ),
-                      );
                       setState(() {
                         widget.QTY = (int.parse(widget.QTY.toString()) -
                                 int.parse(widget.QTYPICKED.toString()))
@@ -1099,6 +1094,19 @@ class _PickListAssingedScreen2State extends State<PickListAssingedScreen2> {
                         table2.clear();
                         result2 = "0";
                       });
+                      Navigator.pushReplacement(context, MaterialPageRoute(
+                        builder: (context) {
+                          return PickListAssignedScreen(
+                              pickedQty: widget.QTYPICKED);
+                        },
+                      ));
+                      Navigator.pop(context);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text("Data Inserted Successfully"),
+                          backgroundColor: Colors.green,
+                        ),
+                      );
                     }).onError((error, stackTrace) {
                       Navigator.pop(context);
                       ScaffoldMessenger.of(context).showSnackBar(

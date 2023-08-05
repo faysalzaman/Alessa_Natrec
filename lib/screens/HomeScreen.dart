@@ -97,7 +97,7 @@ class _HomeScreenState extends State<HomeScreen> {
         Get.to(() => const PutAwayScreen());
       },
       () {
-        Get.to(() => const PickListAssignedScreen());
+        Get.to(() => PickListAssignedScreen());
       },
       // () {
       //   Get.to(() => const ReceivedByContainer());

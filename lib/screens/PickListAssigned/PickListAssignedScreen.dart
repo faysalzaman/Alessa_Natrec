@@ -12,7 +12,9 @@ import '../../../../widgets/TextFormField.dart';
 import '../../../../widgets/TextWidget.dart';
 
 class PickListAssignedScreen extends StatefulWidget {
-  const PickListAssignedScreen({super.key});
+  String? pickedQty;
+
+  PickListAssignedScreen({this.pickedQty});
 
   @override
   State<PickListAssignedScreen> createState() => _PickListAssignedScreenState();
@@ -45,6 +47,30 @@ class _PickListAssignedScreenState extends State<PickListAssignedScreen> {
   void initState() {
     super.initState();
     _showUserInfo();
+    if (widget.pickedQty != null && widget.pickedQty != "") {
+      Future.delayed(Duration.zero, () {
+        Constants.showLoadingDialog(context);
+        GetPickingListController.getAllTable(widget.pickedQty!).then((value) {
+          setState(() {
+            BinToBinJournalTableList = value;
+            total = value.length.toString();
+            isMarked = List<bool>.filled(value.length, false);
+          });
+          Navigator.pop(context);
+        }).onError(
+          (error, stackTrace) {
+            Navigator.pop(context);
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                  error.toString().replaceAll("Exception:", ""),
+                ),
+              ),
+            );
+          },
+        );
+      });
+    }
   }
 
   @override
@@ -133,32 +159,7 @@ class _PickListAssignedScreenState extends State<PickListAssignedScreen> {
                         hintText: "Enter/Scan Journal ID",
                         width: MediaQuery.of(context).size.width * 0.73,
                         onEditingComplete: () {
-                          // unfocus from keyboard
-                          FocusScope.of(context).unfocus();
-                          Constants.showLoadingDialog(context);
-                          GetPickingListController.getAllTable(
-                                  _routeIdController.text.trim())
-                              .then((value) {
-                            setState(() {
-                              BinToBinJournalTableList = value;
-                              total = value.length.toString();
-                              isMarked = List<bool>.filled(value.length, false);
-                            });
-                            Navigator.pop(context);
-                          }).onError(
-                            (error, stackTrace) {
-                              Navigator.pop(context);
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                    error
-                                        .toString()
-                                        .replaceAll("Exception:", ""),
-                                  ),
-                                ),
-                              );
-                            },
-                          );
+                          onClick();
                         },
                       ),
                     ),
@@ -170,32 +171,7 @@ class _PickListAssignedScreenState extends State<PickListAssignedScreen> {
                       ),
                       child: GestureDetector(
                         onTap: () {
-                          // unfocus from keyboard
-                          FocusScope.of(context).unfocus();
-                          Constants.showLoadingDialog(context);
-                          GetPickingListController.getAllTable(
-                                  _routeIdController.text.trim())
-                              .then((value) {
-                            setState(() {
-                              BinToBinJournalTableList = value;
-                              total = value.length.toString();
-                              isMarked = List<bool>.filled(value.length, false);
-                            });
-                            Navigator.pop(context);
-                          }).onError(
-                            (error, stackTrace) {
-                              Navigator.pop(context);
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                    error
-                                        .toString()
-                                        .replaceAll("Exception:", ""),
-                                  ),
-                                ),
-                              );
-                            },
-                          );
+                          onClick();
                         },
                         child: Image.asset('assets/finder.png',
                             width: MediaQuery.of(context).size.width * 0.15,
@@ -409,6 +385,32 @@ class _PickListAssignedScreenState extends State<PickListAssignedScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  void onClick() async {
+    // unfocus from keyboard
+    FocusScope.of(context).unfocus();
+    Constants.showLoadingDialog(context);
+    GetPickingListController.getAllTable(_routeIdController.text.trim())
+        .then((value) {
+      setState(() {
+        BinToBinJournalTableList = value;
+        total = value.length.toString();
+        isMarked = List<bool>.filled(value.length, false);
+      });
+      Navigator.pop(context);
+    }).onError(
+      (error, stackTrace) {
+        Navigator.pop(context);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              error.toString().replaceAll("Exception:", ""),
+            ),
+          ),
+        );
+      },
     );
   }
 }
