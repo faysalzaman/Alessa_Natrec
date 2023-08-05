@@ -379,7 +379,7 @@ class _PickListAssingedScreen2State extends State<PickListAssingedScreen2> {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 const Text(
-                                  "Qty Received",
+                                  "Qty Remaining",
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 16,
