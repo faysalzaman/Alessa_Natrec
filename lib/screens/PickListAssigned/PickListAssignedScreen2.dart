@@ -424,7 +424,7 @@ class _PickListAssingedScreen2State extends State<PickListAssingedScreen2> {
               ),
               const SizedBox(height: 5),
               Container(
-                height: MediaQuery.of(context).size.height * 0.5,
+                height: MediaQuery.of(context).size.height * 0.6,
                 decoration: BoxDecoration(
                   border: Border.all(
                     color: Colors.grey,
@@ -626,19 +626,8 @@ class _PickListAssingedScreen2State extends State<PickListAssingedScreen2> {
                           hintText: "Enter/Scan Serial No",
                           width: MediaQuery.of(context).size.width * 0.9,
                           onEditingComplete: () {
-                            print(
-                                "Serial No. ${_serialNoController.text.trim()}");
-
                             if (_serialNoController.text.isEmpty) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: TextWidget(
-                                    text: "Please enter a valid serial no.",
-                                    color: Colors.white,
-                                  ),
-                                  backgroundColor: Colors.red,
-                                ),
-                              );
+                              FocusScope.of(context).requestFocus(FocusNode());
                               return;
                             } else if (int.parse(widget.QTYPICKED) >=
                                 int.parse(widget.QTY)) {
@@ -664,7 +653,7 @@ class _PickListAssingedScreen2State extends State<PickListAssingedScreen2> {
                                 const SnackBar(
                                   content: TextWidget(
                                     text:
-                                        "Serial No. not found in the above table, please insert a valid serial no.",
+                                        "This Serial No. is not found in the above Table, Please insert a Valid Serial No.",
                                     color: Colors.white,
                                   ),
                                   backgroundColor: Colors.red,

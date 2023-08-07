@@ -97,6 +97,7 @@ class _BarcodeMappingScreenState extends State<BarcodeMappingScreen> {
 
   @override
   void initState() {
+    _binLocationController.text = "AZ-W01-Z001-A0001";
     super.initState();
     _showUserInfo();
     _weightController.text = "0";
