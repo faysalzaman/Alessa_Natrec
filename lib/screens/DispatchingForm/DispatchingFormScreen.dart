@@ -123,7 +123,7 @@ class _DispatchingFormScreenState extends State<DispatchingFormScreen> {
               Container(
                 margin: const EdgeInsets.only(left: 20),
                 child: const TextWidget(
-                  text: "Packing Slip ID*",
+                  text: "Picking Slip ID*",
                   fontSize: 16,
                 ),
               ),

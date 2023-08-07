@@ -4,8 +4,6 @@ import '../../screens/SplashScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 
-import 'bloc/PickingSlipBloc/picking_slip_bloc.dart';
-
 void main() {
   runApp(const MyApp());
 }
@@ -15,29 +13,26 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<PickingSlipBloc>(
-      create: (context) => PickingSlipBloc(),
-      child: GetMaterialApp(
-        title: 'Alessa',
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          appBarTheme: const AppBarTheme(
-            backgroundColor: Colors.orange,
-            titleTextStyle: TextStyle(
-              color: Colors.white,
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-            ),
-            iconTheme: IconThemeData(
-              color: Colors.white,
-            ),
-            elevation: 0,
+    return GetMaterialApp(
+      title: 'Alessa',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Colors.orange,
+          titleTextStyle: TextStyle(
+            color: Colors.white,
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
           ),
-          colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.orange)
-              .copyWith(secondary: Colors.orange),
+          iconTheme: IconThemeData(
+            color: Colors.white,
+          ),
+          elevation: 0,
         ),
-        home: const SplashScreen(),
+        colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.orange)
+            .copyWith(secondary: Colors.orange),
       ),
+      home: const SplashScreen(),
     );
   }
 }
