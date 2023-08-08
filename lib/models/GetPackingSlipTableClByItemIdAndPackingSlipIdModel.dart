@@ -10,19 +10,22 @@ class GetPackingSlipTableClByItemIdAndPackingSlipIdModel {
   String? dATETIMECREATED;
   String? aSSIGNEDUSERID;
   String? iTEMSERIALNO;
+  String? dISPATCH;
 
-  GetPackingSlipTableClByItemIdAndPackingSlipIdModel(
-      {this.sALESID,
-      this.iTEMID,
-      this.nAME,
-      this.iNVENTLOCATIONID,
-      this.cONFIGID,
-      this.oRDERED,
-      this.pACKINGSLIPID,
-      this.vEHICLESHIPPLATENUMBER,
-      this.dATETIMECREATED,
-      this.aSSIGNEDUSERID,
-      this.iTEMSERIALNO});
+  GetPackingSlipTableClByItemIdAndPackingSlipIdModel({
+    this.sALESID,
+    this.iTEMID,
+    this.nAME,
+    this.iNVENTLOCATIONID,
+    this.cONFIGID,
+    this.oRDERED,
+    this.pACKINGSLIPID,
+    this.vEHICLESHIPPLATENUMBER,
+    this.dATETIMECREATED,
+    this.aSSIGNEDUSERID,
+    this.iTEMSERIALNO,
+    this.dISPATCH,
+  });
 
   GetPackingSlipTableClByItemIdAndPackingSlipIdModel.fromJson(
       Map<String, dynamic> json) {
@@ -37,6 +40,7 @@ class GetPackingSlipTableClByItemIdAndPackingSlipIdModel {
     dATETIMECREATED = json['DATETIMECREATED'];
     aSSIGNEDUSERID = json['ASSIGNEDUSERID'];
     iTEMSERIALNO = json['ITEMSERIALNO'];
+    dISPATCH = json["DISPATCH"];
   }
 
   Map<String, dynamic> toJson() {
@@ -52,6 +56,7 @@ class GetPackingSlipTableClByItemIdAndPackingSlipIdModel {
     data['DATETIMECREATED'] = dATETIMECREATED;
     data['ASSIGNEDUSERID'] = aSSIGNEDUSERID;
     data['ITEMSERIALNO'] = iTEMSERIALNO;
+    data["DISPATCH"] = dISPATCH;
     return data;
   }
 }

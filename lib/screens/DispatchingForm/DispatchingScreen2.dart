@@ -223,6 +223,11 @@ class _DispatchingScreen2State extends State<DispatchingScreen2> {
                   columns: const [
                     DataColumn(
                         label: Text(
+                      'DISPATCH',
+                      style: TextStyle(color: Colors.black),
+                    )),
+                    DataColumn(
+                        label: Text(
                       'SALES ID',
                       style: TextStyle(color: Colors.black),
                     )),
@@ -288,6 +293,8 @@ class _DispatchingScreen2State extends State<DispatchingScreen2> {
                   ],
                   source: StudentDataSource(table1, context),
                   showCheckboxColumn: false,
+                  showFirstLastButtons: true,
+                  arrowHeadColor: Colors.orange,
                 ),
               ),
               const SizedBox(height: 30),
@@ -649,6 +656,29 @@ class _DispatchingScreen2State extends State<DispatchingScreen2> {
       FocusScope.of(context).unfocus();
       return;
     }
+
+    // ignore: unrelated_type_equality_checks
+    if (_serialNoController.text.trim() !=
+        table1.where((element) {
+          return element.dISPATCH.toString().trim() == "yes";
+        }).isEmpty) {
+      FocusScope.of(context).unfocus();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: TextWidget(
+            text:
+                "This item with ${_serialNoController.text.trim()} is already dispatched.",
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.red,
+        ),
+      );
+      setState(() {
+        _serialNoController.clear();
+      });
+      return;
+    }
+
     if (table1
         .where((element) =>
             element.iTEMSERIALNO.toString().trim() ==
@@ -710,6 +740,7 @@ class StudentDataSource extends DataTableSource {
       index: index,
       onSelectChanged: (value) {},
       cells: [
+        DataCell(Text(student.dISPATCH ?? "")),
         DataCell(Text(student.sALESID ?? "")),
         DataCell(Text(student.iTEMID ?? "")),
         DataCell(Text(student.nAME ?? "")),
