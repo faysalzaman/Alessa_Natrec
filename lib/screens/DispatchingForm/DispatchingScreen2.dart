@@ -60,7 +60,7 @@ class _DispatchingScreen2State extends State<DispatchingScreen2> {
     Future.delayed(const Duration(seconds: 1)).then((value) {
       Constants.showLoadingDialog(context);
       GetPackingSlipTableClByItemIdAndPackingSlipIdController
-              .getShipmentReceived(widget.packingSlipId, widget.itemId)
+              .getShipmentReceived(widget.salesId)
           .then((value) {
         setState(() {
           table1 = value;
@@ -130,29 +130,24 @@ class _DispatchingScreen2State extends State<DispatchingScreen2> {
                         ),
                       ),
                       const SizedBox(height: 20),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              const Text(
-                                "Item Name:",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              Text(
-                                widget.name.toString(),
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 15,
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                            ],
+                          const Text(
+                            "Item Name:",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            widget.name.toString(),
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 15,
+                            ),
+                            textAlign: TextAlign.center,
                           ),
                         ],
                       ),
@@ -657,11 +652,16 @@ class _DispatchingScreen2State extends State<DispatchingScreen2> {
       return;
     }
 
+    // if dispach value is yes for the selected serial no then show msg
     // ignore: unrelated_type_equality_checks
-    if (_serialNoController.text.trim() !=
-        table1.where((element) {
-          return element.dISPATCH.toString().trim() == "yes";
-        }).isEmpty) {
+
+    if (table1.where((element) {
+      if (element.iTEMSERIALNO?.trim() == _serialNoController.text.trim()) {
+        return element.dISPATCH?.toLowerCase() == "yes";
+      } else {
+        return false;
+      }
+    }).isNotEmpty) {
       FocusScope.of(context).unfocus();
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(

@@ -9,18 +9,14 @@ import '../../utils/Constants.dart';
 
 class GetPackingSlipTableClByItemIdAndPackingSlipIdController {
   static Future<List<GetPackingSlipTableClByItemIdAndPackingSlipIdModel>>
-      getShipmentReceived(
-    String packingSlipId,
-    String itemId,
-  ) async {
+      getShipmentReceived(String saledId) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String token = prefs.getString('token').toString();
 
     String url =
-        "${Constants.baseUrl}getPackingSlipTableClByItemIdAndPackingSlipId?ITEMID=$itemId&PACKINGSLIPID=$packingSlipId";
+        "${Constants.baseUrl}getPackingSlipTableClByItemIdAndPackingSlipId?SALESID=$saledId";
 
     print("URL: $url");
-    print("palletCode: $packingSlipId");
 
     final uri = Uri.parse(url);
 
