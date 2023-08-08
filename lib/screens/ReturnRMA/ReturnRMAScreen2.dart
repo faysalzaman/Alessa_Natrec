@@ -730,14 +730,28 @@ class _ReturnRMAScreen2State extends State<ReturnRMAScreen2> {
       return;
     }
     if (_serialNoController.text.trim() == "") {
+      FocusScope.of(context).unfocus();
+      return;
+    }
+
+    if (table
+        .where((element) =>
+            element.itemSerialNo.toString().trim() ==
+            _serialNoController.text.trim())
+        .toList()
+        .isNotEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text("Please Enter a Unique Serial No."),
+          content: Text(
+            "This Serial No. is already exists in the table.",
+            textAlign: TextAlign.center,
+          ),
           duration: Duration(seconds: 2),
         ),
       );
       return;
     }
+
     Constants.showLoadingDialog(context);
     insertIntoWmsReturnSalesOrderClController
         .getData(
@@ -783,10 +797,11 @@ class _ReturnRMAScreen2State extends State<ReturnRMAScreen2> {
               textAlign: TextAlign.center,
             ),
             backgroundColor: Colors.green,
-            duration: Duration(seconds: 2),
+            duration: Duration(seconds: 1),
           ),
         );
       }).onError((error, stackTrace) {
+        Navigator.pop(context);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
@@ -794,12 +809,13 @@ class _ReturnRMAScreen2State extends State<ReturnRMAScreen2> {
               textAlign: TextAlign.center,
             ),
             duration: const Duration(seconds: 2),
+            backgroundColor: Colors.red,
           ),
         );
-        Navigator.pop(context);
       });
     }).onError(
       (error, stackTrace) {
+        Navigator.pop(context);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: TextWidget(
@@ -807,6 +823,7 @@ class _ReturnRMAScreen2State extends State<ReturnRMAScreen2> {
               color: Colors.white,
             ),
             backgroundColor: Colors.red,
+            duration: const Duration(seconds: 2),
           ),
         );
       },
