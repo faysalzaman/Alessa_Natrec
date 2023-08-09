@@ -225,7 +225,7 @@ class _PickListAssignedScreenState extends State<PickListAssignedScreen> {
                 ),
                 const SizedBox(height: 10),
                 Container(
-                  height: MediaQuery.of(context).size.height * 0.55,
+                  height: MediaQuery.of(context).size.height * 0.5,
                   decoration: BoxDecoration(
                     border: Border.all(
                       color: Colors.grey,
