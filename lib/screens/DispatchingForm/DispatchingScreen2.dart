@@ -557,7 +557,7 @@ class _DispatchingScreen2State extends State<DispatchingScreen2> {
                   width: MediaQuery.of(context).size.width * 0.9,
                   title: "Save",
                   onPressed: () {
-                    if (table2.length == 0) {
+                    if (table2.isEmpty) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
                           content: Text("Please add item first"),
@@ -618,7 +618,7 @@ class _DispatchingScreen2State extends State<DispatchingScreen2> {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             content: Text(
-                                error.toString().replaceAll("Exception", "")),
+                                error.toString().replaceAll("Exception:", "")),
                             backgroundColor: Colors.red,
                           ),
                         );
@@ -628,7 +628,7 @@ class _DispatchingScreen2State extends State<DispatchingScreen2> {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: Text(
-                              error.toString().replaceAll("Exception", "")),
+                              error.toString().replaceAll("Exception:", "")),
                           backgroundColor: Colors.red,
                         ),
                       );
