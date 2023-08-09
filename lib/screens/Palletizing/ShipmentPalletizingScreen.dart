@@ -468,6 +468,7 @@ class _ShipmentPalletizingScreenState extends State<ShipmentPalletizingScreen> {
         .then((value) {
       setState(() {
         table = value;
+        total = value.length.toString();
         shipmentIdController.text = value[0].sHIPMENTID ?? "";
         if (value[0].sHIPMENTID != null && value[0].sHIPMENTID != "") {
           isShipmentId = true;
@@ -481,6 +482,7 @@ class _ShipmentPalletizingScreenState extends State<ShipmentPalletizingScreen> {
     }).onError((error, stackTrace) {
       setState(() {
         table = [];
+        total = "0";
         isShipmentId = false;
       });
       Navigator.pop(context);
