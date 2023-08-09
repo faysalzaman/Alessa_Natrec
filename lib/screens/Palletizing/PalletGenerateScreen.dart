@@ -1,3 +1,4 @@
+import 'package:alessa_v2/controllers/BinToBinFromAXAPTA/getmapBarcodeDataByItemCodeController.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 
 import '../../controllers/Palletization/GenerateAndUpdatePalletIdController.dart';
@@ -16,29 +17,29 @@ import '../../utils/Constants.dart';
 
 // ignore: must_be_immutable
 class PalletGenerateScreen extends StatefulWidget {
+  String ALS_PACKINGSLIPREF;
+  num ALS_TRANSFERORDERTYPE;
   String tRANSFERID;
-  int tRANSFERSTATUS;
   String iNVENTLOCATIONIDFROM;
   String iNVENTLOCATIONIDTO;
+  num QTYTRANSFER;
   String iTEMID;
-  String iNVENTDIMID;
-  int qTYTRANSFER;
-  int qTYREMAINRECEIVE;
-  String cREATEDDATETIME;
-  String palletType = "";
+  String ITEMNAME;
+  String CONFIGID;
+  String WMSLOCATIONID;
   String shipmentId;
 
   PalletGenerateScreen({
+    required this.ALS_PACKINGSLIPREF,
+    required this.ALS_TRANSFERORDERTYPE,
     required this.tRANSFERID,
-    required this.tRANSFERSTATUS,
     required this.iNVENTLOCATIONIDFROM,
     required this.iNVENTLOCATIONIDTO,
+    required this.QTYTRANSFER,
     required this.iTEMID,
-    required this.iNVENTDIMID,
-    required this.qTYTRANSFER,
-    required this.qTYREMAINRECEIVE,
-    required this.cREATEDDATETIME,
-    required this.palletType,
+    required this.ITEMNAME,
+    required this.CONFIGID,
+    required this.WMSLOCATIONID,
     required this.shipmentId,
   });
 
@@ -53,6 +54,9 @@ class _PalletGenerateScreenState extends State<PalletGenerateScreen> {
   final TextEditingController _heightController = TextEditingController();
   final TextEditingController _lengthController = TextEditingController();
   final TextEditingController _rowController = TextEditingController();
+  final TextEditingController _searchController = TextEditingController();
+  final TextEditingController _locationReferenceController =
+      TextEditingController();
 
   String? dropdownValue;
   List<String> dropdownList = [];
@@ -82,18 +86,47 @@ class _PalletGenerateScreenState extends State<PalletGenerateScreen> {
           _rowController.text = value[0].palletRow.toString();
           getAlltblBinLocationsModelList = value;
         });
-        Navigator.pop(context);
+        GetMapBarcodeDataByItemCodeController.getData().then((value) {
+          for (int i = 0; i < value.length; i++) {
+            setState(() {
+              dropDownList.add(value[i].bIN ?? "");
+              Set<String> set = dropDownList.toSet();
+              dropDownList = set.toList();
+            });
+          }
+
+          setState(() {
+            dropDownValue = dropDownList[0];
+            filterList = dropDownList;
+          });
+          Navigator.pop(context);
+        }).onError((error, stackTrace) {
+          Navigator.pop(context);
+          setState(() {
+            _locationReferenceController.text = "Location Reference";
+          });
+        });
       }).onError((error, stackTrace) {
         Navigator.pop(context);
       });
     });
   }
 
+  String? dropDownValue;
+  List<String> dropDownList = [];
+  List<String> filterList = [];
+
   @override
   void dispose() {
     super.dispose();
     _serialNoController.dispose();
     _palletTypeController.dispose();
+    _widthController.dispose();
+    _heightController.dispose();
+    _lengthController.dispose();
+    _rowController.dispose();
+    _searchController.dispose();
+    _locationReferenceController.dispose();
   }
 
   @override
@@ -200,7 +233,7 @@ class _PalletGenerateScreenState extends State<PalletGenerateScreen> {
                                   ),
                                 ),
                                 Text(
-                                  widget.qTYTRANSFER.toString(),
+                                  widget.QTYTRANSFER.toString(),
                                   style: const TextStyle(
                                     color: Colors.white,
                                     fontSize: 15,
@@ -442,6 +475,120 @@ class _PalletGenerateScreenState extends State<PalletGenerateScreen> {
                   },
                 ),
               ),
+              const SizedBox(height: 10),
+              Container(
+                margin: const EdgeInsets.only(left: 20, top: 10),
+                child: TextWidget(
+                  text: "Scan Location To:",
+                  color: Colors.blue[900]!,
+                  fontSize: 15,
+                ),
+              ),
+              Row(
+                children: [
+                  Container(
+                    decoration: const BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                      color: Colors.white,
+                    ),
+                    width: MediaQuery.of(context).size.width * 0.73,
+                    margin: const EdgeInsets.only(left: 20),
+                    child: DropdownSearch<String>(
+                      filterFn: (item, filter) {
+                        return item
+                            .toLowerCase()
+                            .contains(filter.toLowerCase());
+                      },
+                      enabled: true,
+                      dropdownButtonProps: const DropdownButtonProps(
+                        icon: Icon(
+                          Icons.arrow_drop_down,
+                          color: Colors.black,
+                        ),
+                      ),
+                      items: filterList,
+                      onChanged: (value) {
+                        setState(() {
+                          dropDownValue = value!;
+                        });
+                      },
+                      selectedItem: dropDownValue,
+                    ),
+                  ),
+                  Container(
+                    margin: const EdgeInsets.only(left: 10),
+                    child: IconButton(
+                      onPressed: () {
+                        // show dialog box for search
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              title: TextWidget(
+                                text: "Search",
+                                color: Colors.blue[900]!,
+                                fontSize: 15,
+                              ),
+                              content: TextFormFieldWidget(
+                                controller: _searchController,
+                                readOnly: false,
+                                hintText: "Enter/Scan Location",
+                                width: MediaQuery.of(context).size.width * 0.9,
+                                onEditingComplete: () {
+                                  setState(() {
+                                    dropDownList = dropDownList
+                                        .where((element) => element
+                                            .toLowerCase()
+                                            .contains(_searchController.text
+                                                .toLowerCase()))
+                                        .toList();
+                                    dropDownValue = dropDownList[0];
+                                  });
+                                  Navigator.pop(context);
+                                },
+                              ),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: TextWidget(
+                                    text: "Cancel",
+                                    color: Colors.blue[900]!,
+                                    fontSize: 15,
+                                  ),
+                                ),
+                                TextButton(
+                                  onPressed: () {
+                                    // filter list based on search
+                                    setState(() {
+                                      filterList = dropDownList
+                                          .where((element) => element
+                                              .toLowerCase()
+                                              .contains(_searchController.text
+                                                  .toLowerCase()))
+                                          .toList();
+                                      dropDownValue = filterList[0];
+                                    });
+
+                                    Navigator.pop(context);
+                                  },
+                                  child: TextWidget(
+                                    text: "Search",
+                                    color: Colors.blue[900]!,
+                                    fontSize: 15,
+                                  ),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      },
+                      icon: const Icon(Icons.search),
+                    ),
+                  ),
+                ],
+              ),
               const SizedBox(height: 20),
               Center(
                 child: ElevatedButtonWidget(
@@ -450,17 +597,24 @@ class _PalletGenerateScreenState extends State<PalletGenerateScreen> {
                   title: "Generate",
                   onPressed: () {
                     if (serialNoList.isEmpty) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text("Please enter Serial No."),
-                          duration: Duration(seconds: 2),
+                      FocusScope.of(context).requestFocus(FocusNode());
+                      return;
+                    }
+                    if (dropDownValue.toString().isEmpty ||
+                        dropDownValue.toString() == "null") {
+                      const ScaffoldMessenger(
+                        child: SnackBar(
+                          content: Text("Please select a location"),
+                          duration: Duration(seconds: 1),
+                          backgroundColor: Colors.red,
                         ),
                       );
                       return;
                     }
                     Constants.showLoadingDialog(context);
                     GenerateAndUpdatePalletIdController
-                            .generateAndUpdatePalletId(serialNoList)
+                            .generateAndUpdatePalletId(
+                                serialNoList, dropDownValue.toString())
                         .then(
                       (value) {
                         Navigator.pop(context);

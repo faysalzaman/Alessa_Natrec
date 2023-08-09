@@ -10,27 +10,29 @@ import '../../controllers/WareHouseOperationController/GetAllTableZoneController
 
 // ignore: must_be_immutable
 class PalletProceedScreen extends StatefulWidget {
+  String ALS_PACKINGSLIPREF;
+  num ALS_TRANSFERORDERTYPE;
   String tRANSFERID;
-  int tRANSFERSTATUS;
   String iNVENTLOCATIONIDFROM;
   String iNVENTLOCATIONIDTO;
+  num QTYTRANSFER;
   String iTEMID;
-  String iNVENTDIMID;
-  int qTYTRANSFER;
-  int qTYREMAINRECEIVE;
-  String cREATEDDATETIME;
+  String ITEMNAME;
+  String CONFIGID;
+  String WMSLOCATIONID;
   String shipmentId;
 
   PalletProceedScreen({
+    required this.ALS_PACKINGSLIPREF,
+    required this.ALS_TRANSFERORDERTYPE,
     required this.tRANSFERID,
-    required this.tRANSFERSTATUS,
     required this.iNVENTLOCATIONIDFROM,
     required this.iNVENTLOCATIONIDTO,
+    required this.QTYTRANSFER,
     required this.iTEMID,
-    required this.iNVENTDIMID,
-    required this.qTYTRANSFER,
-    required this.qTYREMAINRECEIVE,
-    required this.cREATEDDATETIME,
+    required this.ITEMNAME,
+    required this.CONFIGID,
+    required this.WMSLOCATIONID,
     required this.shipmentId,
   });
 
@@ -244,17 +246,18 @@ class _PalletProceedScreenState extends State<PalletProceedScreen> {
                     }
                     Get.to(
                       () => PalletGenerateScreen(
-                        cREATEDDATETIME: widget.cREATEDDATETIME,
-                        iNVENTDIMID: widget.iNVENTDIMID,
                         iNVENTLOCATIONIDFROM: widget.iNVENTLOCATIONIDFROM,
                         iNVENTLOCATIONIDTO: widget.iNVENTLOCATIONIDTO,
                         iTEMID: widget.iTEMID,
-                        qTYREMAINRECEIVE: widget.qTYREMAINRECEIVE,
-                        qTYTRANSFER: widget.qTYTRANSFER,
-                        tRANSFERID: widget.tRANSFERID,
-                        tRANSFERSTATUS: widget.tRANSFERSTATUS,
-                        palletType: dropdownValue.toString(),
+                        tRANSFERID: widget.tRANSFERID.toString(),
                         shipmentId: widget.shipmentId,
+                        ALS_PACKINGSLIPREF: widget.ALS_PACKINGSLIPREF,
+                        ALS_TRANSFERORDERTYPE:
+                            int.parse(widget.ALS_TRANSFERORDERTYPE.toString()),
+                        QTYTRANSFER: int.parse(widget.QTYTRANSFER.toString()),
+                        ITEMNAME: widget.ITEMNAME,
+                        CONFIGID: widget.CONFIGID,
+                        WMSLOCATIONID: widget.WMSLOCATIONID,
                       ),
                     );
                   },

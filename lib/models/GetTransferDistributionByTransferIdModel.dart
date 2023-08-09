@@ -1,51 +1,55 @@
 class GetTransferDistributionByTransferIdModel {
+  String? aLSPACKINGSLIPREF;
+  num? aLSTRANSFERORDERTYPE;
   String? tRANSFERID;
-  int? tRANSFERSTATUS;
   String? iNVENTLOCATIONIDFROM;
   String? iNVENTLOCATIONIDTO;
+  num? qTYTRANSFER;
   String? iTEMID;
-  String? iNVENTDIMID;
-  int? qTYTRANSFER;
-  int? qTYREMAINRECEIVE;
-  String? cREATEDDATETIME;
+  String? iTEMNAME;
+  String? cONFIGID;
+  String? wMSLOCATIONID;
   String? sHIPMENTID;
 
   GetTransferDistributionByTransferIdModel(
-      {this.tRANSFERID,
-      this.tRANSFERSTATUS,
+      {this.aLSPACKINGSLIPREF,
+      this.aLSTRANSFERORDERTYPE,
+      this.tRANSFERID,
       this.iNVENTLOCATIONIDFROM,
       this.iNVENTLOCATIONIDTO,
-      this.iTEMID,
-      this.iNVENTDIMID,
       this.qTYTRANSFER,
-      this.qTYREMAINRECEIVE,
-      this.cREATEDDATETIME,
+      this.iTEMID,
+      this.iTEMNAME,
+      this.cONFIGID,
+      this.wMSLOCATIONID,
       this.sHIPMENTID});
 
   GetTransferDistributionByTransferIdModel.fromJson(Map<String, dynamic> json) {
+    aLSPACKINGSLIPREF = json['ALS_PACKINGSLIPREF'];
+    aLSTRANSFERORDERTYPE = json['ALS_TRANSFERORDERTYPE'];
     tRANSFERID = json['TRANSFERID'];
-    tRANSFERSTATUS = json['TRANSFERSTATUS'];
     iNVENTLOCATIONIDFROM = json['INVENTLOCATIONIDFROM'];
     iNVENTLOCATIONIDTO = json['INVENTLOCATIONIDTO'];
-    iTEMID = json['ITEMID'];
-    iNVENTDIMID = json['INVENTDIMID'];
     qTYTRANSFER = json['QTYTRANSFER'];
-    qTYREMAINRECEIVE = json['QTYREMAINRECEIVE'];
-    cREATEDDATETIME = json['CREATEDDATETIME'];
+    iTEMID = json['ITEMID'];
+    iTEMNAME = json['ITEMNAME'];
+    cONFIGID = json['CONFIGID'];
+    wMSLOCATIONID = json['WMSLOCATIONID'];
     sHIPMENTID = json['SHIPMENTID'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
+    data['ALS_PACKINGSLIPREF'] = aLSPACKINGSLIPREF;
+    data['ALS_TRANSFERORDERTYPE'] = aLSTRANSFERORDERTYPE;
     data['TRANSFERID'] = tRANSFERID;
-    data['TRANSFERSTATUS'] = tRANSFERSTATUS;
     data['INVENTLOCATIONIDFROM'] = iNVENTLOCATIONIDFROM;
     data['INVENTLOCATIONIDTO'] = iNVENTLOCATIONIDTO;
-    data['ITEMID'] = iTEMID;
-    data['INVENTDIMID'] = iNVENTDIMID;
     data['QTYTRANSFER'] = qTYTRANSFER;
-    data['QTYREMAINRECEIVE'] = qTYREMAINRECEIVE;
-    data['CREATEDDATETIME'] = cREATEDDATETIME;
+    data['ITEMID'] = iTEMID;
+    data['ITEMNAME'] = iTEMNAME;
+    data['CONFIGID'] = cONFIGID;
+    data['WMSLOCATIONID'] = wMSLOCATIONID;
     data['SHIPMENTID'] = sHIPMENTID;
     return data;
   }

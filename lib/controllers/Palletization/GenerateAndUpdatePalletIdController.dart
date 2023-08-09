@@ -6,7 +6,9 @@ import '../../utils/Constants.dart';
 
 class GenerateAndUpdatePalletIdController {
   static Future<List<dynamic>> generateAndUpdatePalletId(
-      List<String> serialNoList) async {
+    List<String> serialNoList,
+    String dropdownValue,
+  ) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String token = prefs.getString('token').toString();
 
@@ -16,7 +18,7 @@ class GenerateAndUpdatePalletIdController {
     print(serialNoListString);
 
     String url =
-        "${Constants.baseUrl}generateAndUpdatePalletIds?serialNumberList[]=$serialNoListString";
+        "${Constants.baseUrl}generateAndUpdatePalletIds?serialNumberList[]=$serialNoListString&binLocaton=$dropdownValue";
 
     print(url);
 

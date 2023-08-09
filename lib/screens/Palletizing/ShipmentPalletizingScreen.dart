@@ -174,7 +174,7 @@ class _ShipmentPalletizingScreenState extends State<ShipmentPalletizingScreen> {
               Container(
                 margin: const EdgeInsets.only(left: 20, top: 10),
                 child: const TextWidget(
-                  text: " Shipment ID*",
+                  text: " Filter by Shipment ID*",
                   fontSize: 16,
                 ),
               ),
@@ -191,83 +191,268 @@ class _ShipmentPalletizingScreenState extends State<ShipmentPalletizingScreen> {
               ),
               const SizedBox(height: 10),
               Container(
-                height: MediaQuery.of(context).size.height * 0.55,
+                height: MediaQuery.of(context).size.height * 0.5,
                 decoration: BoxDecoration(
                   border: Border.all(
                     color: Colors.grey,
                     width: 1,
                   ),
                 ),
-                child: PaginatedDataTable(
-                  rowsPerPage: 5,
-                  columns: const [
-                    DataColumn(
-                        label: Text('TRANSFER ID',
-                            style: TextStyle(color: Colors.black))),
-                    DataColumn(
-                        label: Text('TRANSFER STATUS',
-                            style: TextStyle(color: Colors.black))),
-                    DataColumn(
-                        label: Text(
-                      'INVENT LOCATIONID FROM',
-                      style: TextStyle(color: Colors.black),
-                      textAlign: TextAlign.center,
-                    )),
-                    DataColumn(
-                        label: Text(
-                      'INVENT LOCATION ID TO',
-                      style: TextStyle(color: Colors.black),
-                      textAlign: TextAlign.center,
-                    )),
-                    DataColumn(
-                        label: Text(
-                      'ITEM ID',
-                      style: TextStyle(color: Colors.black),
-                      textAlign: TextAlign.center,
-                    )),
-                    DataColumn(
-                        label: Text(
-                      'INVENT DIM ID',
-                      style: TextStyle(color: Colors.black),
-                      textAlign: TextAlign.center,
-                    )),
-                    DataColumn(
-                        label: Text(
-                      'QTY TRANSFER',
-                      style: TextStyle(color: Colors.black),
-                      textAlign: TextAlign.center,
-                    )),
-                    DataColumn(
-                        label: Text(
-                      'QTY REMAIN RECEIVE',
-                      style: TextStyle(color: Colors.black),
-                      textAlign: TextAlign.center,
-                    )),
-                    DataColumn(
-                        label: Text(
-                      'CREATED DATE TIME',
-                      style: TextStyle(color: Colors.black),
-                      textAlign: TextAlign.center,
-                    )),
-                  ],
-                  source: StudentDataSource(
-                    table,
-                    context,
-                    shipmentIdController.text.trim(),
-                    isShipmentId,
-                  ),
-                  showCheckboxColumn: false,
-                  showFirstLastButtons: true,
-                  arrowHeadColor: Colors.orange,
-                  header: Text(
-                    'Transfer Details',
-                    style: TextStyle(
-                        color: Colors.blue[900]!,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold),
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: DataTable(
+                      showCheckboxColumn: false,
+                      dataRowColor: MaterialStateColor.resolveWith(
+                          (states) => Colors.grey.withOpacity(0.2)),
+                      headingRowColor: MaterialStateColor.resolveWith(
+                          (states) => Colors.orange),
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Colors.grey,
+                          width: 1,
+                        ),
+                      ),
+                      border: TableBorder.all(
+                        color: Colors.black,
+                        width: 1,
+                      ),
+                      columns: const [
+                        DataColumn(
+                            label: Text(
+                          'ALS_PACKINGSLIPREF',
+                          style: TextStyle(color: Colors.white),
+                        )),
+                        DataColumn(
+                            label: Text(
+                          'ALS_TRANSFERORDERTYPE',
+                          style: TextStyle(color: Colors.white),
+                        )),
+                        DataColumn(
+                            label: Text(
+                          'TRANSFER ID',
+                          style: TextStyle(color: Colors.white),
+                          textAlign: TextAlign.center,
+                        )),
+                        DataColumn(
+                            label: Text(
+                          'INVENT LOCATION ID FROM',
+                          style: TextStyle(color: Colors.white),
+                          textAlign: TextAlign.center,
+                        )),
+                        DataColumn(
+                            label: Text(
+                          'INVENT LOCATION ID TO',
+                          style: TextStyle(color: Colors.white),
+                          textAlign: TextAlign.center,
+                        )),
+                        DataColumn(
+                            label: Text(
+                          'QTY TRANSFER',
+                          style: TextStyle(color: Colors.white),
+                          textAlign: TextAlign.center,
+                        )),
+                        DataColumn(
+                            label: Text(
+                          'ITEM ID',
+                          style: TextStyle(color: Colors.white),
+                          textAlign: TextAlign.center,
+                        )),
+                        DataColumn(
+                            label: Text(
+                          'ITEM NAME',
+                          style: TextStyle(color: Colors.white),
+                          textAlign: TextAlign.center,
+                        )),
+                        DataColumn(
+                            label: Text(
+                          'CONFIG ID',
+                          style: TextStyle(color: Colors.white),
+                          textAlign: TextAlign.center,
+                        )),
+                        DataColumn(
+                            label: Text(
+                          'WMS LOCATION ID',
+                          style: TextStyle(color: Colors.white),
+                          textAlign: TextAlign.center,
+                        )),
+                        DataColumn(
+                            label: Text(
+                          'SHIPMENT ID',
+                          style: TextStyle(color: Colors.white),
+                          textAlign: TextAlign.center,
+                        )),
+                      ],
+                      rows: table.map((e) {
+                        return DataRow(
+                            onSelectChanged: (value) async {
+                              if (e.sHIPMENTID == null || e.sHIPMENTID == "") {
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(const SnackBar(
+                                  content: Text("Please Enter Shipment id."),
+                                  backgroundColor: Colors.redAccent,
+                                  duration: Duration(seconds: 1),
+                                ));
+                                return;
+                              }
+
+                              FocusScope.of(context).requestFocus(FocusNode());
+                              if (isShipmentId == false) {
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(const SnackBar(
+                                  content: Text(
+                                      "Shipment ID not found in tbl_Shipment_Received_CL"),
+                                  backgroundColor: Colors.redAccent,
+                                  duration: Duration(seconds: 1),
+                                ));
+                                return;
+                              }
+                              Get.to(() => PalletProceedScreen(
+                                    iNVENTLOCATIONIDFROM:
+                                        e.iNVENTLOCATIONIDFROM ?? "",
+                                    iNVENTLOCATIONIDTO:
+                                        e.iNVENTLOCATIONIDTO ?? "",
+                                    iTEMID: e.iTEMID ?? "",
+                                    tRANSFERID: e.tRANSFERID ?? "",
+                                    shipmentId: e.sHIPMENTID!,
+                                    ALS_PACKINGSLIPREF:
+                                        e.aLSPACKINGSLIPREF ?? "",
+                                    ALS_TRANSFERORDERTYPE: int.parse(
+                                        e.aLSTRANSFERORDERTYPE.toString()),
+                                    QTYTRANSFER:
+                                        int.parse(e.qTYTRANSFER.toString()),
+                                    ITEMNAME: e.iTEMNAME ?? "",
+                                    CONFIGID: e.cONFIGID ?? "",
+                                    WMSLOCATIONID: e.wMSLOCATIONID ?? "",
+                                  ));
+                            },
+                            cells: [
+                              DataCell(Text(e.aLSPACKINGSLIPREF ?? "")),
+                              DataCell(Text(e.aLSTRANSFERORDERTYPE.toString())),
+                              DataCell(Text(e.tRANSFERID ?? "")),
+                              DataCell(Text(e.iNVENTLOCATIONIDFROM ?? "")),
+                              DataCell(Text(e.iNVENTLOCATIONIDTO ?? "")),
+                              DataCell(Text(e.qTYTRANSFER.toString())),
+                              DataCell(Text(e.iTEMID.toString())),
+                              DataCell(Text(e.iTEMNAME ?? "")),
+                              DataCell(Text(e.cONFIGID ?? "")),
+                              DataCell(Text(e.wMSLOCATIONID ?? "")),
+                              DataCell(Text(e.sHIPMENTID ?? "")),
+                            ]);
+                      }).toList(),
+                    ),
                   ),
                 ),
               ),
+              const SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: <Widget>[
+                  const TextWidget(
+                    text: "TOTAL",
+                    fontSize: 15,
+                  ),
+                  const SizedBox(width: 5),
+                  Container(
+                    width: MediaQuery.of(context).size.width * 0.2,
+                    height: 30,
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: Colors.blue,
+                      ),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Center(
+                      child: TextWidget(text: total),
+                    ),
+                  ),
+                  const SizedBox(width: 20),
+                ],
+              ),
+              // Container(
+              //   height: MediaQuery.of(context).size.height * 0.5,
+              //   decoration: BoxDecoration(
+              //     border: Border.all(
+              //       color: Colors.grey,
+              //       width: 1,
+              //     ),
+              //   ),
+              //   child: PaginatedDataTable(
+              //     rowsPerPage: 5,
+              //     columns: const [
+              //       DataColumn(
+              //           label: Text('ALS_PACKINGSLIPREF',
+              //               style: TextStyle(color: Colors.black))),
+              //       DataColumn(
+              //           label: Text('ALS_TRANSFERORDERTYPE',
+              //               style: TextStyle(color: Colors.black))),
+              //       DataColumn(
+              //           label: Text(
+              //         'TRANSFER ID',
+              //         style: TextStyle(color: Colors.black),
+              //         textAlign: TextAlign.center,
+              //       )),
+              //       DataColumn(
+              //           label: Text(
+              //         'INVENT LOCATION ID FROM',
+              //         style: TextStyle(color: Colors.black),
+              //         textAlign: TextAlign.center,
+              //       )),
+              //       DataColumn(
+              //           label: Text(
+              //         'INVENT LOCATION ID TO',
+              //         style: TextStyle(color: Colors.black),
+              //         textAlign: TextAlign.center,
+              //       )),
+              //       DataColumn(
+              //           label: Text(
+              //         'QTY TRANSFER',
+              //         style: TextStyle(color: Colors.black),
+              //         textAlign: TextAlign.center,
+              //       )),
+              //       DataColumn(
+              //           label: Text(
+              //         'ITEM ID',
+              //         style: TextStyle(color: Colors.black),
+              //         textAlign: TextAlign.center,
+              //       )),
+              //       DataColumn(
+              //           label: Text(
+              //         'ITEM NAME',
+              //         style: TextStyle(color: Colors.black),
+              //         textAlign: TextAlign.center,
+              //       )),
+              //       DataColumn(
+              //           label: Text(
+              //         'CONFIG ID',
+              //         style: TextStyle(color: Colors.black),
+              //         textAlign: TextAlign.center,
+              //       )),
+              //       DataColumn(
+              //           label: Text(
+              //         'WMS LOCATION ID',
+              //         style: TextStyle(color: Colors.black),
+              //         textAlign: TextAlign.center,
+              //       )),
+              //       DataColumn(
+              //           label: Text(
+              //         'SHIPMENT ID',
+              //         style: TextStyle(color: Colors.black),
+              //         textAlign: TextAlign.center,
+              //       )),
+              //     ],
+              //     source: StudentDataSource(
+              //       table,
+              //       context,
+              //       shipmentIdController.text.trim(),
+              //       isShipmentId,
+              //     ),
+              //     showCheckboxColumn: false,
+              //     showFirstLastButtons: true,
+              //     arrowHeadColor: Colors.orange,
+              //   ),
+              // ),
               const SizedBox(height: 20),
             ],
           ),
@@ -380,28 +565,32 @@ class StudentDataSource extends DataTableSource {
           return;
         }
         Get.to(() => PalletProceedScreen(
-              cREATEDDATETIME: tble.cREATEDDATETIME ?? "",
-              iNVENTDIMID: tble.iNVENTDIMID ?? "",
               iNVENTLOCATIONIDFROM: tble.iNVENTLOCATIONIDFROM ?? "",
               iNVENTLOCATIONIDTO: tble.iNVENTLOCATIONIDTO ?? "",
               iTEMID: tble.iTEMID ?? "",
-              qTYREMAINRECEIVE: int.parse(tble.qTYREMAINRECEIVE.toString()),
-              qTYTRANSFER: int.parse(tble.qTYTRANSFER.toString()),
-              tRANSFERID: tble.tRANSFERID.toString(),
-              tRANSFERSTATUS: int.parse(tble.tRANSFERSTATUS.toString()),
+              tRANSFERID: tble.tRANSFERID ?? "",
               shipmentId: shipmentId!,
+              ALS_PACKINGSLIPREF: tble.aLSPACKINGSLIPREF ?? "",
+              ALS_TRANSFERORDERTYPE:
+                  int.parse(tble.aLSTRANSFERORDERTYPE.toString()),
+              QTYTRANSFER: int.parse(tble.qTYTRANSFER.toString()),
+              ITEMNAME: tble.iTEMNAME ?? "",
+              CONFIGID: tble.cONFIGID ?? "",
+              WMSLOCATIONID: tble.wMSLOCATIONID ?? "",
             ));
       },
       cells: [
+        DataCell(Text(tble.aLSPACKINGSLIPREF ?? "")),
+        DataCell(Text(tble.aLSTRANSFERORDERTYPE.toString())),
         DataCell(Text(tble.tRANSFERID ?? "")),
-        DataCell(Text(tble.tRANSFERSTATUS.toString())),
         DataCell(Text(tble.iNVENTLOCATIONIDFROM ?? "")),
         DataCell(Text(tble.iNVENTLOCATIONIDTO ?? "")),
-        DataCell(Text(tble.iTEMID ?? "")),
-        DataCell(Text(tble.iNVENTDIMID ?? "")),
         DataCell(Text(tble.qTYTRANSFER.toString())),
-        DataCell(Text(tble.qTYREMAINRECEIVE.toString())),
-        DataCell(Text(tble.cREATEDDATETIME ?? "")),
+        DataCell(Text(tble.iTEMID.toString())),
+        DataCell(Text(tble.iTEMNAME ?? "")),
+        DataCell(Text(tble.cONFIGID ?? "")),
+        DataCell(Text(tble.wMSLOCATIONID ?? "")),
+        DataCell(Text(tble.sHIPMENTID ?? "")),
       ],
     );
   }
