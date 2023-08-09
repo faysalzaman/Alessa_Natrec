@@ -13,6 +13,7 @@ class GetPickingListController {
 
     String url =
         "${Constants.baseUrl}getAllWmsSalesPickingListClFromWBSByPickingRouteId?PICKINGROUTEID=$pickingRouteId";
+    print(url);
 
     final uri = Uri.parse(url);
 

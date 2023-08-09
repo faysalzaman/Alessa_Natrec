@@ -189,13 +189,41 @@ class _PickListAssignedScreenState extends State<PickListAssignedScreen> {
                     ],
                   ),
                 ),
-                Container(
-                  margin: const EdgeInsets.only(left: 10, top: 10),
-                  child: const TextWidget(
-                    text: "Items*",
-                    fontSize: 16,
-                  ),
+                const SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                      margin: const EdgeInsets.only(left: 10, top: 10),
+                      child: const TextWidget(
+                        text: "Items*",
+                        fontSize: 16,
+                      ),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: <Widget>[
+                        const TextWidget(text: "TOTAL", fontSize: 15),
+                        const SizedBox(width: 5),
+                        Container(
+                          width: MediaQuery.of(context).size.width * 0.2,
+                          height: 30,
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: Colors.blue,
+                            ),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Center(
+                            child: TextWidget(text: total),
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                      ],
+                    ),
+                  ],
                 ),
+                const SizedBox(height: 10),
                 Container(
                   height: MediaQuery.of(context).size.height * 0.55,
                   decoration: BoxDecoration(
@@ -313,11 +341,13 @@ class _PickListAssignedScreenState extends State<PickListAssignedScreen> {
                         rows: BinToBinJournalTableList.map((e) {
                           return DataRow(
                               onSelectChanged: (value) {
-                                if (e.qTY == 0 || e.qTY == null) {
+                                if (e.qTY == 0 ||
+                                    e.qTY == null ||
+                                    e.pICKSTATUS == "Picked") {
                                   ScaffoldMessenger.of(context)
                                       .showSnackBar(const SnackBar(
                                     content: Text(
-                                        'This item has been picked completely'),
+                                        'Item already picked & ready for dispatch!'),
                                     duration: Duration(seconds: 2),
                                   ));
                                   return;
@@ -372,28 +402,6 @@ class _PickListAssignedScreenState extends State<PickListAssignedScreen> {
                   ),
                 ),
                 const SizedBox(height: 10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: <Widget>[
-                    const TextWidget(text: "TOTAL"),
-                    const SizedBox(width: 5),
-                    Container(
-                      width: MediaQuery.of(context).size.width * 0.4,
-                      height: 50,
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: Colors.blue,
-                        ),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Center(
-                        child: TextWidget(text: total),
-                      ),
-                    ),
-                    const SizedBox(width: 20),
-                  ],
-                ),
-                const SizedBox(height: 10),
               ],
             ),
           ),
@@ -416,6 +424,11 @@ class _PickListAssignedScreenState extends State<PickListAssignedScreen> {
       Navigator.pop(context);
     }).onError(
       (error, stackTrace) {
+        setState(() {
+          BinToBinJournalTableList = [];
+          total = "0";
+          isMarked = [];
+        });
         Navigator.pop(context);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(

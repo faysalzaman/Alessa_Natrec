@@ -423,14 +423,9 @@ class _PickListAssingedScreen2State extends State<PickListAssingedScreen2> {
                 ),
               ),
               const SizedBox(height: 5),
-              Container(
-                height: MediaQuery.of(context).size.height * 0.6,
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: Colors.grey,
-                    width: 1,
-                  ),
-                ),
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.55,
+                width: MediaQuery.of(context).size.width * 1,
                 child: PaginatedDataTable(
                   rowsPerPage: 5,
                   columns: const [
@@ -544,6 +539,8 @@ class _PickListAssingedScreen2State extends State<PickListAssingedScreen2> {
                   ],
                   source: StudentDataSource(table1, context),
                   showCheckboxColumn: false,
+                  showFirstLastButtons: true,
+                  arrowHeadColor: Colors.orange,
                 ),
               ),
               const SizedBox(height: 30),
@@ -894,11 +891,11 @@ class _PickListAssingedScreen2State extends State<PickListAssingedScreen2> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: <Widget>[
-                  const TextWidget(text: "TOTAL"),
+                  const TextWidget(text: "TOTAL", fontSize: 15),
                   const SizedBox(width: 5),
                   Container(
-                    width: MediaQuery.of(context).size.width * 0.4,
-                    height: 50,
+                    width: MediaQuery.of(context).size.width * 0.2,
+                    height: 30,
                     decoration: BoxDecoration(
                       border: Border.all(
                         color: Colors.blue,
