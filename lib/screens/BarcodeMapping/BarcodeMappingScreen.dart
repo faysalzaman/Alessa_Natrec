@@ -1,3 +1,5 @@
+import 'package:alessa_v2/controllers/BarcodeMapping/GetItemInfoByItemSerialNoController.dart';
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -38,6 +40,8 @@ class _BarcodeMappingScreenState extends State<BarcodeMappingScreen> {
   final TextEditingController _weightController = TextEditingController();
 
   FocusNode focusNode = FocusNode();
+  FocusNode serialFocusNode = FocusNode();
+  FocusNode gtinFocusNode = FocusNode();
 
   String? dropDownValue = "Select Config";
   List<String> dropDownList = [
@@ -255,6 +259,44 @@ class _BarcodeMappingScreenState extends State<BarcodeMappingScreen> {
                     textInputAction: TextInputAction.next,
                     onFieldSubmitted: (p0) {
                       FocusScope.of(context).unfocus();
+                      GetItemInfoByItemSerialNoController.getData(
+                              _serialNoController.text.trim())
+                          .then((value) {
+                        if (value == 200) {
+                          showDiologMethod(
+                            context,
+                            "Item Serial No. Already Exists",
+                            () {
+                              FocusScope.of(context)
+                                  .requestFocus(gtinFocusNode);
+                            },
+                            () {
+                              _serialNoController.clear();
+                              FocusScope.of(context).requestFocus(focusNode);
+                            },
+                          ).show();
+                        }
+                        if (value == 404) {
+                          FocusScope.of(context).requestFocus(gtinFocusNode);
+                          return;
+                        }
+                      }).onError((error, stackTrace) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              "Error: $error".replaceAll("Exception:", ""),
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.red,
+                              ),
+                            ),
+                            backgroundColor: Colors.white,
+                            duration: const Duration(seconds: 3),
+                          ),
+                        );
+                        return;
+                      });
                     },
                   ),
                 ),
@@ -275,6 +317,7 @@ class _BarcodeMappingScreenState extends State<BarcodeMappingScreen> {
                   child: TextFormFieldWidget(
                     hintText: "Enter/Scan GTIN",
                     controller: _gtinController,
+                    focusNode: gtinFocusNode,
                     textInputAction: TextInputAction.next,
                     width: MediaQuery.of(context).size.width * 0.9,
                     onFieldSubmitted: (p0) {
@@ -650,6 +693,27 @@ class _BarcodeMappingScreenState extends State<BarcodeMappingScreen> {
       );
       Navigator.of(context).pop();
     });
+  }
+
+  AwesomeDialog showDiologMethod(
+    BuildContext context,
+    String title,
+    VoidCallback btnOkOnPress,
+    VoidCallback btnCancelOnPress,
+  ) {
+    return AwesomeDialog(
+      context: context,
+      dialogType: DialogType.warning,
+      animType: AnimType.rightSlide,
+      title: title,
+      desc: "Do you want to update the data?",
+      btnOkOnPress: btnOkOnPress,
+      btnCancelOnPress: btnCancelOnPress,
+      reverseBtnOrder: true,
+      // change button text
+      btnCancelText: "Cancel",
+      btnOkText: "Yes, Update it!",
+    );
   }
 }
 
