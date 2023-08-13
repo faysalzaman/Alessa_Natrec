@@ -227,52 +227,71 @@ class _BarcodeMappingScreenState extends State<BarcodeMappingScreen> {
                     ],
                   ),
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 10),
                 Center(
                   child: Container(
                     width: MediaQuery.of(context).size.width * 0.9,
+                    height: 50,
                     padding: const EdgeInsets.only(left: 10, right: 10),
                     decoration: BoxDecoration(
                       border: Border.all(color: Colors.black12),
                       borderRadius: BorderRadius.circular(5),
                     ),
-                    child: DropdownButtonHideUnderline(
-                      child: DropdownButtonFormField(
-                        value: dValue,
-                        alignment: Alignment.centerLeft,
-                        decoration: const InputDecoration(
-                          enabledBorder: InputBorder.none,
-                          focusedBorder: InputBorder.none,
-                        ),
-                        onChanged: (String? newValue) {
-                          setState(() {
-                            dValue = newValue!;
-                            itemID = itemList
-                                .where((element) =>
-                                    dValue.contains(element.iTEMID.toString()))
-                                .first
-                                .iTEMID
-                                .toString();
-                            itemName = itemList
-                                .where((element) =>
-                                    dValue.contains(element.iTEMID.toString()))
-                                .first
-                                .iTEMNAME
-                                .toString();
-                          });
-                        },
-                        isExpanded: true,
-                        items:
-                            dList.map<DropdownMenuItem<String>>((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(
-                              value,
-                              style: const TextStyle(
-                                  fontSize: 18, fontWeight: FontWeight.bold),
+                    child: DropdownButtonFormField(
+                      value: dValue,
+                      alignment: Alignment.centerLeft,
+                      decoration: const InputDecoration(
+                        enabledBorder: InputBorder.none,
+                        focusedBorder: InputBorder.none,
+                      ),
+                      padding: const EdgeInsets.only(top: 7),
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          dValue = newValue!;
+                          itemID = itemList
+                              .where((element) =>
+                                  dValue.contains(element.iTEMID.toString()))
+                              .first
+                              .iTEMID
+                              .toString();
+                          itemName = itemList
+                              .where((element) =>
+                                  dValue.contains(element.iTEMID.toString()))
+                              .first
+                              .iTEMNAME
+                              .toString();
+                        });
+                      },
+                      isExpanded: true,
+                      items:
+                          dList.map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(
+                            value,
+                            textScaleFactor: 0.7,
+                            style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              background: null,
                             ),
-                          );
-                        }).toList(),
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 5),
+                  child: Center(
+                    child: Text(
+                      dValue.toString(),
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.blue[900]!,
                       ),
                     ),
                   ),
