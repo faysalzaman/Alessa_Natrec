@@ -1,24 +1,26 @@
+// ignore_for_file: avoid_print, depend_on_referenced_packages
+
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
 import '../../utils/Constants.dart';
 
-class getAllTblShipmentReceivedCLController {
+class GetAllTblShipmentReceivedCLController {
   static Future<int> getAllTableZone(
-    String CONTAINERID,
-    String SHIPMENTID,
-    String ITEMID,
+    String cONTAINERID,
+    String sHIPMENTID,
+    String iTEMID,
   ) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String token = prefs.getString('token').toString();
 
-    print("CONTAINERID: $CONTAINERID");
-    print("SHIPMENTID: $SHIPMENTID");
-    print("ITEMID: $ITEMID");
+    print("CONTAINERID: $cONTAINERID");
+    print("SHIPMENTID: $sHIPMENTID");
+    print("ITEMID: $iTEMID");
 
     String url =
-        "${Constants.baseUrl}getRemainingQtyFromShipmentCounter?CONTAINERID=$CONTAINERID&SHIPMENTID=$SHIPMENTID&ITEMID=$ITEMID";
+        "${Constants.baseUrl}getRemainingQtyFromShipmentCounter?CONTAINERID=$cONTAINERID&SHIPMENTID=$sHIPMENTID&ITEMID=$iTEMID";
 
     print("URL: $url");
 

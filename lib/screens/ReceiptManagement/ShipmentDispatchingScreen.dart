@@ -23,8 +23,9 @@ class ShipmentDispatchingScreen extends StatefulWidget {
 class _ShipmentDispatchingScreenState extends State<ShipmentDispatchingScreen> {
   final TextEditingController _shipmentIdController = TextEditingController();
   final TextEditingController _filterController = TextEditingController();
+
   String total = "0";
-  List<DummyModel> getAllAssetByLocationList = [];
+  List<DummyModel> table = [];
   List<bool> isMarked = [];
 
   String userName = "";
@@ -142,11 +143,9 @@ class _ShipmentDispatchingScreenState extends State<ShipmentDispatchingScreen> {
                                   _shipmentIdController.text.trim())
                               .then((value) {
                             setState(() {
-                              getAllAssetByLocationList = value;
-                              total =
-                                  getAllAssetByLocationList.length.toString();
-                              isMarked = List<bool>.filled(
-                                  getAllAssetByLocationList.length, false);
+                              table = value;
+                              total = table.length.toString();
+                              isMarked = List<bool>.filled(table.length, false);
                             });
                             Navigator.pop(context);
                           }).onError((error, stackTrace) {
@@ -173,11 +172,9 @@ class _ShipmentDispatchingScreenState extends State<ShipmentDispatchingScreen> {
                                   _shipmentIdController.text.trim())
                               .then((value) {
                             setState(() {
-                              getAllAssetByLocationList = value;
-                              total =
-                                  getAllAssetByLocationList.length.toString();
-                              isMarked = List<bool>.filled(
-                                  getAllAssetByLocationList.length, false);
+                              table = value;
+                              total = table.length.toString();
+                              isMarked = List<bool>.filled(table.length, false);
                               Navigator.pop(context);
                             });
                           }).onError((error, stackTrace) {
@@ -216,15 +213,12 @@ class _ShipmentDispatchingScreenState extends State<ShipmentDispatchingScreen> {
                           FocusScope.of(context).unfocus();
                           // Filter by Container Id
                           setState(() {
-                            getAllAssetByLocationList =
-                                getAllAssetByLocationList
-                                    .where((element) =>
-                                        element.cONTAINERID!.contains(
-                                            _filterController.text.trim()))
-                                    .toList();
-                            total = getAllAssetByLocationList.length.toString();
-                            isMarked = List<bool>.filled(
-                                getAllAssetByLocationList.length, false);
+                            table = table
+                                .where((element) => element.cONTAINERID!
+                                    .contains(_filterController.text.trim()))
+                                .toList();
+                            total = table.length.toString();
+                            isMarked = List<bool>.filled(table.length, false);
                           });
                         },
                       ),
@@ -346,7 +340,7 @@ class _ShipmentDispatchingScreenState extends State<ShipmentDispatchingScreen> {
                           textAlign: TextAlign.center,
                         )),
                       ],
-                      rows: getAllAssetByLocationList.map((e) {
+                      rows: table.map((e) {
                         return DataRow(
                             onSelectChanged: (value) {
                               // keybord hide
@@ -366,9 +360,7 @@ class _ShipmentDispatchingScreenState extends State<ShipmentDispatchingScreen> {
                               }));
                             },
                             cells: [
-                              DataCell(Text(
-                                  (getAllAssetByLocationList.indexOf(e) + 1)
-                                      .toString())),
+                              DataCell(Text((table.indexOf(e) + 1).toString())),
                               DataCell(Text(e.pURCHID ?? "")),
                               DataCell(Text(e.cREATEDDATETIME ?? "")),
                               DataCell(Text(e.sHIPMENTID ?? "")),

@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import '../../controllers/BarcodeMapping/GetTblStockMasterByItemIdController.dart';
 import '../../controllers/WareHouseOperationController/GetAllTableZoneController.dart';
 import '../../controllers/WareHouseOperationController/GetItemNameByItemId.dart';
-import '../../controllers/WareHouseOperationController/getAllTblShipmentReceivedCLController.dart';
+import '../../controllers/WareHouseOperationController/GetAllTblShipmentReceivedCLController.dart';
 import '../../utils/Constants.dart';
 import '../../widgets/ElevatedButtonWidget.dart';
 import '../../widgets/TextFormField.dart';
@@ -74,13 +74,11 @@ class _ScanSerialNumberScreenState extends State<ScanSerialNumberScreen> {
           dropdownList = dropdownList.toSet().toList();
         }
 
-        getAllTblShipmentReceivedCLController
-            .getAllTableZone(
+        GetAllTblShipmentReceivedCLController.getAllTableZone(
           widget.containerId,
           widget.shipmentId,
           widget.itemId,
-        )
-            .then((value) {
+        ).then((value) {
           setState(() {
             RCQTY = value;
           });

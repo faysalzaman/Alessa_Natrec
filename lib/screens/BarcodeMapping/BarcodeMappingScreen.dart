@@ -1,4 +1,5 @@
 import 'package:alessa_v2/controllers/BarcodeMapping/GetItemInfoByItemSerialNoController.dart';
+import 'package:alessa_v2/models/getInventTableWMSDataByItemIdOrItemNameModel.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:intl/intl.dart';
@@ -111,8 +112,10 @@ class _BarcodeMappingScreenState extends State<BarcodeMappingScreen> {
 
   String itemName = '';
   String itemID = '';
-  String itemGroupId = '';
-  String groupName = '';
+
+  List<getInventTableWMSDataByItemIdOrItemNameModel> itemList = [];
+  String dValue = '';
+  List<String> dList = [];
 
   @override
   Widget build(BuildContext context) {
@@ -227,15 +230,52 @@ class _BarcodeMappingScreenState extends State<BarcodeMappingScreen> {
                 const SizedBox(height: 20),
                 Center(
                   child: Container(
-                      width: MediaQuery.of(context).size.width * 0.9,
-                      child: Text(
-                        "$itemID - $itemName",
-                        style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.red),
-                        textAlign: TextAlign.center,
-                      )),
+                    width: MediaQuery.of(context).size.width * 0.9,
+                    padding: const EdgeInsets.only(left: 10, right: 10),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.black12),
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    child: DropdownButtonHideUnderline(
+                      child: DropdownButtonFormField(
+                        value: dValue,
+                        alignment: Alignment.centerLeft,
+                        decoration: const InputDecoration(
+                          enabledBorder: InputBorder.none,
+                          focusedBorder: InputBorder.none,
+                        ),
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            dValue = newValue!;
+                            itemID = itemList
+                                .where((element) =>
+                                    dValue.contains(element.iTEMID.toString()))
+                                .first
+                                .iTEMID
+                                .toString();
+                            itemName = itemList
+                                .where((element) =>
+                                    dValue.contains(element.iTEMID.toString()))
+                                .first
+                                .iTEMNAME
+                                .toString();
+                          });
+                        },
+                        isExpanded: true,
+                        items:
+                            dList.map<DropdownMenuItem<String>>((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(
+                              value,
+                              style: const TextStyle(
+                                  fontSize: 18, fontWeight: FontWeight.bold),
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                  ),
                 ),
                 const SizedBox(height: 20),
                 Container(
@@ -570,7 +610,8 @@ class _BarcodeMappingScreenState extends State<BarcodeMappingScreen> {
                           _binLocationController.text.trim() == "" ||
                           _lengthController.text.trim() == "" ||
                           _widthController.text.trim() == "" ||
-                          _heightController.text.trim() == "") {
+                          _heightController.text.trim() == "" ||
+                          dValue.toString() == "") {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
                             content: Text("Please fill the above fields"),
@@ -662,10 +703,13 @@ class _BarcodeMappingScreenState extends State<BarcodeMappingScreen> {
         .getData(_searchController.text.trim())
         .then((value) {
       setState(() {
-        itemName = "${value[0].iTEMNAME}";
-        itemID = "${value[0].iTEMID}";
-        itemGroupId = "${value[0].iTEMGROUPID}";
-        groupName = "${value[0].gROUPNAME}";
+        itemList = value;
+        dList.clear();
+        for (var element in itemList) {
+          String temp = "${element.iTEMID} - ${element.iTEMNAME}";
+          dList.add(temp);
+        }
+        dValue = dList[0];
       });
 
       GetTblStockMasterByItemIdController.getData(itemID).then((value) {
