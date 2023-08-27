@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:alessa_v2/screens/PalletIdInquiry/PalletIdInquiryScreen.dart';
 import 'package:alessa_v2/screens/UnAllocatedItem/UnAllocatedItemsScreen1.dart';
 import 'package:auto_size_text/auto_size_text.dart';
@@ -41,21 +43,18 @@ class _HomeScreenState extends State<HomeScreen> {
       "assets/gtin_tracking.png",
       "assets/stock_management.png",
       "assets/picking.png",
-      // "assets/container.png",
       "assets/work_in_progress.png",
-      "assets/allocation.png",
-      "assets/receipt_management.png",
       "assets/physical_invention.png",
       "assets/log-in.png",
       "assets/journal.png",
-      "assets/profit-and-loss.png",
-      // "assets/cycle-counting.png",
       "assets/product-return.png",
       "assets/put-away.png",
-      "assets/movement.png",
-      // "assets/inventory.png",
-      "assets/wms-inventory.png",
       "assets/inventory-location.png",
+      "assets/movement.png",
+      "assets/wms-inventory.png",
+      "assets/profit-and-loss.png",
+      "assets/allocation.png",
+      "assets/receipt_management.png",
       "assets/inventory.png",
       "assets/logout.jpg",
     ],
@@ -65,21 +64,18 @@ class _HomeScreenState extends State<HomeScreen> {
       "Palletization",
       "Shipment Put-Away",
       "Picking Slip",
-      // "Received By Container",
       "Dispatching",
-      "Items Re-Allocation",
-      "Un-Allocated Items",
       "Bin To Bin (AXAPTA)",
       "Bin To Bin (Internal)",
       "Bin To Bin (Journal)",
-      "Profit and Loss",
-      // "Cycle Counting Process",
       "Return RMA",
       "RMA Put-Away",
-      "Journal Movement Counting",
-      // "WMS Inventory",
-      "Physical Count (WMS)",
       "Inventory by Bin Location",
+      "Journal Movement Counting",
+      "Physical Count (WMS)",
+      "Profit and Loss",
+      "Items Re-Allocation",
+      "Un-Allocated Items",
       "Pallet ID Inquiry",
       "Logout",
     ],
@@ -99,17 +95,8 @@ class _HomeScreenState extends State<HomeScreen> {
       () {
         Get.to(() => PickListAssignedScreen());
       },
-      // () {
-      //   Get.to(() => const ReceivedByContainer());
-      // },
       () {
         Get.to(() => const DispatchingScreen());
-      },
-      () {
-        Get.to(() => const ItemReAllocationScreen());
-      },
-      () {
-        Get.to(() => const UnAllocatedItemsScreen1());
       },
       () {
         Get.to(() => const BinToBinAxaptaScreen());
@@ -120,13 +107,6 @@ class _HomeScreenState extends State<HomeScreen> {
       () {
         Get.to(() => const BinToBinJournalScreen());
       },
-
-      () {
-        Get.to(() => const ProfitAndLossScreen1());
-      },
-      // () {
-      //   Get.to(() => const CycleCountingScreen1());
-      // },
       () {
         Get.to(() => const ReturnRMAScreen1());
       },
@@ -134,16 +114,22 @@ class _HomeScreenState extends State<HomeScreen> {
         Get.to(() => const RMAPutawayScreen());
       },
       () {
+        Get.to(() => const PhysicalInventoryByBinLocationScreen());
+      },
+      () {
         Get.to(() => const JournalMovementScreen1());
       },
-      // () {
-      //   Get.to(() => WMSInventoryScreen());
-      // },
       () {
         Get.to(() => const PhysicalInventoryScreen());
       },
       () {
-        Get.to(() => const PhysicalInventoryByBinLocationScreen());
+        Get.to(() => const ProfitAndLossScreen1());
+      },
+      () {
+        Get.to(() => const ItemReAllocationScreen());
+      },
+      () {
+        Get.to(() => const UnAllocatedItemsScreen1());
       },
       () {
         Get.to(() => const PalletIdInquiryScreen());

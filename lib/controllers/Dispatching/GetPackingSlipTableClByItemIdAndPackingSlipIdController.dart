@@ -1,6 +1,8 @@
+// ignore_for_file: avoid_print
+
 import 'package:alessa_v2/models/GetPackingSlipTableClByItemIdAndPackingSlipIdModel.dart';
 
-import '../../models/getDispatchingTableModel.dart';
+// ignore: depend_on_referenced_packages
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';

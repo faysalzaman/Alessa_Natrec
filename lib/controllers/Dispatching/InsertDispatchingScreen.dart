@@ -1,3 +1,5 @@
+// ignore_for_file: depend_on_referenced_packages, avoid_print
+
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
