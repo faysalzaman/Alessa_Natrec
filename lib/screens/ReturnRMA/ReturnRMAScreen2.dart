@@ -114,7 +114,6 @@ class _ReturnRMAScreen2State extends State<ReturnRMAScreen2> {
                 dDownList = set.toList();
               });
             }
-
             setState(() {
               dDownValue = dDownList[0];
               fltrList = dDownList;

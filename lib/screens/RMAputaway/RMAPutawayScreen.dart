@@ -34,10 +34,10 @@ class _RMAPutawayScreenState extends State<RMAPutawayScreen> {
   String userName = "";
   String userID = "";
 
-  final TextEditingController _searchController = TextEditingController();
-  String? dropDownValue;
-  List<String> dropDownList = [];
-  List<String> filterList = [];
+  final TextEditingController _srchController = TextEditingController();
+  String? dDownValue;
+  List<String> dDownList = [];
+  List<String> fltrList = [];
 
   void _showUserInfo() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -71,21 +71,21 @@ class _RMAPutawayScreenState extends State<RMAPutawayScreen> {
         Navigator.pop(context);
         for (int i = 0; i < value.length; i++) {
           setState(() {
-            dropDownList.add(value[i].bIN ?? "");
-            Set<String> set = dropDownList.toSet();
-            dropDownList = set.toList();
+            dDownList.add(value[i].bIN ?? "");
+            Set<String> set = dDownList.toSet();
+            dDownList = set.toList();
           });
         }
 
         setState(() {
-          dropDownValue = dropDownList[0];
-          filterList = dropDownList;
+          dDownValue = dDownList[0];
+          fltrList = dDownList;
         });
       }).onError((error, stackTrace) {
         Navigator.pop(context);
         setState(() {
-          dropDownValue = "";
-          filterList = [];
+          dDownValue = "";
+          fltrList = [];
         });
       });
     }).onError((error, stackTrace) {
@@ -405,13 +405,13 @@ class _RMAPutawayScreenState extends State<RMAPutawayScreen> {
                             color: Colors.black,
                           ),
                         ),
-                        items: filterList,
+                        items: fltrList,
                         onChanged: (value) {
                           setState(() {
-                            dropDownValue = value!;
+                            dDownValue = value!;
                           });
                         },
-                        selectedItem: dropDownValue,
+                        selectedItem: dDownValue,
                       ),
                     ),
                     Container(
@@ -429,20 +429,20 @@ class _RMAPutawayScreenState extends State<RMAPutawayScreen> {
                                   fontSize: 15,
                                 ),
                                 content: TextFormFieldWidget(
-                                  controller: _searchController,
+                                  controller: _srchController,
                                   readOnly: false,
                                   hintText: "Enter/Scan Location",
                                   width:
                                       MediaQuery.of(context).size.width * 0.9,
                                   onEditingComplete: () {
                                     setState(() {
-                                      dropDownList = dropDownList
+                                      dDownList = dDownList
                                           .where((element) => element
                                               .toLowerCase()
-                                              .contains(_searchController.text
+                                              .contains(_srchController.text
                                                   .toLowerCase()))
                                           .toList();
-                                      dropDownValue = dropDownList[0];
+                                      dDownValue = dDownList[0];
                                     });
                                     Navigator.pop(context);
                                   },
@@ -462,13 +462,13 @@ class _RMAPutawayScreenState extends State<RMAPutawayScreen> {
                                     onPressed: () {
                                       // filter list based on search
                                       setState(() {
-                                        filterList = dropDownList
+                                        fltrList = dDownList
                                             .where((element) => element
                                                 .toLowerCase()
-                                                .contains(_searchController.text
+                                                .contains(_srchController.text
                                                     .toLowerCase()))
                                             .toList();
-                                        dropDownValue = filterList[0];
+                                        dDownValue = fltrList[0];
                                       });
 
                                       Navigator.pop(context);
@@ -499,7 +499,7 @@ class _RMAPutawayScreenState extends State<RMAPutawayScreen> {
                     textColor: Colors.white,
                     color: Colors.orange,
                     onPressed: () {
-                      if (dropDownValue == null || dropDownValue == "") {
+                      if (dDownValue == null || dDownValue == "") {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
                             content: Text("Please Select Bin Location"),
@@ -524,7 +524,7 @@ class _RMAPutawayScreenState extends State<RMAPutawayScreen> {
                       Constants.showLoadingDialog(context);
                       insertManyIntoMappedBarcodeController
                           .getData(
-                        dropDownValue.toString(),
+                        dDownValue.toString(),
                         duplicateTable,
                       )
                           .then((value) {
