@@ -1,3 +1,5 @@
+// ignore_for_file: camel_case_types
+
 class getmapBarcodeDataByItemCodeModel {
   String? itemCode;
   String? itemDesc;
@@ -15,7 +17,7 @@ class getmapBarcodeDataByItemCodeModel {
   String? sID;
   String? cID;
   String? pO;
-  int? trans;
+  num? trans;
 
   getmapBarcodeDataByItemCodeModel(
       {this.itemCode,

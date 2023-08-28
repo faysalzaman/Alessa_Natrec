@@ -1,7 +1,9 @@
+// ignore_for_file: camel_case_types
+
 class getWmsJournalMovementClByAssignedToUserIdModel {
   String? iTEMID;
   String? iTEMNAME;
-  int? qTY;
+  num? qTY;
   String? lEDGERACCOUNTIDOFFSET;
   String? jOURNALID;
   String? tRANSDATE;
@@ -12,9 +14,9 @@ class getWmsJournalMovementClByAssignedToUserIdModel {
   String? tRXDATETIME;
   String? tRXUSERIDASSIGNED;
   String? tRXUSERIDASSIGNEDBY;
-  int? iTEMSERIALNO;
-  int? qTYSCANNED;
-  int? qTYDIFFERENCE;
+  num? iTEMSERIALNO;
+  num? qTYSCANNED;
+  num? qTYDIFFERENCE;
 
   getWmsJournalMovementClByAssignedToUserIdModel(
       {this.iTEMID,

@@ -1,10 +1,12 @@
+// ignore_for_file: file_names
+
 class GetShipmentPalletizingModel {
   String? aLSPACKINGSLIPREF;
-  int? aLSTRANSFERORDERTYPE;
+  num? aLSTRANSFERORDERTYPE;
   String? tRANSFERID;
   String? iNVENTLOCATIONIDFROM;
   String? iNVENTLOCATIONIDTO;
-  int? qTYTRANSFER;
+  num? qTYTRANSFER;
   String? iTEMID;
   String? iTEMNAME;
   String? cONFIGID;

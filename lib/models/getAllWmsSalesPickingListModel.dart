@@ -1,3 +1,5 @@
+// ignore_for_file: camel_case_types
+
 class getAllWmsSalesPickingListModel {
   String? pICKINGROUTEID;
   String? iNVENTLOCATIONID;
@@ -8,7 +10,7 @@ class getAllWmsSalesPickingListModel {
   String? cUSTOMER;
   String? dLVDATE;
   String? tRANSREFID;
-  int? eXPEDITIONSTATUS;
+  num? eXPEDITIONSTATUS;
 
   getAllWmsSalesPickingListModel(
       {this.pICKINGROUTEID,

@@ -1,11 +1,13 @@
+// ignore_for_file: file_names
+
 class DummyModel {
   String? pURCHID;
   String? cREATEDDATETIME;
   String? sHIPMENTID;
-  int? sHIPMENTSTATUS;
+  num? sHIPMENTSTATUS;
   String? cONTAINERID;
   String? iTEMID;
-  int? qTY;
+  num? qTY;
 
   DummyModel(
       {this.pURCHID,

@@ -22,8 +22,8 @@ class PhysicalInventoryScreen extends StatefulWidget {
 }
 
 class _PhysicalInventoryScreenState extends State<PhysicalInventoryScreen> {
-  TextEditingController _palletController = TextEditingController();
-  TextEditingController _serialController = TextEditingController();
+  final TextEditingController _palletController = TextEditingController();
+  final TextEditingController _serialController = TextEditingController();
   String total = "0";
   String total2 = "0";
 
@@ -61,26 +61,27 @@ class _PhysicalInventoryScreenState extends State<PhysicalInventoryScreen> {
   void initState() {
     super.initState();
     _showUserInfo();
-    getWmsJournalCountingOnlyCLByAssignedToUserIdController
-        .getData()
-        .then((value) {
+    Future.delayed(Duration.zero, () {
       Constants.showLoadingDialog(context);
-      setState(() {
-        BinToBinJournalTableList = value;
+      getWmsJournalCountingOnlyCLByAssignedToUserIdController
+          .getData()
+          .then((value) {
+        setState(() {
+          BinToBinJournalTableList = value;
 
-        isMarked = List<bool>.generate(
-            BinToBinJournalTableList.length, (index) => false);
-        total = BinToBinJournalTableList.length.toString();
+          isMarked = List<bool>.generate(
+              BinToBinJournalTableList.length, (index) => false);
+          total = BinToBinJournalTableList.length.toString();
+        });
+        Navigator.of(context).pop();
+      }).onError((error, stackTrace) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(error.toString().replaceAll("Exception:", "")),
+          ),
+        );
+        Navigator.of(context).pop();
       });
-      Navigator.of(context).pop();
-    }).onError((error, stackTrace) {
-      Constants.showLoadingDialog(context);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(error.toString().replaceAll("Exception:", "")),
-        ),
-      );
-      Navigator.of(context).pop();
     });
   }
 
@@ -114,7 +115,7 @@ class _PhysicalInventoryScreenState extends State<PhysicalInventoryScreen> {
             ],
           ),
         ),
-        body: Container(
+        body: SizedBox(
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height,
           child: SingleChildScrollView(
@@ -277,10 +278,18 @@ class _PhysicalInventoryScreenState extends State<PhysicalInventoryScreen> {
                             DataCell(Text(e.tRXDATETIME ?? "")),
                             DataCell(Text(e.tRXUSERIDASSIGNED ?? "")),
                             DataCell(Text(e.tRXUSERIDASSIGNEDBY ?? "")),
-                            DataCell(Text(e.qTYSCANNED.toString())),
-                            DataCell(Text(e.qTYDIFFERENCE.toString())),
-                            DataCell(Text(e.qTYONHAND.toString())),
-                            DataCell(Text(e.jOURNALID.toString())),
+                            DataCell(Text(e.qTYSCANNED.toString() == "null"
+                                ? "0"
+                                : e.qTYSCANNED.toString())),
+                            DataCell(Text(e.qTYDIFFERENCE.toString() == "null"
+                                ? "0"
+                                : e.qTYDIFFERENCE.toString())),
+                            DataCell(Text(e.qTYONHAND.toString() == "null"
+                                ? "0"
+                                : e.qTYONHAND.toString())),
+                            DataCell(Text(e.jOURNALID.toString() == "null"
+                                ? "0"
+                                : e.jOURNALID.toString())),
                             DataCell(Text(e.bINLOCATION ?? "")),
                           ]);
                         }).toList(),

@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 class GetShipmentReceivedTableModel {
   String? itemCode;
   String? itemDesc;
@@ -15,7 +17,7 @@ class GetShipmentReceivedTableModel {
   String? sID;
   String? cID;
   String? pO;
-  int? trans;
+  num? trans;
 
   GetShipmentReceivedTableModel(
       {this.itemCode,

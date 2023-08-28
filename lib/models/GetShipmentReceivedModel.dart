@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 class GetShipmentReceivedModel {
   String? sHIPMENTID;
   String? cONTAINERID;
@@ -5,7 +7,7 @@ class GetShipmentReceivedModel {
   String? iTEMNAME;
   String? iTEMID;
   String? pURCHID;
-  int? cLASSIFICATION;
+  num? cLASSIFICATION;
   String? sERIALNUM;
   String? rCVDCONFIGID;
   String? rCVDDATE;
@@ -15,9 +17,9 @@ class GetShipmentReceivedModel {
   String? pALLETCODE;
   String? bIN;
   String? rEMARKS;
-  int? pOQTY;
-  int? rCVQTY;
-  int? rEMAININGQTY;
+  num? pOQTY;
+  num? rCVQTY;
+  num? rEMAININGQTY;
   String? uSERID;
   String? tRXDATETIME;
 

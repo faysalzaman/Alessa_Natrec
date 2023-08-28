@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 class GetItemInfoByPalletCodeModel {
   String? itemCode;
   String? itemDesc;
@@ -15,7 +17,7 @@ class GetItemInfoByPalletCodeModel {
   String? sID;
   String? cID;
   String? pO;
-  int? trans;
+  num? trans;
 
   GetItemInfoByPalletCodeModel(
       {this.itemCode,

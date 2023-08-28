@@ -1,5 +1,7 @@
+// ignore_for_file: file_names
+
 class GetAllTblLocationsCLModel {
-  int? lOCATIONSHFID;
+  num? lOCATIONSHFID;
   String? mAIN;
   String? wAREHOUSE;
   String? zONE;

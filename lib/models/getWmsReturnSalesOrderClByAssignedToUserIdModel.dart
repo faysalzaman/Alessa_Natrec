@@ -1,7 +1,9 @@
+// ignore_for_file: camel_case_types
+
 class getWmsReturnSalesOrderClByAssignedToUserIdModel {
   String? iTEMID;
   String? nAME;
-  int? eXPECTEDRETQTY;
+  num? eXPECTEDRETQTY;
   String? sALESID;
   String? rETURNITEMNUM;
   String? iNVENTSITEID;

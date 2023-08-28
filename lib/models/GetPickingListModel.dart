@@ -1,18 +1,20 @@
+// ignore_for_file: file_names
+
 class GetPickingListModel {
   String? pICKINGROUTEID;
   String? iNVENTLOCATIONID;
   String? cONFIGID;
   String? iTEMID;
   String? iTEMNAME;
-  int? qTY;
+  num? qTY;
   String? cUSTOMER;
   String? dLVDATE;
   String? tRANSREFID;
-  int? eXPEDITIONSTATUS;
+  num? eXPEDITIONSTATUS;
   String? dATETIMEASSIGNED;
   String? aSSIGNEDTOUSERID;
   String? pICKSTATUS;
-  int? qTYPICKED;
+  num? qTYPICKED;
 
   GetPickingListModel(
       {this.pICKINGROUTEID,

@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 class BinToBinJournalTableModel {
   String? itemCode;
   String? itemDesc;
@@ -15,7 +17,7 @@ class BinToBinJournalTableModel {
   String? sID;
   String? cID;
   String? pO;
-  int? trans;
+  num? trans;
 
   BinToBinJournalTableModel(
       {this.itemCode,

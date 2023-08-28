@@ -45,26 +45,27 @@ class _ProfitAndLossScreen1State extends State<ProfitAndLossScreen1> {
   void initState() {
     super.initState();
     _showUserInfo();
-    getWmsJournalProfitLostCLByAssignedToUserIdController
-        .getData()
-        .then((value) {
+    Future.delayed(Duration.zero, () {
       Constants.showLoadingDialog(context);
-      setState(() {
-        BinToBinJournalTableList = value;
+      getWmsJournalProfitLostCLByAssignedToUserIdController
+          .getData()
+          .then((value) {
+        setState(() {
+          BinToBinJournalTableList = value;
 
-        isMarked = List<bool>.generate(
-            BinToBinJournalTableList.length, (index) => false);
-        total = BinToBinJournalTableList.length.toString();
+          isMarked = List<bool>.generate(
+              BinToBinJournalTableList.length, (index) => false);
+          total = BinToBinJournalTableList.length.toString();
+        });
+        Navigator.of(context).pop();
+      }).onError((error, stackTrace) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(error.toString().replaceAll("Exception:", "")),
+          ),
+        );
+        Navigator.of(context).pop();
       });
-      Navigator.of(context).pop();
-    }).onError((error, stackTrace) {
-      Constants.showLoadingDialog(context);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(error.toString().replaceAll("Exception:", "")),
-        ),
-      );
-      Navigator.of(context).pop();
     });
   }
 

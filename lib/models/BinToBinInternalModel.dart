@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 class BinToBinInternalModel {
   String? itemCode;
   String? itemDesc;
@@ -15,7 +17,7 @@ class BinToBinInternalModel {
   String? sID;
   String? cID;
   String? pO;
-  int? trans;
+  num? trans;
 
   BinToBinInternalModel(
       {this.itemCode,

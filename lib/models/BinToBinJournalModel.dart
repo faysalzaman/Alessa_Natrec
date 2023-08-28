@@ -1,11 +1,13 @@
+// ignore_for_file: file_names
+
 class BinToBinJournalModel {
   String? tRANSFERID;
-  int? tRANSFERSTATUS;
+  num? tRANSFERSTATUS;
   String? iNVENTLOCATIONIDFROM;
   String? iNVENTLOCATIONIDTO;
   String? iTEMID;
-  int? qTYTRANSFER;
-  int? qTYRECEIVED;
+  num? qTYTRANSFER;
+  num? qTYRECEIVED;
   String? cREATEDDATETIME;
   String? journalID;
   String? binLocation;

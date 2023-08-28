@@ -350,7 +350,9 @@ class _ShipmentDispatchingScreenState extends State<ShipmentDispatchingScreen> {
                                 return ScanSerialNumberScreen(
                                   containerId: e.cONTAINERID ?? "",
                                   itemId: e.iTEMID ?? "",
-                                  qty: e.qTY ?? 0,
+                                  qty: int.parse(e.qTY.toString() == "null"
+                                      ? "0"
+                                      : e.qTY.toString()),
                                   shipmentId: e.sHIPMENTID ?? "",
                                   shipmentStatus:
                                       int.parse(e.sHIPMENTSTATUS.toString()),

@@ -1,5 +1,7 @@
+// ignore_for_file: file_names
+
 class GetAllTblRZonesModel {
-  int? tblRZONESID;
+  num? tblRZONESID;
   String? rZONE;
 
   GetAllTblRZonesModel({this.tblRZONESID, this.rZONE});

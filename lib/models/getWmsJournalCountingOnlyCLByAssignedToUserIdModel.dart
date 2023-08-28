@@ -1,3 +1,5 @@
+// ignore_for_file: file_names, camel_case_types
+
 class getWmsJournalCountingOnlyCLByAssignedToUserIdModel {
   String? iTEMID;
   String? iTEMNAME;
@@ -7,10 +9,10 @@ class getWmsJournalCountingOnlyCLByAssignedToUserIdModel {
   String? tRXDATETIME;
   String? tRXUSERIDASSIGNED;
   String? tRXUSERIDASSIGNEDBY;
-  int? qTYSCANNED;
-  double? qTYDIFFERENCE;
-  int? qTYONHAND;
-  int? jOURNALID;
+  num? qTYSCANNED;
+  num? qTYDIFFERENCE;
+  num? qTYONHAND;
+  num? jOURNALID;
   String? bINLOCATION;
 
   getWmsJournalCountingOnlyCLByAssignedToUserIdModel(

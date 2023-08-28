@@ -1,3 +1,5 @@
+// ignore_for_file: file_names, prefer_typing_uninitialized_variables
+
 class GetItemInfoByPalletCode2Model {
   String? itemCode;
   String? itemDesc;
@@ -15,7 +17,7 @@ class GetItemInfoByPalletCode2Model {
   String? sID;
   String? cID;
   String? pO;
-  int? trans;
+  num? trans;
   num? length;
   num? width;
   num? height;
