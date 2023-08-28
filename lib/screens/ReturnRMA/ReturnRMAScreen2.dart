@@ -1,3 +1,6 @@
+// ignore_for_file: file_names
+
+import 'package:alessa_v2/controllers/BinToBinFromAXAPTA/getmapBarcodeDataByItemCodeController.dart';
 import 'package:alessa_v2/widgets/ElevatedButtonWidget.dart';
 
 import '../../controllers/ReturnRMA/InsertManyIntoMappedBarcodeController.dart';
@@ -29,6 +32,7 @@ class ReturnRMAScreen2 extends StatefulWidget {
   getWmsReturnSalesOrderByReturnItemNumModel tble;
 
   ReturnRMAScreen2({
+    super.key,
     required this.iTEMID,
     required this.nAME,
     required this.eXPECTEDRETQTY,
@@ -52,6 +56,11 @@ class _ReturnRMAScreen2State extends State<ReturnRMAScreen2> {
   final TextEditingController _serialNoController = TextEditingController();
   final TextEditingController _modelNoController = TextEditingController();
   final TextEditingController _searchController = TextEditingController();
+
+  final TextEditingController _srchController = TextEditingController();
+  String? dDownValue;
+  List<String> dDownList = [];
+  List<String> fltrList = [];
 
   String result = "0";
   List<String> serialNoList = [];
@@ -78,50 +87,75 @@ class _ReturnRMAScreen2State extends State<ReturnRMAScreen2> {
     super.initState();
     _returnItemNumController.text = widget.rETURNITEMNUM;
 
-    Future.delayed(Duration.zero, () async {
-      try {
-        Constants.showLoadingDialog(context);
-        var value = await ReturnDZones.getData();
-        Navigator.pop(context);
-        for (int i = 0; i < value.length; i++) {
-          setState(() {
-            dropDownList.add(value[i].rZONE ?? "");
-            Set<String> set = dropDownList.toSet();
-            dropDownList = set.toList();
-          });
-        }
-        setState(() {
-          dropDownValue = dropDownList[0];
-          filterList = dropDownList;
-        });
+    Future.delayed(
+      Duration.zero,
+      () async {
+        try {
+          Constants.showLoadingDialog(context);
+          var value = await ReturnDZones.getData();
 
-        // GetPickListTableDataController.getData(
-        //   widget.iTEMID,
-        //   dropDownValue.toString(),
-        // ).then((value) {
-        //   setState(() {
-        //     GetShipmentPalletizingList = value;
-        //     result = value.length.toString();
-        //   });
-        //   Navigator.pop(context);
-        // }).onError((error, stackTrace) {
-        //   setState(() {
-        //     GetShipmentPalletizingList = [];
-        //     result = "0";
-        //   });
-        //   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        //     content: Text(error.toString().replaceAll("Exception:", "")),
-        //     backgroundColor: Colors.red,
-        //   ));
-        // });
-      } catch (e) {
-        Navigator.pop(context);
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text(e.toString().replaceAll("Exception:", "")),
-          backgroundColor: Colors.red,
-        ));
-      }
-    });
+          for (int i = 0; i < value.length; i++) {
+            setState(() {
+              dropDownList.add(value[i].rZONE ?? "");
+              Set<String> set = dropDownList.toSet();
+              dropDownList = set.toList();
+            });
+          }
+          setState(() {
+            dropDownValue = dropDownList[0];
+            filterList = dropDownList;
+          });
+
+          GetMapBarcodeDataByItemCodeController.getData().then((value) {
+            for (int i = 0; i < value.length; i++) {
+              setState(() {
+                dDownList.add(value[i].bIN ?? "");
+                Set<String> set = dDownList.toSet();
+                dDownList = set.toList();
+              });
+            }
+
+            setState(() {
+              dDownValue = dDownList[0];
+              fltrList = dDownList;
+            });
+            Navigator.pop(context);
+          }).onError((error, stackTrace) {
+            setState(() {
+              dDownValue = "";
+              fltrList = [];
+            });
+            Navigator.pop(context);
+          });
+
+          // GetPickListTableDataController.getData(
+          //   widget.iTEMID,
+          //   dropDownValue.toString(),
+          // ).then((value) {
+          //   setState(() {
+          //     GetShipmentPalletizingList = value;
+          //     result = value.length.toString();
+          //   });
+          //   Navigator.pop(context);
+          // }).onError((error, stackTrace) {
+          //   setState(() {
+          //     GetShipmentPalletizingList = [];
+          //     result = "0";
+          //   });
+          //   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          //     content: Text(error.toString().replaceAll("Exception:", "")),
+          //     backgroundColor: Colors.red,
+          //   ));
+          // });
+        } catch (e) {
+          Navigator.pop(context);
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(e.toString().replaceAll("Exception:", "")),
+            backgroundColor: Colors.red,
+          ));
+        }
+      },
+    );
   }
 
   @override
@@ -708,6 +742,119 @@ class _ReturnRMAScreen2State extends State<ReturnRMAScreen2> {
                   const SizedBox(width: 20),
                 ],
               ),
+              const SizedBox(height: 10),
+              Container(
+                margin: const EdgeInsets.only(left: 20, top: 10, bottom: 5),
+                child: const TextWidget(
+                  text: "Bin Location",
+                  fontSize: 16,
+                ),
+              ),
+              Row(
+                children: [
+                  Container(
+                    decoration: const BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                      color: Colors.white,
+                    ),
+                    width: MediaQuery.of(context).size.width * 0.73,
+                    margin: const EdgeInsets.only(left: 20),
+                    child: DropdownSearch<String>(
+                      filterFn: (item, filter) {
+                        return item
+                            .toLowerCase()
+                            .contains(filter.toLowerCase());
+                      },
+                      enabled: true,
+                      dropdownButtonProps: const DropdownButtonProps(
+                        icon: Icon(
+                          Icons.arrow_drop_down,
+                          color: Colors.black,
+                        ),
+                      ),
+                      items: fltrList,
+                      onChanged: (value) {
+                        setState(() {
+                          dDownValue = value!;
+                        });
+                      },
+                      selectedItem: dDownValue,
+                    ),
+                  ),
+                  Container(
+                    margin: const EdgeInsets.only(left: 10),
+                    child: IconButton(
+                      onPressed: () {
+                        // show dialog box for search
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              title: TextWidget(
+                                text: "Search",
+                                color: Colors.blue[900]!,
+                                fontSize: 15,
+                              ),
+                              content: TextFormFieldWidget(
+                                controller: _srchController,
+                                readOnly: false,
+                                hintText: "Enter/Scan Location",
+                                width: MediaQuery.of(context).size.width * 0.9,
+                                onEditingComplete: () {
+                                  setState(() {
+                                    dDownList = dDownList
+                                        .where((element) => element
+                                            .toLowerCase()
+                                            .contains(_srchController.text
+                                                .toLowerCase()))
+                                        .toList();
+                                    dDownValue = dDownList[0];
+                                  });
+                                  Navigator.pop(context);
+                                },
+                              ),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: TextWidget(
+                                    text: "Cancel",
+                                    color: Colors.blue[900]!,
+                                    fontSize: 15,
+                                  ),
+                                ),
+                                TextButton(
+                                  onPressed: () {
+                                    // filter list based on search
+                                    setState(() {
+                                      fltrList = dDownList
+                                          .where((element) => element
+                                              .toLowerCase()
+                                              .contains(_srchController.text
+                                                  .toLowerCase()))
+                                          .toList();
+                                      dDownValue = fltrList[0];
+                                    });
+
+                                    Navigator.pop(context);
+                                  },
+                                  child: TextWidget(
+                                    text: "Search",
+                                    color: Colors.blue[900]!,
+                                    fontSize: 15,
+                                  ),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      },
+                      icon: const Icon(Icons.search),
+                    ),
+                  ),
+                ],
+              ),
               const SizedBox(height: 20),
             ],
           ),
@@ -866,10 +1013,7 @@ class _ReturnRMAScreen2State extends State<ReturnRMAScreen2> {
       _modelNoController.text.trim(),
     ).then((value) {
       insertIntoWmsReturnSalesOrderClController
-          .getData(
-        widget.tble,
-        value,
-      )
+          .getData(widget.tble, value)
           .then((val) {
         setState(
           () {
