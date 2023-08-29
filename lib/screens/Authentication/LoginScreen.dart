@@ -1,12 +1,15 @@
-import 'package:alessa_v2/constants/app_lotties.dart';
-import 'package:alessa_v2/utils/app_dialog.dart';
-import 'package:lottie/lottie.dart';
+// ignore_for_file: file_names, avoid_print
 
-import '../../controllers/Authentication/LoginController.dart';
-import '../../screens/HomeScreen.dart';
-import '../../utils/Constants.dart';
-import 'package:flutter/material.dart';
+import 'package:alessa_v2/constants/app_lotties.dart';
+import 'package:alessa_v2/controllers/Authentication/GetRolesAssignedToUserController.dart';
+import 'package:alessa_v2/controllers/Authentication/LoginController.dart';
+import 'package:alessa_v2/models/GetRolesAssignedToUserModel.dart';
+import 'package:alessa_v2/screens/HomeScreen.dart';
+import 'package:alessa_v2/utils/Constants.dart';
+import 'package:alessa_v2/utils/app_dialog.dart';
 import 'package:get/get.dart';
+import 'package:lottie/lottie.dart';
+import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../Core/Animation/Fade_Animation.dart';
@@ -17,6 +20,8 @@ enum FormData {
 }
 
 class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
+
   @override
   State<LoginScreen> createState() => _LoginScreenState();
 }
@@ -35,7 +40,6 @@ class _LoginScreenState extends State<LoginScreen> {
   void clearAllData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.clear();
-    print("Clear All Data");
   }
 
   @override
@@ -43,6 +47,8 @@ class _LoginScreenState extends State<LoginScreen> {
     super.initState();
     clearAllData();
   }
+
+  List<GetRolesAssignedToUserModel> roles = [];
 
   @override
   Widget build(BuildContext context) {
@@ -222,29 +228,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ),
                                 child: TextButton(
                                   onPressed: () async {
-                                    Constants.showLoadingDialog(context);
-                                    LoginController.login(
-                                            emailController.text.trim(),
-                                            passwordController.text.trim())
-                                        .then((value) {
-                                      Navigator.of(context).pop();
-                                      Get.offAll(() => const HomeScreen());
-                                      AppDialog.showLottie(
-                                          context, AppLotties.loading);
-                                      Future.delayed(
-                                          const Duration(milliseconds: 2500),
-                                          () {
-                                        AppDialog.closeDialog();
-                                      });
-                                    }).onError((error, stackTrace) {
-                                      Navigator.of(context).pop();
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(SnackBar(
-                                              content: Text(error
-                                                  .toString()
-                                                  .replaceAll(
-                                                      "Exception:", ""))));
-                                    });
+                                    loginMethod();
                                   },
                                   style: TextButton.styleFrom(
                                       backgroundColor: Colors.white,
@@ -288,6 +272,41 @@ class _LoginScreenState extends State<LoginScreen> {
           width: 50,
           height: 50,
           fit: BoxFit.contain,
+        );
+      },
+    );
+  }
+
+  void loginMethod() {
+    Constants.showLoadingDialog(context);
+    LoginController.login(
+            emailController.text.trim(), passwordController.text.trim())
+        .then((value) {
+      GetRolesAssignedToUserController.getRoles(emailController.text.trim())
+          .then((vl) {
+        setState(() {
+          roles = vl;
+        });
+        print(roles[0].roleName);
+        Navigator.of(context).pop();
+        Get.offAll(() => HomeScreen(roles: vl));
+        AppDialog.showLottie(context, AppLotties.loading);
+        Future.delayed(const Duration(milliseconds: 2500), () {
+          AppDialog.closeDialog();
+        });
+      }).onError((error, stackTrace) {
+        roles = [];
+        Navigator.of(context).pop();
+      });
+    }).onError(
+      (error, stackTrace) {
+        Navigator.of(context).pop();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              error.toString().replaceAll("Exception:", ""),
+            ),
+          ),
         );
       },
     );

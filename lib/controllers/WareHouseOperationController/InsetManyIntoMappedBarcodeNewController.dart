@@ -4,13 +4,28 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
-import '../../models/getWmsReturnSalesOrderClByAssignedToUserIdModel.dart';
 import '../../utils/Constants.dart';
 
-class insertManyIntoMappedBarcodeController {
+class insertManyIntoMappedBarcodeNewController {
   static Future<void> getData(
+    String itemCode,
+    String itemDesc,
+    String classification,
+    String mainLocation,
+    String itemSerialNo,
+    String trxdate,
     String binLocation,
-    List<getWmsReturnSalesOrderClByAssignedToUserIdModel> data,
+    String gtin,
+    String remarks,
+    String palletCode,
+    String reference,
+    String sid,
+    String cid,
+    String po,
+    String length,
+    String width,
+    String height,
+    String weight,
   ) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String token = prefs.getString('token').toString();
@@ -27,30 +42,28 @@ class insertManyIntoMappedBarcodeController {
       "Accept": "application/json",
     };
 
-    List<Map<String, dynamic>> body = data.map(
-      (e) {
-        return {
-          "itemcode": e.iTEMID ?? '',
-          "itemdesc": e.nAME ?? '',
-          "classification": e.rETURNITEMNUM ?? '',
-          "mainlocation": e.iNVENTSITEID ?? '',
-          "intcode": e.cONFIGID ?? '',
-          "itemserialno": e.iTEMSERIALNO ?? '',
-          "mapdate": e.tRXDATETIME ?? '',
-          "user": e.aSSIGNEDTOUSERID ?? '',
-          "binlocation": binLocation,
-          "gtin": "",
-          "remarks": "",
-          "palletcode": "",
-          "reference": "",
-          "sid": "",
-          "cid": "",
-          "po": ""
-        };
-      },
-    ).toList();
+    Map<String, dynamic> body = {
+      "itemcode": itemCode,
+      "itemdesc": itemDesc,
+      "classification": classification,
+      "mainlocation": mainLocation,
+      "itemserialno": itemSerialNo,
+      "trxdate": trxdate,
+      "binlocation": binLocation,
+      "gtin": gtin,
+      "remarks": remarks,
+      "palletcode": palletCode,
+      "reference": reference,
+      "sid": sid,
+      "cid": cid,
+      "po": po,
+      "length": length,
+      "width": width,
+      "height": height,
+      "weight": weight,
+    };
 
-    print("Body: ${jsonEncode([...body])}");
+    print("Body: ${jsonEncode([body])}");
 
     try {
       var response = await http.post(uri,

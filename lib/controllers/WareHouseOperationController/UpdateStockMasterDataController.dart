@@ -1,3 +1,5 @@
+// ignore_for_file: non_constant_identifier_names
+
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
@@ -21,8 +23,8 @@ class UpdateStockMasterDataController {
     final uri = Uri.parse(url);
 
     final headers = <String, String>{
-      "Authorization": "$token",
-      "Host": "${Constants.host}",
+      "Authorization": token,
+      "Host": Constants.host,
       "Accept": "application/json",
       "Content-Type": "application/json"
     };

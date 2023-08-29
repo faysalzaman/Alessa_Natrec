@@ -79,7 +79,7 @@ class _PickListAssignedScreenState extends State<PickListAssignedScreen> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        Get.offAll(() => const HomeScreen());
+        Get.offAll(() => HomeScreen(roles: const []));
         return true;
       },
       child: Scaffold(

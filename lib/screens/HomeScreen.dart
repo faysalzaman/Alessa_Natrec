@@ -1,5 +1,6 @@
-// ignore_for_file: avoid_print
+// ignore_for_file: avoid_print, must_be_immutable, unrelated_type_equality_checks
 
+import 'package:alessa_v2/models/GetRolesAssignedToUserModel.dart';
 import 'package:alessa_v2/screens/PalletIdInquiry/PalletIdInquiryScreen.dart';
 import 'package:alessa_v2/screens/UnAllocatedItem/UnAllocatedItemsScreen1.dart';
 import 'package:auto_size_text/auto_size_text.dart';
@@ -10,7 +11,6 @@ import '../../screens/JournalMovement/JournalMovementScreen1.dart';
 import '../../screens/PhysicalInventory/PhysicalInventoryScreen.dart';
 import '../../screens/ProfitAndLoss/ProfitAndLossScreen1.dart';
 import '../../screens/ReturnRMA/ReturnRMAScreen1.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../Core/Animation/Fade_Animation.dart';
 import '../../screens/BinToBinAXAPTA/BinToBinAxaptaScreen.dart';
@@ -23,13 +23,13 @@ import 'ReceiptManagement/ShipmentDispatchingScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import 'BarcodeMapping/BarcodeMappingScreen.dart';
 import 'PhysicalInverntoryByBinLocation/PhysicalInventoryByBinLocationScreen.dart';
 import 'PickListAssigned/PickListAssignedScreen.dart';
 import 'RMAputaway/RMAPutawayScreen.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  List<GetRolesAssignedToUserModel> roles;
+  HomeScreen({Key? key, required this.roles}) : super(key: key);
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -80,87 +80,368 @@ class _HomeScreenState extends State<HomeScreen> {
       "Logout",
     ],
     "functions": [
-      () {
-        Get.to(() => BarcodeMappingScreen());
-      },
-      () {
-        Get.to(() => const ShipmentDispatchingScreen());
-      },
-      () {
-        Get.to(() => const ShipmentPalletizingScreen());
-      },
-      () {
-        Get.to(() => const PutAwayScreen());
-      },
-      () {
-        Get.to(() => PickListAssignedScreen());
-      },
-      () {
-        Get.to(() => const DispatchingScreen());
-      },
-      () {
-        Get.to(() => const BinToBinAxaptaScreen());
-      },
-      () {
-        Get.to(() => const BinToBinInternalScreen());
-      },
-      () {
-        Get.to(() => const BinToBinJournalScreen());
-      },
-      () {
-        Get.to(() => const ReturnRMAScreen1());
-      },
-      () {
-        Get.to(() => const RMAPutawayScreen());
-      },
-      () {
-        Get.to(() => const PhysicalInventoryByBinLocationScreen());
-      },
-      () {
-        Get.to(() => const JournalMovementScreen1());
-      },
-      () {
-        Get.to(() => const PhysicalInventoryScreen());
-      },
-      () {
-        Get.to(() => const ProfitAndLossScreen1());
-      },
-      () {
-        Get.to(() => const ItemReAllocationScreen());
-      },
-      () {
-        Get.to(() => const UnAllocatedItemsScreen1());
-      },
-      () {
-        Get.to(() => const PalletIdInquiryScreen());
-      },
-      () {
-        Get.offAll(() => LoginScreen());
-      },
+      () {},
+      () {},
+      () {},
+      () {},
+      () {},
+      () {},
+      () {},
+      () {},
+      () {},
+      () {},
+      () {},
+      () {},
+      () {},
+      () {},
+      () {},
+      () {},
+      () {},
+      () {},
+      () {},
     ],
   };
 
   void _showUserInfo() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? token = prefs.getString('token');
-    String? userId = prefs.getString('userId');
-    String? fullName = prefs.getString('fullName');
-    String? userLevel = prefs.getString('userLevel');
-    String? loc = prefs.getString('userLocation');
+    // SharedPreferences prefs = await SharedPreferences.getInstance();
+    // String? token = prefs.getString('token');
+    // String? userId = prefs.getString('userId');
+    // String? fullName = prefs.getString('fullName');
+    // String? userLevel = prefs.getString('userLevel');
+    // String? loc = prefs.getString('userLocation');
 
-    print('token: $token');
-    print('userId: $userId');
-    print('fullName: $fullName');
-    print('userLevel: $userLevel');
-    print('loc: $loc');
+    // print('token: $token');
+    // print('userId: $userId');
+    // print('fullName: $fullName');
+    // print('userLevel: $userLevel');
+    // print('loc: $loc');
   }
 
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration.zero, () {
-      _showUserInfo();
-    });
+    data['functions'][0] = () {
+      if (widget.roles
+              .where((element) => element.roleName == "WO Mapped Items")
+              .isNotEmpty ||
+          widget.roles
+              .where((element) => element.roleName == "Admin")
+              .isNotEmpty) {
+        Get.to(() => const DispatchingScreen());
+      } else {
+        Get.snackbar(
+          'Access Denied',
+          'You are not authorized to access this feature.',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+          duration: const Duration(seconds: 5),
+        );
+      }
+    };
+    data['functions'][1] = () {
+      if (widget.roles
+              .where((element) => element.roleName == "WO Shipment Received")
+              .isNotEmpty ||
+          widget.roles
+              .where((element) => element.roleName == "Admin")
+              .isNotEmpty) {
+        Get.to(() => const ShipmentDispatchingScreen());
+      } else {
+        Get.snackbar(
+          'Access Denied',
+          'You are not authorized to access this feature.',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+          duration: const Duration(seconds: 5),
+        );
+      }
+    };
+    data['functions'][2] = () {
+      if (widget.roles
+              .where((element) => element.roleName == "WO Pallets")
+              .isNotEmpty ||
+          widget.roles
+              .where((element) => element.roleName == "Admin")
+              .isNotEmpty) {
+        Get.to(() => const ShipmentPalletizingScreen());
+      } else {
+        Get.snackbar(
+          'Access Denied',
+          'You are not authorized to access this feature.',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+          duration: const Duration(seconds: 5),
+        );
+      }
+    };
+    data['functions'][3] = () {
+      if (widget.roles
+              .where((element) => element.roleName == "WO PutAway")
+              .isNotEmpty ||
+          widget.roles
+              .where((element) => element.roleName == "Admin")
+              .isNotEmpty) {
+        Get.to(() => const PutAwayScreen());
+      } else {
+        Get.snackbar(
+          'Access Denied',
+          'You are not authorized to access this feature.',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+          duration: const Duration(seconds: 5),
+        );
+      }
+    };
+    data['functions'][4] = () {
+      if (widget.roles
+              .where((element) => element.roleName == "WO Picking")
+              .isNotEmpty ||
+          widget.roles
+              .where((element) => element.roleName == "Admin")
+              .isNotEmpty) {
+        Get.to(() => PickListAssignedScreen());
+      } else {
+        Get.snackbar(
+          'Access Denied',
+          'You are not authorized to access this feature.',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+          duration: const Duration(seconds: 5),
+        );
+      }
+    };
+    data['functions'][5] = () {
+      if (widget.roles
+              .where((element) => element.roleName == "WO Dispatching")
+              .isNotEmpty ||
+          widget.roles
+              .where((element) => element.roleName == "Admin")
+              .isNotEmpty) {
+        Get.to(() => const DispatchingScreen());
+      } else {
+        Get.snackbar(
+          'Access Denied',
+          'You are not authorized to access this feature.',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+          duration: const Duration(seconds: 5),
+        );
+      }
+    };
+    data['functions'][6] = () {
+      if (widget.roles
+              .where((element) => element.roleName == "WMS Bin to Bin(Axapta)")
+              .isNotEmpty ||
+          widget.roles
+              .where((element) => element.roleName == "Admin")
+              .isNotEmpty) {
+        Get.to(() => const BinToBinAxaptaScreen());
+      } else {
+        Get.snackbar(
+          'Access Denied',
+          'You are not authorized to access this feature.',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+          duration: const Duration(seconds: 5),
+        );
+      }
+    };
+    data['functions'][7] = () {
+      if (widget.roles
+              .where(
+                  (element) => element.roleName == "WMS Bin to Bin(Internal)")
+              .isNotEmpty ||
+          widget.roles
+              .where((element) => element.roleName == "Admin")
+              .isNotEmpty) {
+        Get.to(() => const BinToBinInternalScreen());
+      } else {
+        Get.snackbar(
+          'Access Denied',
+          'You are not authorized to access this feature.',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+          duration: const Duration(seconds: 5),
+        );
+      }
+    };
+    data['functions'][8] = () {
+      if (widget.roles
+              .where((element) => element.roleName == "WMS Bin to Bin(Journal)")
+              .isNotEmpty ||
+          widget.roles
+              .where((element) => element.roleName == "Admin")
+              .isNotEmpty) {
+        Get.to(() => const BinToBinJournalScreen());
+      } else {
+        Get.snackbar(
+          'Access Denied',
+          'You are not authorized to access this feature.',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+          duration: const Duration(seconds: 5),
+        );
+      }
+    };
+    data['functions'][9] = () {
+      if (widget.roles
+              .where((element) => element.roleName == "WMS Return RMA")
+              .isNotEmpty ||
+          widget.roles
+              .where((element) => element.roleName == "Admin")
+              .isNotEmpty) {
+        Get.to(() => const ReturnRMAScreen1());
+      } else {
+        Get.snackbar(
+          'Access Denied',
+          'You are not authorized to access this feature.',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+          duration: const Duration(seconds: 5),
+        );
+      }
+    };
+    data['functions'][10] = () {
+      if (widget.roles
+              .where((element) => element.roleName == "WO PutAway")
+              .isNotEmpty ||
+          widget.roles
+              .where((element) => element.roleName == "Admin")
+              .isNotEmpty) {
+        Get.to(() => const RMAPutawayScreen());
+      } else {
+        Get.snackbar(
+          'Access Denied',
+          'You are not authorized to access this feature.',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+          duration: const Duration(seconds: 5),
+        );
+      }
+    };
+    data['functions'][11] = () {
+      if (widget.roles
+              .where((element) =>
+                  element.roleName == "WMS Inventory by Bin Location")
+              .isNotEmpty ||
+          widget.roles
+              .where((element) => element.roleName == "Admin")
+              .isNotEmpty) {
+        Get.to(() => const PhysicalInventoryByBinLocationScreen());
+      } else {
+        Get.snackbar(
+          'Access Denied',
+          'You are not authorized to access this feature.',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+          duration: const Duration(seconds: 5),
+        );
+      }
+    };
+    data['functions'][12] = () {
+      if (widget.roles
+              .where((element) => element.roleName == "WO Journal Movement")
+              .isNotEmpty ||
+          widget.roles
+              .where((element) => element.roleName == "Admin")
+              .isNotEmpty) {
+        Get.to(() => const JournalMovementScreen1());
+      } else {
+        Get.snackbar(
+          'Access Denied',
+          'You are not authorized to access this feature.',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+          duration: const Duration(seconds: 5),
+        );
+      }
+    };
+    data['functions'][13] = () {
+      if (widget.roles
+              .where((element) => element.roleName == "WO Journal Counting")
+              .isNotEmpty ||
+          widget.roles
+              .where((element) => element.roleName == "Admin")
+              .isNotEmpty) {
+        Get.to(() => const PhysicalInventoryScreen());
+      } else {
+        Get.snackbar(
+          'Access Denied',
+          'This feature is not available yet.',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+          duration: const Duration(seconds: 3),
+        );
+      }
+    };
+    data['functions'][14] = () {
+      if (widget.roles
+              .where((element) => element.roleName == "WO Journal ProfitLoss")
+              .isNotEmpty ||
+          widget.roles
+              .where((element) => element.roleName == "Admin")
+              .isNotEmpty) {
+        Get.to(() => const ProfitAndLossScreen1());
+      } else {
+        Get.snackbar(
+          'Access Denied',
+          'This feature is not available yet.',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+          duration: const Duration(seconds: 3),
+        );
+      }
+    };
+    data['functions'][15] = () {
+      if (widget.roles
+              .where((element) => element.roleName == "WO Re-Allocation Picked")
+              .isNotEmpty ||
+          widget.roles
+              .where((element) => element.roleName == "Admin")
+              .isNotEmpty) {
+        Get.to(() => const ItemReAllocationScreen());
+      } else {
+        Get.snackbar(
+          'Access Denied',
+          'This feature is not available yet.',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+          duration: const Duration(seconds: 3),
+        );
+      }
+    };
+    data['functions'][16] = () {
+      Get.to(() => const UnAllocatedItemsScreen1());
+    };
+    data['functions'][17] = () {
+      Get.to(() => const PalletIdInquiryScreen());
+    };
+    data['functions'][18] = () async {
+      Get.offAll(() => const LoginScreen());
+    };
+
+    Future.delayed(
+      Duration.zero,
+      () {
+        _showUserInfo();
+      },
+    );
   }
 
   @override

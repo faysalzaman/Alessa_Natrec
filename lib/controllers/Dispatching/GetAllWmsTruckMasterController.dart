@@ -1,19 +1,20 @@
-// ignore_for_file: avoid_print
+// ignore_for_file: avoid_print, depend_on_referenced_packages
+
+// import 'package:alessa_v2/models/GetAllWmsTruckMasterModel.dart';
 
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../models/DummyModel.dart';
 import '../../utils/Constants.dart';
 
-class GetShipmentDataController {
-  static Future<List<DummyModel>> getShipmentData(String id) async {
+class GetAllWmsTruckMasterController {
+  static Future<String> getShipmentReceived(String packingSlipId) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String token = prefs.getString('token').toString();
 
     String url =
-        "${Constants.baseUrl}getShipmentDataFromtShipmentReceiving?SHIPMENTID=$id";
+        "${Constants.baseUrl}/getPackingSlipTableByPackingSlipId?packingSlipId=$packingSlipId";
 
     print("URL: $url");
 
@@ -26,20 +27,19 @@ class GetShipmentDataController {
     };
 
     try {
-      var response = await http.post(uri, headers: headers);
+      var response = await http.get(uri, headers: headers);
 
       if (response.statusCode == 200) {
         print("Status Code: ${response.statusCode}");
 
         var data = json.decode(response.body) as List;
-        List<DummyModel> shipmentData =
-            data.map((e) => DummyModel.fromJson(e)).toList();
-        return shipmentData;
+        String vEHICLESHIPPLATENUMBER =
+            data[0]['VEHICLESHIPPLATENUMBER'].toString();
+        return vEHICLESHIPPLATENUMBER;
       } else {
-        print("Status Code: ${response.statusCode}");
         var data = json.decode(response.body);
-        var message = data['message'];
-        throw Exception(message);
+        String msg = data['message'].toString().replaceAll("Exception", "");
+        throw Exception(msg);
       }
     } catch (e) {
       print(e);

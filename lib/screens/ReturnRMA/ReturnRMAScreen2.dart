@@ -1,6 +1,8 @@
 // ignore_for_file: file_names
 
 import 'package:alessa_v2/controllers/BinToBinFromAXAPTA/getmapBarcodeDataByItemCodeController.dart';
+import 'package:alessa_v2/controllers/ReturnRMA/DeleteMultipleRecordsFromWmsReturnSalesOrderClController.dart';
+import 'package:alessa_v2/controllers/ReturnRMA/inset.dart';
 import 'package:alessa_v2/widgets/ElevatedButtonWidget.dart';
 
 import '../../controllers/ReturnRMA/InsertManyIntoMappedBarcodeController.dart';
@@ -853,6 +855,87 @@ class _ReturnRMAScreen2State extends State<ReturnRMAScreen2> {
                     ),
                   ),
                 ],
+              ),
+              const SizedBox(height: 10),
+              Container(
+                margin: const EdgeInsets.only(left: 20),
+                child: ElevatedButtonWidget(
+                  width: MediaQuery.of(context).size.width * 0.9,
+                  height: 50,
+                  title: "Save",
+                  textColor: Colors.white,
+                  color: Colors.orange,
+                  onPressed: () {
+                    if (dDownValue == null || dDownValue == "") {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text("Please Select Bin Location"),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
+                      return;
+                    }
+
+                    if (table.isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text(
+                              "Please Select At least One Item from table"),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
+                      return;
+                    }
+
+                    FocusScope.of(context).requestFocus();
+                    Constants.showLoadingDialog(context);
+                    insertManyIntoMappedBarcodeController2
+                        .getData(
+                      dDownValue.toString(),
+                      table,
+                    )
+                        .then((value) {
+                      DeleteMultipleRecordsFromWmsReturnSalesOrderClController
+                          .getData(
+                        table.map((e) => e.itemSerialNo.toString()).toList(),
+                      ).then((value) {
+                        // delete the selected rows from table
+                        setState(() {
+                          table.removeWhere(
+                              (element) => table.contains(element));
+                          table = [];
+                          isMarked = List<bool>.generate(
+                              table.length, (index) => false);
+                          result = table.length.toString();
+                        });
+                        Navigator.of(context).pop();
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(const SnackBar(
+                          content: Text("Data Inserted Successfully"),
+                          backgroundColor: Colors.green,
+                        ));
+                      }).onError((error, stackTrace) {
+                        Navigator.of(context).pop();
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                                error.toString().replaceAll("Exception:", "")),
+                            backgroundColor: Colors.red,
+                          ),
+                        );
+                      });
+                    }).onError((error, stackTrace) {
+                      Navigator.of(context).pop();
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                              error.toString().replaceAll("Exception:", "")),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
+                    });
+                  },
+                ),
               ),
               const SizedBox(height: 20),
             ],

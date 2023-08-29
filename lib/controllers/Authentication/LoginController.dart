@@ -1,3 +1,5 @@
+// ignore_for_file: depend_on_referenced_packages, avoid_print
+
 import '../../models/LoginModel.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -14,8 +16,6 @@ class LoginController {
     String url =
         "${Constants.baseUrl}login?UserID=$userName&UserPassword=$password";
 
-    print("URL: $url");
-
     final uri = Uri.parse(url);
 
     final headers = <String, String>{
@@ -26,10 +26,7 @@ class LoginController {
     try {
       var response = await http.post(uri, headers: headers);
 
-      print("Status Code: ${response.statusCode}");
-
       if (response.statusCode == 200) {
-        print("Status Code: ${response.statusCode}");
         var data = json.decode(response.body);
         var loginModel = LoginModel.fromJson(data);
 
@@ -41,11 +38,9 @@ class LoginController {
 
         return loginModel;
       } else {
-        print("Status Code: ${response.statusCode}");
         throw Exception("Bad Credentials");
       }
     } catch (e) {
-      print(e);
       throw Exception(e);
     }
   }

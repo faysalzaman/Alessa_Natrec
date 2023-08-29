@@ -1,3 +1,5 @@
+import 'package:alessa_v2/controllers/WareHouseOperationController/InsetManyIntoMappedBarcodeNewController.dart';
+
 import '../../controllers/WareHouseOperationController/GenerateSerialNumberforRecevingController.dart';
 import '../../controllers/WareHouseOperationController/InsertShipmentReceivedData.dart';
 import '../../controllers/WareHouseOperationController/UpdateStockMasterDataController.dart';
@@ -399,22 +401,54 @@ class _SaveScreenState extends State<SaveScreen> {
                         // focus back to serial no field
                       });
                       UpdateStockMasterDataController.insertShipmentData(
+                              widget.itemId,
+                              widget.length,
+                              widget.width,
+                              widget.height,
+                              widget.weight)
+                          .then((value) {
+                        insertManyIntoMappedBarcodeNewController
+                            .getData(
                           widget.itemId,
-                          widget.length,
-                          widget.width,
-                          widget.height,
-                          widget.weight);
-
-                      FocusScope.of(context).requestFocus(secondFocusNode);
-                      Navigator.pop(context);
+                          widget.itemName,
+                          "0",
+                          "",
+                          _serialNoController.text.trim(),
+                          DateTime.now().toString(),
+                          "",
+                          widget.gtin,
+                          "",
+                          "",
+                          widget.shipmentId,
+                          widget.purchId,
+                          widget.containerId,
+                          widget.qty.toString(),
+                          widget.length.toString(),
+                          widget.width.toString(),
+                          widget.height.toString(),
+                          widget.weight.toString(),
+                        )
+                            .then((value) {
+                          Navigator.pop(context);
+                          FocusScope.of(context).requestFocus(secondFocusNode);
+                        }).onError((error, stackTrace) {
+                          _serialNoController.clear();
+                          FocusScope.of(context).requestFocus(secondFocusNode);
+                          Navigator.pop(context);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text("Serial Number already exists!"),
+                            ),
+                          );
+                        });
+                      }).onError((error, stackTrace) {
+                        _serialNoController.clear();
+                        FocusScope.of(context).requestFocus(secondFocusNode);
+                        Navigator.pop(context);
+                      });
                     }).onError((error, stackTrace) {
                       _serialNoController.clear();
                       FocusScope.of(context).requestFocus(secondFocusNode);
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text("Serial Number already exists!"),
-                        ),
-                      );
                       Navigator.pop(context);
                     });
                   },
@@ -467,20 +501,67 @@ class _SaveScreenState extends State<SaveScreen> {
                             RCQTY = RCQTY + 1;
                           });
                           UpdateStockMasterDataController.insertShipmentData(
+                                  widget.itemId,
+                                  widget.length,
+                                  widget.width,
+                                  widget.height,
+                                  widget.weight)
+                              .then((value) {
+                            insertManyIntoMappedBarcodeNewController
+                                .getData(
                               widget.itemId,
-                              widget.length,
-                              widget.width,
-                              widget.height,
-                              widget.weight);
-
-                          Navigator.pop(context);
+                              widget.itemName,
+                              "0",
+                              "",
+                              _serialNoController.text.trim(),
+                              DateTime.now().toString(),
+                              "",
+                              widget.gtin,
+                              "",
+                              "",
+                              widget.shipmentId,
+                              widget.purchId,
+                              widget.containerId,
+                              widget.qty.toString(),
+                              widget.length.toString(),
+                              widget.width.toString(),
+                              widget.height.toString(),
+                              widget.weight.toString(),
+                            )
+                                .then((value) {
+                              Navigator.pop(context);
+                            }).onError((error, stackTrace) {
+                              Navigator.pop(context);
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text("Serial No. not generated!"),
+                                ),
+                              );
+                              setState(() {
+                                _serialNoController.clear();
+                              });
+                            });
+                          }).onError((error, stackTrace) {
+                            Navigator.pop(context);
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text("Serial No. not generated!"),
+                              ),
+                            );
+                            setState(() {
+                              _serialNoController.clear();
+                            });
+                          });
                         }).onError((error, stackTrace) {
+                          Navigator.pop(context);
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
                               content: Text("Serial No. not generated!"),
                             ),
                           );
-                          Navigator.pop(context);
+                          setState(() {
+                            _serialNoController.clear();
+                          });
                         });
                       },
                     );

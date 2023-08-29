@@ -1,16 +1,16 @@
 // ignore_for_file: camel_case_types, depend_on_referenced_packages, avoid_print
 
+import 'package:alessa_v2/models/getWmsReturnSalesOrderByReturnItemNum2Model.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
-import '../../models/getWmsReturnSalesOrderClByAssignedToUserIdModel.dart';
 import '../../utils/Constants.dart';
 
-class insertManyIntoMappedBarcodeController {
+class insertManyIntoMappedBarcodeController2 {
   static Future<void> getData(
     String binLocation,
-    List<getWmsReturnSalesOrderClByAssignedToUserIdModel> data,
+    List<getWmsReturnSalesOrderByReturnItemNum2Model> data,
   ) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String token = prefs.getString('token').toString();
@@ -35,9 +35,9 @@ class insertManyIntoMappedBarcodeController {
           "classification": e.rETURNITEMNUM ?? '',
           "mainlocation": e.iNVENTSITEID ?? '',
           "intcode": e.cONFIGID ?? '',
-          "itemserialno": e.iTEMSERIALNO ?? '',
-          "mapdate": e.tRXDATETIME ?? '',
-          "user": e.aSSIGNEDTOUSERID ?? '',
+          "itemserialno": e.itemSerialNo ?? '',
+          "mapdate": '',
+          "user": '',
           "binlocation": binLocation,
           "gtin": "",
           "remarks": "",

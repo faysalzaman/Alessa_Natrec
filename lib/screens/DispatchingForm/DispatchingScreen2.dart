@@ -1,3 +1,6 @@
+// ignore_for_file: avoid_print, use_key_in_widget_constructors
+
+import 'package:alessa_v2/controllers/Dispatching/GetAllWmsTruckMasterController.dart';
 import 'package:alessa_v2/controllers/Dispatching/GetPackingSlipTableClByItemIdAndPackingSlipIdController.dart';
 import 'package:alessa_v2/controllers/Dispatching/InsertDispatchingScreen.dart';
 import 'package:alessa_v2/controllers/Dispatching/InsertTblDispatchingDetailsDataCLController.dart';
@@ -52,11 +55,27 @@ class _DispatchingScreen2State extends State<DispatchingScreen2> {
   List<GetPackingSlipTableClByItemIdAndPackingSlipIdModel> table1 = [];
   List<GetPackingSlipTableClByItemIdAndPackingSlipIdModel> table2 = [];
 
+  // String dropdownValue = "";
+  // List<String> dropdownList = [];
+
   @override
   void initState() {
     _transferIdController.text = widget.packingSlipId;
 
     super.initState();
+    Future.delayed(Duration.zero, () {
+      GetAllWmsTruckMasterController.getShipmentReceived(widget.packingSlipId)
+          .then((value) {
+        setState(() {
+          _vehicleBarcodeSerialController.text = value == "null" ? "" : value;
+        });
+      }).onError((error, stackTrace) {
+        setState(() {
+          _vehicleBarcodeSerialController.clear();
+        });
+      });
+    });
+
     Future.delayed(const Duration(seconds: 1)).then((value) {
       Constants.showLoadingDialog(context);
       GetPackingSlipTableClByItemIdAndPackingSlipIdController
@@ -67,16 +86,10 @@ class _DispatchingScreen2State extends State<DispatchingScreen2> {
         });
         Navigator.pop(context);
       }).onError((error, stackTrace) {
-        Navigator.pop(context);
         setState(() {
           table1 = [];
         });
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(error.toString().replaceAll("Exception:", "")),
-            backgroundColor: Colors.red,
-          ),
-        );
+        Navigator.pop(context);
       });
     });
   }
@@ -410,72 +423,73 @@ class _DispatchingScreen2State extends State<DispatchingScreen2> {
                         DataColumn(
                             label: Text(
                           'Delete',
-                          style: TextStyle(color: Colors.black),
+                          style: TextStyle(color: Colors.white),
                         )),
                         DataColumn(
                             label: Text(
                           'SALES ID',
-                          style: TextStyle(color: Colors.black),
+                          style: TextStyle(color: Colors.white),
                         )),
                         DataColumn(
                             label: Text(
                           'ITEM ID',
-                          style: TextStyle(color: Colors.black),
+                          style: TextStyle(color: Colors.white),
                         )),
                         DataColumn(
                             label: Text(
                           'NAME',
-                          style: TextStyle(color: Colors.black),
+                          style: TextStyle(color: Colors.white),
                           textAlign: TextAlign.center,
                         )),
                         DataColumn(
                             label: Text(
                           'INVENT LOCATION ID',
-                          style: TextStyle(color: Colors.black),
+                          style: TextStyle(color: Colors.white),
                           textAlign: TextAlign.center,
                         )),
                         DataColumn(
                             label: Text(
                           'CONFIG ID',
-                          style: TextStyle(color: Colors.black),
+                          style: TextStyle(color: Colors.white),
                           textAlign: TextAlign.center,
                         )),
                         DataColumn(
                             label: Text(
                           'ORDERED',
-                          style: TextStyle(color: Colors.black),
+                          style: TextStyle(color: Colors.white),
                           textAlign: TextAlign.center,
                         )),
                         DataColumn(
                             label: Text(
                           'PACKING SLIP ID',
-                          style: TextStyle(color: Colors.black),
+                          style: TextStyle(color: Colors.white),
                           textAlign: TextAlign.center,
                         )),
                         DataColumn(
                             label: Text(
                           'VEHICLE SHIP PLATE NUMBER',
-                          style: TextStyle(color: Colors.black),
+                          style: TextStyle(color: Colors.white),
                           textAlign: TextAlign.center,
                         )),
                         DataColumn(
                             label: Text(
                           'DATE TIME CREATED',
-                          style: TextStyle(color: Colors.black),
+                          style: TextStyle(color: Colors.white),
                           textAlign: TextAlign.center,
                         )),
                         DataColumn(
                             label: Text(
                           'ASSIGNED USER ID',
-                          style: TextStyle(color: Colors.black),
+                          style: TextStyle(color: Colors.white),
                           textAlign: TextAlign.center,
                         )),
                         DataColumn(
-                            label: Text(
-                          'ITEM SERIAL NUMBER',
-                          style: TextStyle(color: Colors.black),
-                          textAlign: TextAlign.center,
-                        )),
+                          label: Text(
+                            'ITEM SERIAL NUMBER',
+                            style: TextStyle(color: Colors.white),
+                            textAlign: TextAlign.center,
+                          ),
+                        )
                       ],
                       rows: table2.map((e) {
                         return DataRow(onSelectChanged: (value) {}, cells: [
@@ -548,8 +562,39 @@ class _DispatchingScreen2State extends State<DispatchingScreen2> {
                   controller: _vehicleBarcodeSerialController,
                   width: MediaQuery.of(context).size.width * 0.9,
                   hintText: "Enter/Scan Serial No.",
+                  readOnly: _vehicleBarcodeSerialController.text.isEmpty
+                      ? false
+                      : true,
                 ),
               ),
+
+              // Container(
+              //   decoration: const BoxDecoration(
+              //     borderRadius: BorderRadius.all(Radius.circular(10)),
+              //     color: Colors.white,
+              //   ),
+              //   width: MediaQuery.of(context).size.width * 0.9,
+              //   margin: const EdgeInsets.only(left: 20),
+              //   child: DropdownSearch<String>(
+              //     filterFn: (item, filter) {
+              //       return item.toLowerCase().contains(filter.toLowerCase());
+              //     },
+              //     enabled: true,
+              //     dropdownButtonProps: const DropdownButtonProps(
+              //       icon: Icon(
+              //         Icons.arrow_drop_down,
+              //         color: Colors.black,
+              //       ),
+              //     ),
+              //     items: dropdownList,
+              //     onChanged: (value) {
+              //       setState(() {
+              //         dropdownValue = value!;
+              //       });
+              //     },
+              //     selectedItem: dropdownValue,
+              //   ),
+              // ),
               const SizedBox(height: 10),
               Center(
                 child: ElevatedButtonWidget(
@@ -599,8 +644,9 @@ class _DispatchingScreen2State extends State<DispatchingScreen2> {
                       _vehicleBarcodeSerialController.text.trim(),
                     ).then((value) {
                       InsertTblDispatchingDetailsDataCLController.insertData(
-                              data, _vehicleBarcodeSerialController.text.trim())
-                          .then((value) {
+                        data,
+                        _vehicleBarcodeSerialController.text.trim(),
+                      ).then((value) {
                         Navigator.of(context).pop();
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
@@ -611,7 +657,6 @@ class _DispatchingScreen2State extends State<DispatchingScreen2> {
                         setState(() {
                           table2.clear();
                           total = "0";
-                          _vehicleBarcodeSerialController.clear();
                         });
                       }).onError((error, stackTrace) {
                         Navigator.of(context).pop();

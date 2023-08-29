@@ -1,3 +1,5 @@
+// ignore_for_file: non_constant_identifier_names, sized_box_for_whitespace
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -136,7 +138,6 @@ class _ShipmentDispatchingScreenState extends State<ShipmentDispatchingScreen> {
                         controller: _shipmentIdController,
                         width: MediaQuery.of(context).size.width * 0.73,
                         onEditingComplete: () {
-                          // hide keyboard
                           FocusScope.of(context).unfocus();
                           Constants.showLoadingDialog(context);
                           GetShipmentDataController.getShipmentData(

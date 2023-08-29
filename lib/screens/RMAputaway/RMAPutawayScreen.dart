@@ -513,7 +513,7 @@ class _RMAPutawayScreenState extends State<RMAPutawayScreen> {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
                             content: Text(
-                                "Please Select Atleast One Item from table"),
+                                "Please Select At least One Item from table"),
                             backgroundColor: Colors.red,
                           ),
                         );
