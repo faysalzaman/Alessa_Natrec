@@ -3,7 +3,6 @@
 import 'package:alessa_v2/models/GetRolesAssignedToUserModel.dart';
 
 import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
 import '../../utils/Constants.dart';
@@ -11,8 +10,8 @@ import '../../utils/Constants.dart';
 class GetRolesAssignedToUserController {
   static Future<List<GetRolesAssignedToUserModel>> getRoles(
       String userId) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String token = prefs.getString('token').toString();
+    // SharedPreferences prefs = await SharedPreferences.getInstance();
+    // String token = prefs.getString('token').toString();
 
     String url = "${Constants.baseUrl}getRolesAssignedToUser?userId=$userId";
 
