@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_print
+// ignore_for_file: avoid_print, non_constant_identifier_names
 
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -212,12 +212,12 @@ class _PhysicalInventoryScreenState extends State<PhysicalInventoryScreen> {
                             style: TextStyle(color: Colors.white),
                             textAlign: TextAlign.center,
                           )),
-                          DataColumn(
-                              label: Text(
-                            'INVENTORY BY',
-                            style: TextStyle(color: Colors.white),
-                            textAlign: TextAlign.center,
-                          )),
+                          // DataColumn(
+                          //     label: Text(
+                          //   'INVENTORY BY',
+                          //   style: TextStyle(color: Colors.white),
+                          //   textAlign: TextAlign.center,
+                          // )),
                           DataColumn(
                               label: Text(
                             'TRX DATE TIME',
@@ -260,12 +260,12 @@ class _PhysicalInventoryScreenState extends State<PhysicalInventoryScreen> {
                             style: TextStyle(color: Colors.white),
                             textAlign: TextAlign.center,
                           )),
-                          DataColumn(
-                              label: Text(
-                            'BIN LOCATION',
-                            style: TextStyle(color: Colors.white),
-                            textAlign: TextAlign.center,
-                          )),
+                          // DataColumn(
+                          //     label: Text(
+                          //   'BIN LOCATION',
+                          //   style: TextStyle(color: Colors.white),
+                          //   textAlign: TextAlign.center,
+                          // )),
                         ],
                         rows: BinToBinJournalTableList.map((e) {
                           return DataRow(onSelectChanged: (value) {}, cells: [
@@ -276,7 +276,7 @@ class _PhysicalInventoryScreenState extends State<PhysicalInventoryScreen> {
                             DataCell(Text(e.iTEMNAME ?? "")),
                             DataCell(Text(e.iTEMGROUPID ?? "")),
                             DataCell(Text(e.gROUPNAME ?? "")),
-                            DataCell(Text(e.iNVENTORYBY ?? "")),
+                            // DataCell(Text(e.iNVENTORYBY ?? "")),
                             DataCell(Text(e.tRXDATETIME ?? "")),
                             DataCell(Text(e.tRXUSERIDASSIGNED ?? "")),
                             DataCell(Text(e.tRXUSERIDASSIGNEDBY ?? "")),
@@ -292,7 +292,7 @@ class _PhysicalInventoryScreenState extends State<PhysicalInventoryScreen> {
                             DataCell(Text(e.jOURNALID.toString() == "null"
                                 ? "0"
                                 : e.jOURNALID.toString())),
-                            DataCell(Text(e.bINLOCATION ?? "")),
+                            // DataCell(Text(e.bINLOCATION ?? "")),
                           ]);
                         }).toList(),
                       ),
@@ -584,12 +584,12 @@ class _PhysicalInventoryScreenState extends State<PhysicalInventoryScreen> {
                             style: TextStyle(color: Colors.white),
                             textAlign: TextAlign.center,
                           )),
-                          DataColumn(
-                              label: Text(
-                            'INVENTORY BY',
-                            style: TextStyle(color: Colors.white),
-                            textAlign: TextAlign.center,
-                          )),
+                          // DataColumn(
+                          //     label: Text(
+                          //   'INVENTORY BY',
+                          //   style: TextStyle(color: Colors.white),
+                          //   textAlign: TextAlign.center,
+                          // )),
                           DataColumn(
                               label: Text(
                             'TRX DATE TIME',
@@ -632,12 +632,12 @@ class _PhysicalInventoryScreenState extends State<PhysicalInventoryScreen> {
                             style: TextStyle(color: Colors.white),
                             textAlign: TextAlign.center,
                           )),
-                          DataColumn(
-                              label: Text(
-                            'BIN LOCATION',
-                            style: TextStyle(color: Colors.white),
-                            textAlign: TextAlign.center,
-                          )),
+                          // DataColumn(
+                          //     label: Text(
+                          //   'BIN LOCATION',
+                          //   style: TextStyle(color: Colors.white),
+                          //   textAlign: TextAlign.center,
+                          // )),
                         ],
                         rows: BinToBinJournalTableList2.map((e) {
                           return DataRow(onSelectChanged: (value) {}, cells: [
@@ -648,15 +648,23 @@ class _PhysicalInventoryScreenState extends State<PhysicalInventoryScreen> {
                             DataCell(Text(e.iTEMNAME ?? "")),
                             DataCell(Text(e.iTEMGROUPID ?? "")),
                             DataCell(Text(e.gROUPNAME ?? "")),
-                            DataCell(Text(e.iNVENTORYBY ?? "")),
+                            // DataCell(Text(e.iNVENTORYBY ?? "")),
                             DataCell(Text(e.tRXDATETIME ?? "")),
                             DataCell(Text(e.tRXUSERIDASSIGNED ?? "")),
                             DataCell(Text(e.tRXUSERIDASSIGNEDBY ?? "")),
-                            DataCell(Text(e.qTYSCANNED.toString())),
-                            DataCell(Text(e.qTYDIFFERENCE.toString())),
-                            DataCell(Text(e.qTYONHAND.toString())),
-                            DataCell(Text(e.jOURNALID.toString())),
-                            DataCell(Text(e.bINLOCATION ?? "")),
+                            DataCell(Text(e.qTYSCANNED.toString() == "null"
+                                ? ""
+                                : e.qTYSCANNED.toString())),
+                            DataCell(Text(e.qTYDIFFERENCE.toString() == "null"
+                                ? ""
+                                : e.qTYDIFFERENCE.toString())),
+                            DataCell(Text(e.qTYONHAND.toString() == "null"
+                                ? ""
+                                : e.qTYONHAND.toString())),
+                            DataCell(Text(e.jOURNALID.toString() == "null"
+                                ? ""
+                                : e.jOURNALID.toString())),
+                            // DataCell(Text(e.bINLOCATION ?? "")),
                           ]);
                         }).toList(),
                       ),

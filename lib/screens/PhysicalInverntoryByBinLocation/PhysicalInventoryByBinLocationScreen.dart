@@ -1,20 +1,19 @@
-// ignore_for_file: non_constant_identifier_names
+// ignore_for_file: non_constant_identifier_names, avoid_print
 
+import 'package:alessa_v2/controllers/PhysicalInventory/insertIntoWmsJournalCountingOnlyCLDetsController.dart';
+import 'package:alessa_v2/controllers/PhysicalInventory/validateItemSerialNumberForJournalCountingOnlyCLDetsController.dart';
+import 'package:alessa_v2/controllers/PhysicalInventoryByBinLocation/getBinLocationByUserIdFromJournalCountingOnlyCLController.dart';
+import 'package:alessa_v2/controllers/PhysicalInventoryByBinLocation/getWmsJournalCountingOnlyCLByBinLocationController.dart';
+import 'package:alessa_v2/controllers/PhysicalInventoryByBinLocation/incrementQTYSCANNEDInJournalCountingOnlyCLByBinLocationController.dart';
+import 'package:alessa_v2/models/getWmsJournalCountingOnlyCLByAssignedToUserIdModel.dart';
+import 'package:alessa_v2/widgets/AppBarWidget.dart';
+import 'package:alessa_v2/widgets/TextFormField.dart';
+import 'package:alessa_v2/widgets/TextWidget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../controllers/PhysicalInventory/insertIntoWmsJournalCountingOnlyCLDetsController.dart';
-import '../../controllers/PhysicalInventory/validateItemSerialNumberForJournalCountingOnlyCLDetsController.dart';
-import '../../controllers/PhysicalInventoryByBinLocation/getBinLocationByUserIdFromJournalCountingOnlyCLController.dart';
-import '../../controllers/PhysicalInventoryByBinLocation/getWmsJournalCountingOnlyCLByBinLocationController.dart';
-import '../../controllers/PhysicalInventoryByBinLocation/incrementQTYSCANNEDInJournalCountingOnlyCLByBinLocationController.dart';
-import '../../models/getWmsJournalCountingOnlyCLByAssignedToUserIdModel.dart';
 import '../../utils/Constants.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
-import '../../../../widgets/AppBarWidget.dart';
-import '../../../../widgets/TextWidget.dart';
-import '../../widgets/TextFormField.dart';
 
 class PhysicalInventoryByBinLocationScreen extends StatefulWidget {
   const PhysicalInventoryByBinLocationScreen({super.key});
@@ -36,9 +35,6 @@ class _PhysicalInventoryByBinLocationScreenState
 
   List<getWmsJournalCountingOnlyCLByAssignedToUserIdModel>
       BinToBinJournalTableList2 = [];
-
-  List<getWmsJournalCountingOnlyCLByAssignedToUserIdModel>
-      BinToBinJournalTableList3 = [];
 
   List<bool> isMarked = [];
 
@@ -200,77 +196,76 @@ class _PhysicalInventoryByBinLocationScreenState
                   ),
                 ),
                 Center(
-                  child: Container(
-                    margin: const EdgeInsets.only(bottom: 10),
-                    padding: const EdgeInsets.only(left: 30, right: 30),
-                    width: MediaQuery.of(context).size.width * 0.9,
-                    height: 50,
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: Colors.grey,
-                        width: 1,
-                      ),
-                    ),
-                    child: DropdownButtonHideUnderline(
-                      child: DropdownButtonFormField(
-                        items: dropDownList.map((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: TextWidget(
-                              text: value,
-                              color: Colors.black,
-                              fontSize: 16,
-                            ),
-                          );
-                        }).toList(),
-                        style: const TextStyle(
-                          color: Colors.black,
-                          fontSize: 16,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: Container(
+                      margin: const EdgeInsets.only(bottom: 10),
+                      padding: const EdgeInsets.only(left: 30, right: 30),
+                      width: MediaQuery.of(context).size.width * 0.9,
+                      height: 50,
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Colors.grey,
+                          width: 1,
                         ),
-                        onChanged: (value) {
-                          setState(() {
-                            dropDownValue = value.toString();
-                          });
-                        },
-                        onTap: () {
-                          getWmsJournalCountingOnlyCLByBinLocationController
-                              .getData(dropDownValue.toString())
-                              .then((value) {
-                            Constants.showLoadingDialog(context);
-                            setState(() {
-                              BinToBinJournalTableList = value;
-
-                              isMarked = List<bool>.generate(
-                                  BinToBinJournalTableList.length,
-                                  (index) => false);
-                              total =
-                                  BinToBinJournalTableList.length.toString();
-                            });
-                            Navigator.of(context).pop();
-                          }).onError((error, stackTrace) {
-                            Constants.showLoadingDialog(context);
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(error
-                                    .toString()
-                                    .replaceAll("Exception:", "")),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: DropdownButtonHideUnderline(
+                        child: DropdownButtonFormField(
+                          items: dropDownList.map((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: TextWidget(
+                                text: value,
+                                color: Colors.black,
+                                fontSize: 16,
                               ),
                             );
-                            Navigator.of(context).pop();
-                          });
-                        },
-                        icon: const Icon(
-                          Icons.arrow_downward,
-                          color: Colors.black,
-                          size: 20,
+                          }).toList(),
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontSize: 16,
+                          ),
+                          onChanged: (value) {
+                            Constants.showLoadingDialog(context);
+                            getWmsJournalCountingOnlyCLByBinLocationController
+                                .getData(dropDownValue.toString())
+                                .then((value) {
+                              setState(() {
+                                BinToBinJournalTableList = value;
+
+                                isMarked = List<bool>.generate(
+                                    BinToBinJournalTableList.length,
+                                    (index) => false);
+                                total =
+                                    BinToBinJournalTableList.length.toString();
+                              });
+                              Navigator.of(context).pop();
+                            }).onError((error, stackTrace) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(error
+                                      .toString()
+                                      .replaceAll("Exception:", "")),
+                                ),
+                              );
+                              Navigator.of(context).pop();
+                            });
+                          },
+                          icon: const Icon(
+                            Icons.arrow_downward,
+                            color: Colors.black,
+                            size: 20,
+                          ),
+                          value: dropDownValue,
+                          elevation: 10,
                         ),
-                        value: dropDownValue,
-                        elevation: 10,
                       ),
                     ),
                   ),
                 ),
                 Container(
+                  alignment: Alignment.topCenter,
                   height: MediaQuery.of(context).size.height * 0.4,
                   decoration: BoxDecoration(
                     border: Border.all(
@@ -307,107 +302,107 @@ class _PhysicalInventoryByBinLocationScreenState
                           )),
                           DataColumn(
                               label: Text(
-                            'ITEM ID',
+                            'BIN LOCATION',
                             style: TextStyle(color: Colors.white),
+                            textAlign: TextAlign.center,
                           )),
+                          // DataColumn(
+                          //     label: Text(
+                          //   'ITEM ID',
+                          //   style: TextStyle(color: Colors.white),
+                          // )),
                           DataColumn(
                               label: Text(
                             'ITEM NAME',
                             style: TextStyle(color: Colors.white),
                           )),
-                          DataColumn(
-                              label: Text(
-                            'ITEM GROUP ID',
-                            style: TextStyle(color: Colors.white),
-                            textAlign: TextAlign.center,
-                          )),
-                          DataColumn(
-                              label: Text(
-                            'GROUP NAME',
-                            style: TextStyle(color: Colors.white),
-                            textAlign: TextAlign.center,
-                          )),
-                          DataColumn(
-                              label: Text(
-                            'INVENTORY BY',
-                            style: TextStyle(color: Colors.white),
-                            textAlign: TextAlign.center,
-                          )),
-                          DataColumn(
-                              label: Text(
-                            'TRX DATE TIME',
-                            style: TextStyle(color: Colors.white),
-                            textAlign: TextAlign.center,
-                          )),
-                          DataColumn(
-                              label: Text(
-                            'TRX USER ID ASSIGNED',
-                            style: TextStyle(color: Colors.white),
-                            textAlign: TextAlign.center,
-                          )),
-                          DataColumn(
-                              label: Text(
-                            'TRX USER ID ASSIGNED BY',
-                            style: TextStyle(color: Colors.white),
-                            textAlign: TextAlign.center,
-                          )),
-                          DataColumn(
-                              label: Text(
-                            'QTY SCANNED',
-                            style: TextStyle(color: Colors.white),
-                            textAlign: TextAlign.center,
-                          )),
-                          DataColumn(
-                              label: Text(
-                            'QTY DIFFERENCE',
-                            style: TextStyle(color: Colors.white),
-                            textAlign: TextAlign.center,
-                          )),
-                          DataColumn(
-                              label: Text(
-                            'QTY ON HAND',
-                            style: TextStyle(color: Colors.white),
-                            textAlign: TextAlign.center,
-                          )),
-                          DataColumn(
-                              label: Text(
-                            'JOURNAL ID',
-                            style: TextStyle(color: Colors.white),
-                            textAlign: TextAlign.center,
-                          )),
-                          DataColumn(
-                              label: Text(
-                            'BIN LOCATION',
-                            style: TextStyle(color: Colors.white),
-                            textAlign: TextAlign.center,
-                          )),
+                          // DataColumn(
+                          //     label: Text(
+                          //   'ITEM GROUP ID',
+                          //   style: TextStyle(color: Colors.white),
+                          //   textAlign: TextAlign.center,
+                          // )),
+                          // DataColumn(
+                          //     label: Text(
+                          //   'GROUP NAME',
+                          //   style: TextStyle(color: Colors.white),
+                          //   textAlign: TextAlign.center,
+                          // )),
+                          // DataColumn(
+                          //     label: Text(
+                          //   'INVENTORY BY',
+                          //   style: TextStyle(color: Colors.white),
+                          //   textAlign: TextAlign.center,
+                          // )),
+                          // DataColumn(
+                          //     label: Text(
+                          //   'TRX DATE TIME',
+                          //   style: TextStyle(color: Colors.white),
+                          //   textAlign: TextAlign.center,
+                          // )),
+                          // DataColumn(
+                          //     label: Text(
+                          //   'TRX USER ID ASSIGNED',
+                          //   style: TextStyle(color: Colors.white),
+                          //   textAlign: TextAlign.center,
+                          // )),
+                          // DataColumn(
+                          //     label: Text(
+                          //   'TRX USER ID ASSIGNED BY',
+                          //   style: TextStyle(color: Colors.white),
+                          //   textAlign: TextAlign.center,
+                          // )),
+                          // DataColumn(
+                          //     label: Text(
+                          //   'QTY SCANNED',
+                          //   style: TextStyle(color: Colors.white),
+                          //   textAlign: TextAlign.center,
+                          // )),
+                          // DataColumn(
+                          //     label: Text(
+                          //   'QTY DIFFERENCE',
+                          //   style: TextStyle(color: Colors.white),
+                          //   textAlign: TextAlign.center,
+                          // )),
+                          // DataColumn(
+                          //     label: Text(
+                          //   'QTY ON HAND',
+                          //   style: TextStyle(color: Colors.white),
+                          //   textAlign: TextAlign.center,
+                          // )),
+                          // DataColumn(
+                          //     label: Text(
+                          //   'JOURNAL ID',
+                          //   style: TextStyle(color: Colors.white),
+                          //   textAlign: TextAlign.center,
+                          // )),
                         ],
                         rows: BinToBinJournalTableList.map((e) {
                           return DataRow(onSelectChanged: (value) {}, cells: [
                             DataCell(Text(
                                 (BinToBinJournalTableList.indexOf(e) + 1)
                                     .toString())),
-                            DataCell(Text(e.iTEMID ?? "")),
-                            DataCell(Text(e.iTEMNAME ?? "")),
-                            DataCell(Text(e.iTEMGROUPID ?? "")),
-                            DataCell(Text(e.gROUPNAME ?? "")),
-                            DataCell(Text(e.iNVENTORYBY ?? "")),
-                            DataCell(Text(e.tRXDATETIME ?? "")),
-                            DataCell(Text(e.tRXUSERIDASSIGNED ?? "")),
-                            DataCell(Text(e.tRXUSERIDASSIGNEDBY ?? "")),
-                            DataCell(Text(e.qTYSCANNED.toString() == "null"
-                                ? "0"
-                                : e.qTYSCANNED.toString())),
-                            DataCell(Text(e.qTYDIFFERENCE.toString() == "null"
-                                ? "0"
-                                : e.qTYDIFFERENCE.toString())),
-                            DataCell(Text(e.qTYONHAND.toString() == "null"
-                                ? "0"
-                                : e.qTYONHAND.toString())),
-                            DataCell(Text(e.jOURNALID.toString() == "null"
-                                ? "0"
-                                : e.jOURNALID.toString())),
                             DataCell(Text(e.bINLOCATION ?? "")),
+                            // DataCell(Text(e.iTEMID ?? "")),
+                            DataCell(Text(e.iTEMNAME ?? "")),
+                            // DataCell(Text(e.iTEMGROUPID ?? "")),
+                            // DataCell(Text(e.gROUPNAME ?? "")),
+                            // DataCell(Text(e.iNVENTORYBY ?? "")),
+                            // DataCell(Text(e.tRXDATETIME ?? "")),
+                            // DataCell(Text(e.tRXUSERIDASSIGNED ?? "")),
+                            // DataCell(Text(e.tRXUSERIDASSIGNEDBY ?? "")),
+                            // DataCell(Text(e.qTYSCANNED.toString() == "null"
+                            //     ? "0"
+                            //     : e.qTYSCANNED.toString())),
+                            // DataCell(Text(e.qTYDIFFERENCE.toString() == "null"
+                            //     ? "0"
+                            //     : e.qTYDIFFERENCE.toString())),
+                            // DataCell(Text(e.qTYONHAND.toString() == "null"
+                            //     ? "0"
+                            //     : e.qTYONHAND.toString())),
+                            // DataCell(Text(e.jOURNALID.toString() == "null"
+                            //     ? "0"
+                            //     : e.jOURNALID.toString())),
                           ]);
                         }).toList(),
                       ),
@@ -519,12 +514,20 @@ class _PhysicalInventoryByBinLocationScreenState
                             hintText: "Enter/Scan Serial No",
                             width: MediaQuery.of(context).size.width * 0.9,
                             onEditingComplete: () {
+                              if (_serialController.text.trim().isEmpty) {
+                                // hide keyboard
+                                FocusScope.of(context)
+                                    .requestFocus(FocusNode());
+                                return;
+                              }
+
                               FocusScope.of(context).requestFocus(FocusNode());
                               Constants.showLoadingDialog(context);
                               validateItemSerialNumberForJournalCountingOnlyCLDetsController
                                   .getData(_serialController.text.trim())
                                   .then((response) {
                                 var table2 = response.allData![0];
+                                print(table2.itemCode);
 
                                 for (var element in BinToBinJournalTableList2) {
                                   if (element.iTEMID.toString() !=
@@ -566,7 +569,6 @@ class _PhysicalInventoryByBinLocationScreenState
                                   total = BinToBinJournalTableList.length
                                       .toString();
                                 });
-                                print("Hello...");
                                 incrementQTYSCANNEDInJournalCountingOnlyCLByBinLocationController
                                     .getData(
                                   BinToBinJournalTableList2
@@ -610,7 +612,6 @@ class _PhysicalInventoryByBinLocationScreenState
                                     );
                                   });
                                 }).onError((error, stackTrace) {
-                                  print("Hello");
                                   Navigator.of(context).pop();
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
