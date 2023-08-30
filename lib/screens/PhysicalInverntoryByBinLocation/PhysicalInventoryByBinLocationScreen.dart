@@ -30,11 +30,8 @@ class _PhysicalInventoryByBinLocationScreenState
   String total = "0";
   String total2 = "0";
 
-  List<getWmsJournalCountingOnlyCLByAssignedToUserIdModel>
-      BinToBinJournalTableList = [];
-
-  List<getWmsJournalCountingOnlyCLByAssignedToUserIdModel>
-      BinToBinJournalTableList2 = [];
+  List<getWmsJournalCountingOnlyCLByAssignedToUserIdModel> tbl1 = [];
+  List<getWmsJournalCountingOnlyCLByAssignedToUserIdModel> tbl2 = [];
 
   List<bool> isMarked = [];
 
@@ -90,28 +87,25 @@ class _PhysicalInventoryByBinLocationScreenState
             .getData(dropDownValue.toString())
             .then((value) {
           setState(() {
-            BinToBinJournalTableList = value;
-
-            isMarked = List<bool>.generate(
-                BinToBinJournalTableList.length, (index) => false);
-            total = BinToBinJournalTableList.length.toString();
+            tbl1 = value;
+            isMarked = List<bool>.generate(tbl1.length, (index) => false);
+            total = tbl1.length.toString();
           });
           Navigator.of(context).pop();
         }).onError((error, stackTrace) {
-          Constants.showLoadingDialog(context);
+          Navigator.of(context).pop();
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(error.toString().replaceAll("Exception:", "")),
             ),
           );
-          Navigator.of(context).pop();
         });
       }).onError((error, stackTrace) {
-        Navigator.pop(context);
         setState(() {
           dropDownList.add("No Data Found");
           dropDownValue = dropDownList[0];
         });
+        Navigator.pop(context);
       });
     });
   }
@@ -227,21 +221,25 @@ class _PhysicalInventoryByBinLocationScreenState
                             fontSize: 16,
                           ),
                           onChanged: (value) {
+                            setState(() {
+                              dropDownValue = value.toString();
+                            });
+
                             Constants.showLoadingDialog(context);
                             getWmsJournalCountingOnlyCLByBinLocationController
                                 .getData(dropDownValue.toString())
                                 .then((value) {
                               setState(() {
-                                BinToBinJournalTableList = value;
+                                tbl1 = value;
 
                                 isMarked = List<bool>.generate(
-                                    BinToBinJournalTableList.length,
-                                    (index) => false);
-                                total =
-                                    BinToBinJournalTableList.length.toString();
+                                    tbl1.length, (index) => false);
+                                total = tbl1.length.toString();
                               });
                               Navigator.of(context).pop();
                             }).onError((error, stackTrace) {
+                              tbl1 = [];
+                              Navigator.of(context).pop();
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                   content: Text(error
@@ -249,7 +247,6 @@ class _PhysicalInventoryByBinLocationScreenState
                                       .replaceAll("Exception:", "")),
                                 ),
                               );
-                              Navigator.of(context).pop();
                             });
                           },
                           icon: const Icon(
@@ -377,11 +374,9 @@ class _PhysicalInventoryByBinLocationScreenState
                           //   textAlign: TextAlign.center,
                           // )),
                         ],
-                        rows: BinToBinJournalTableList.map((e) {
+                        rows: tbl1.map((e) {
                           return DataRow(onSelectChanged: (value) {}, cells: [
-                            DataCell(Text(
-                                (BinToBinJournalTableList.indexOf(e) + 1)
-                                    .toString())),
+                            DataCell(Text((tbl1.indexOf(e) + 1).toString())),
                             DataCell(Text(e.bINLOCATION ?? "")),
                             // DataCell(Text(e.iTEMID ?? "")),
                             DataCell(Text(e.iTEMNAME ?? "")),
@@ -529,7 +524,7 @@ class _PhysicalInventoryByBinLocationScreenState
                                 var table2 = response.allData![0];
                                 print(table2.itemCode);
 
-                                for (var element in BinToBinJournalTableList2) {
+                                for (var element in tbl2) {
                                   if (element.iTEMID.toString() !=
                                       table2.itemCode.toString()) {
                                     Navigator.of(context).pop();
@@ -546,8 +541,8 @@ class _PhysicalInventoryByBinLocationScreenState
                                 }
 
                                 setState(() {
-                                  BinToBinJournalTableList2.add(
-                                    BinToBinJournalTableList.firstWhere(
+                                  tbl2.add(
+                                    tbl1.firstWhere(
                                       (element) =>
                                           element.iTEMID ==
                                           table2.itemCode.toString(),
@@ -555,29 +550,23 @@ class _PhysicalInventoryByBinLocationScreenState
                                   );
 
                                   // remove the selected pallet code row from the GetShipmentPalletizingList
-                                  BinToBinJournalTableList.removeAt(
-                                    BinToBinJournalTableList.indexWhere(
+                                  tbl1.removeAt(
+                                    tbl1.indexWhere(
                                       (element) =>
                                           element.iTEMID ==
                                           table2.itemCode.toString(),
                                     ),
                                   );
 
-                                  total2 = BinToBinJournalTableList2.length
-                                      .toString();
+                                  total2 = tbl2.length.toString();
 
-                                  total = BinToBinJournalTableList.length
-                                      .toString();
+                                  total = tbl1.length.toString();
                                 });
                                 incrementQTYSCANNEDInJournalCountingOnlyCLByBinLocationController
                                     .getData(
-                                  BinToBinJournalTableList2
-                                      .last.tRXUSERIDASSIGNED
-                                      .toString(),
-                                  BinToBinJournalTableList2.last.tRXDATETIME
-                                      .toString(),
-                                  BinToBinJournalTableList2.last.bINLOCATION
-                                      .toString(),
+                                  tbl2.last.tRXUSERIDASSIGNED.toString(),
+                                  tbl2.last.tRXDATETIME.toString(),
+                                  tbl2.last.bINLOCATION.toString(),
                                 )
                                     .then((value) {
                                   insertIntoWmsJournalCountingOnlyCLDetsController
@@ -586,7 +575,7 @@ class _PhysicalInventoryByBinLocationScreenState
                                           table2.binLocation.toString(),
                                           value.toString(),
                                           table2.itemSerialNo.toString(),
-                                          BinToBinJournalTableList2)
+                                          tbl2)
                                       .then((value) {
                                     Navigator.of(context).pop();
                                     ScaffoldMessenger.of(context).showSnackBar(
@@ -755,11 +744,9 @@ class _PhysicalInventoryByBinLocationScreenState
                             textAlign: TextAlign.center,
                           )),
                         ],
-                        rows: BinToBinJournalTableList2.map((e) {
+                        rows: tbl2.map((e) {
                           return DataRow(onSelectChanged: (value) {}, cells: [
-                            DataCell(Text(
-                                (BinToBinJournalTableList2.indexOf(e) + 1)
-                                    .toString())),
+                            DataCell(Text((tbl2.indexOf(e) + 1).toString())),
                             DataCell(Text(e.iTEMID ?? "")),
                             DataCell(Text(e.iTEMNAME ?? "")),
                             DataCell(Text(e.iTEMGROUPID ?? "")),
