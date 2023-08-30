@@ -1,3 +1,5 @@
+// ignore_for_file: non_constant_identifier_names
+
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../controllers/PhysicalInventory/insertIntoWmsJournalCountingOnlyCLDetsController.dart';
@@ -24,8 +26,8 @@ class PhysicalInventoryByBinLocationScreen extends StatefulWidget {
 
 class _PhysicalInventoryByBinLocationScreenState
     extends State<PhysicalInventoryByBinLocationScreen> {
-  TextEditingController _palletController = TextEditingController();
-  TextEditingController _serialController = TextEditingController();
+  final TextEditingController _palletController = TextEditingController();
+  final TextEditingController _serialController = TextEditingController();
   String total = "0";
   String total2 = "0";
 
@@ -71,7 +73,6 @@ class _PhysicalInventoryByBinLocationScreenState
           .getData()
           .then((value) {
         dropDownList.clear();
-        Navigator.pop(context);
         for (int i = 0; i < value.length; i++) {
           setState(() {
             if (value[i] != "") {
@@ -87,6 +88,27 @@ class _PhysicalInventoryByBinLocationScreenState
 
         setState(() {
           dropDownValue = dropDownList[0];
+        });
+
+        getWmsJournalCountingOnlyCLByBinLocationController
+            .getData(dropDownValue.toString())
+            .then((value) {
+          setState(() {
+            BinToBinJournalTableList = value;
+
+            isMarked = List<bool>.generate(
+                BinToBinJournalTableList.length, (index) => false);
+            total = BinToBinJournalTableList.length.toString();
+          });
+          Navigator.of(context).pop();
+        }).onError((error, stackTrace) {
+          Constants.showLoadingDialog(context);
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(error.toString().replaceAll("Exception:", "")),
+            ),
+          );
+          Navigator.of(context).pop();
         });
       }).onError((error, stackTrace) {
         Navigator.pop(context);
@@ -131,7 +153,7 @@ class _PhysicalInventoryByBinLocationScreenState
             ],
           ),
         ),
-        body: Container(
+        body: SizedBox(
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height,
           child: SingleChildScrollView(
@@ -169,71 +191,82 @@ class _PhysicalInventoryByBinLocationScreenState
                     ],
                   ),
                 ),
-                // dropdown button
                 Container(
-                  padding: const EdgeInsets.only(left: 30, right: 30),
-                  width: MediaQuery.of(context).size.width,
-                  height: 50,
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: Colors.grey,
-                      width: 1,
-                    ),
+                  margin: const EdgeInsets.only(left: 20, top: 10),
+                  child: TextWidget(
+                    text: "From",
+                    color: Colors.blue[900]!,
+                    fontSize: 15,
                   ),
-                  child: DropdownButtonHideUnderline(
-                    child: DropdownButtonFormField(
-                      items: dropDownList.map((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: TextWidget(
-                            text: value,
-                            color: Colors.black,
-                            fontSize: 16,
-                          ),
-                        );
-                      }).toList(),
-                      style: const TextStyle(
-                        color: Colors.black,
-                        fontSize: 16,
+                ),
+                Center(
+                  child: Container(
+                    margin: const EdgeInsets.only(bottom: 10),
+                    padding: const EdgeInsets.only(left: 30, right: 30),
+                    width: MediaQuery.of(context).size.width * 0.9,
+                    height: 50,
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: Colors.grey,
+                        width: 1,
                       ),
-                      onChanged: (value) {
-                        setState(() {
-                          dropDownValue = value.toString();
-                        });
-                      },
-                      onTap: () {
-                        getWmsJournalCountingOnlyCLByBinLocationController
-                            .getData(dropDownValue.toString())
-                            .then((value) {
-                          Constants.showLoadingDialog(context);
-                          setState(() {
-                            BinToBinJournalTableList = value;
-
-                            isMarked = List<bool>.generate(
-                                BinToBinJournalTableList.length,
-                                (index) => false);
-                            total = BinToBinJournalTableList.length.toString();
-                          });
-                          Navigator.of(context).pop();
-                        }).onError((error, stackTrace) {
-                          Constants.showLoadingDialog(context);
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(error
-                                  .toString()
-                                  .replaceAll("Exception:", "")),
+                    ),
+                    child: DropdownButtonHideUnderline(
+                      child: DropdownButtonFormField(
+                        items: dropDownList.map((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: TextWidget(
+                              text: value,
+                              color: Colors.black,
+                              fontSize: 16,
                             ),
                           );
-                          Navigator.of(context).pop();
-                        });
-                      },
-                      icon: const Icon(
-                        Icons.arrow_downward,
-                        color: Colors.black,
-                        size: 20,
+                        }).toList(),
+                        style: const TextStyle(
+                          color: Colors.black,
+                          fontSize: 16,
+                        ),
+                        onChanged: (value) {
+                          setState(() {
+                            dropDownValue = value.toString();
+                          });
+                        },
+                        onTap: () {
+                          getWmsJournalCountingOnlyCLByBinLocationController
+                              .getData(dropDownValue.toString())
+                              .then((value) {
+                            Constants.showLoadingDialog(context);
+                            setState(() {
+                              BinToBinJournalTableList = value;
+
+                              isMarked = List<bool>.generate(
+                                  BinToBinJournalTableList.length,
+                                  (index) => false);
+                              total =
+                                  BinToBinJournalTableList.length.toString();
+                            });
+                            Navigator.of(context).pop();
+                          }).onError((error, stackTrace) {
+                            Constants.showLoadingDialog(context);
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(error
+                                    .toString()
+                                    .replaceAll("Exception:", "")),
+                              ),
+                            );
+                            Navigator.of(context).pop();
+                          });
+                        },
+                        icon: const Icon(
+                          Icons.arrow_downward,
+                          color: Colors.black,
+                          size: 20,
+                        ),
+                        value: dropDownValue,
+                        elevation: 10,
                       ),
-                      value: dropDownValue,
-                      elevation: 10,
                     ),
                   ),
                 ),
@@ -362,10 +395,18 @@ class _PhysicalInventoryByBinLocationScreenState
                             DataCell(Text(e.tRXDATETIME ?? "")),
                             DataCell(Text(e.tRXUSERIDASSIGNED ?? "")),
                             DataCell(Text(e.tRXUSERIDASSIGNEDBY ?? "")),
-                            DataCell(Text(e.qTYSCANNED.toString())),
-                            DataCell(Text(e.qTYDIFFERENCE.toString())),
-                            DataCell(Text(e.qTYONHAND.toString())),
-                            DataCell(Text(e.jOURNALID.toString())),
+                            DataCell(Text(e.qTYSCANNED.toString() == "null"
+                                ? "0"
+                                : e.qTYSCANNED.toString())),
+                            DataCell(Text(e.qTYDIFFERENCE.toString() == "null"
+                                ? "0"
+                                : e.qTYDIFFERENCE.toString())),
+                            DataCell(Text(e.qTYONHAND.toString() == "null"
+                                ? "0"
+                                : e.qTYONHAND.toString())),
+                            DataCell(Text(e.jOURNALID.toString() == "null"
+                                ? "0"
+                                : e.jOURNALID.toString())),
                             DataCell(Text(e.bINLOCATION ?? "")),
                           ]);
                         }).toList(),

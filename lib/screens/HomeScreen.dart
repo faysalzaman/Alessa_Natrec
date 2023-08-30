@@ -1,6 +1,7 @@
 // ignore_for_file: avoid_print, must_be_immutable, unrelated_type_equality_checks
 
 import 'package:alessa_v2/models/GetRolesAssignedToUserModel.dart';
+import 'package:alessa_v2/screens/BarcodeMapping/BarcodeMappingScreen.dart';
 import 'package:alessa_v2/screens/PalletIdInquiry/PalletIdInquiryScreen.dart';
 import 'package:alessa_v2/screens/UnAllocatedItem/UnAllocatedItemsScreen1.dart';
 import 'package:auto_size_text/auto_size_text.dart';
@@ -82,6 +83,12 @@ class _HomeScreenState extends State<HomeScreen> {
     "functions": [
       () {},
       () {},
+      () {
+        Get.to(() => const ShipmentPalletizingScreen());
+      },
+      () {
+        Get.to(() => const PutAwayScreen());
+      },
       () {},
       () {},
       () {},
@@ -91,14 +98,20 @@ class _HomeScreenState extends State<HomeScreen> {
       () {},
       () {},
       () {},
+      () {
+        Get.to(() => const PhysicalInventoryScreen());
+      },
       () {},
+      () {
+        Get.to(() => const UnAllocatedItemsScreen1());
+      },
       () {},
-      () {},
-      () {},
-      () {},
-      () {},
-      () {},
-      () {},
+      () {
+        Get.to(() => const PalletIdInquiryScreen());
+      },
+      () {
+        Get.offAll(() => const LoginScreen());
+      },
     ],
   };
 
@@ -122,12 +135,13 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     data['functions'][0] = () {
       if (widget.roles
-              .where((element) => element.roleName == "WO Mapped Items")
+              .where((element) =>
+                  element.roleName == "WMS Product Barcode Mapping")
               .isNotEmpty ||
           widget.roles
               .where((element) => element.roleName == "Admin")
               .isNotEmpty) {
-        Get.to(() => const DispatchingScreen());
+        Get.to(() => BarcodeMappingScreen());
       } else {
         Get.snackbar(
           'Access Denied',
@@ -135,13 +149,13 @@ class _HomeScreenState extends State<HomeScreen> {
           snackPosition: SnackPosition.BOTTOM,
           backgroundColor: Colors.red,
           colorText: Colors.white,
-          duration: const Duration(seconds: 5),
+          duration: const Duration(seconds: 2),
         );
       }
     };
     data['functions'][1] = () {
       if (widget.roles
-              .where((element) => element.roleName == "WO Shipment Received")
+              .where((element) => element.roleName == "WMS Goods Receiving")
               .isNotEmpty ||
           widget.roles
               .where((element) => element.roleName == "Admin")
@@ -154,51 +168,13 @@ class _HomeScreenState extends State<HomeScreen> {
           snackPosition: SnackPosition.BOTTOM,
           backgroundColor: Colors.red,
           colorText: Colors.white,
-          duration: const Duration(seconds: 5),
-        );
-      }
-    };
-    data['functions'][2] = () {
-      if (widget.roles
-              .where((element) => element.roleName == "WO Pallets")
-              .isNotEmpty ||
-          widget.roles
-              .where((element) => element.roleName == "Admin")
-              .isNotEmpty) {
-        Get.to(() => const ShipmentPalletizingScreen());
-      } else {
-        Get.snackbar(
-          'Access Denied',
-          'You are not authorized to access this feature.',
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
-          duration: const Duration(seconds: 5),
-        );
-      }
-    };
-    data['functions'][3] = () {
-      if (widget.roles
-              .where((element) => element.roleName == "WO PutAway")
-              .isNotEmpty ||
-          widget.roles
-              .where((element) => element.roleName == "Admin")
-              .isNotEmpty) {
-        Get.to(() => const PutAwayScreen());
-      } else {
-        Get.snackbar(
-          'Access Denied',
-          'You are not authorized to access this feature.',
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
-          duration: const Duration(seconds: 5),
+          duration: const Duration(seconds: 2),
         );
       }
     };
     data['functions'][4] = () {
       if (widget.roles
-              .where((element) => element.roleName == "WO Picking")
+              .where((element) => element.roleName == "WMS Picking Slip")
               .isNotEmpty ||
           widget.roles
               .where((element) => element.roleName == "Admin")
@@ -211,13 +187,13 @@ class _HomeScreenState extends State<HomeScreen> {
           snackPosition: SnackPosition.BOTTOM,
           backgroundColor: Colors.red,
           colorText: Colors.white,
-          duration: const Duration(seconds: 5),
+          duration: const Duration(seconds: 2),
         );
       }
     };
     data['functions'][5] = () {
       if (widget.roles
-              .where((element) => element.roleName == "WO Dispatching")
+              .where((element) => element.roleName == "WMS Dispatching")
               .isNotEmpty ||
           widget.roles
               .where((element) => element.roleName == "Admin")
@@ -230,7 +206,7 @@ class _HomeScreenState extends State<HomeScreen> {
           snackPosition: SnackPosition.BOTTOM,
           backgroundColor: Colors.red,
           colorText: Colors.white,
-          duration: const Duration(seconds: 5),
+          duration: const Duration(seconds: 2),
         );
       }
     };
@@ -249,7 +225,7 @@ class _HomeScreenState extends State<HomeScreen> {
           snackPosition: SnackPosition.BOTTOM,
           backgroundColor: Colors.red,
           colorText: Colors.white,
-          duration: const Duration(seconds: 5),
+          duration: const Duration(seconds: 2),
         );
       }
     };
@@ -269,7 +245,7 @@ class _HomeScreenState extends State<HomeScreen> {
           snackPosition: SnackPosition.BOTTOM,
           backgroundColor: Colors.red,
           colorText: Colors.white,
-          duration: const Duration(seconds: 5),
+          duration: const Duration(seconds: 2),
         );
       }
     };
@@ -288,7 +264,7 @@ class _HomeScreenState extends State<HomeScreen> {
           snackPosition: SnackPosition.BOTTOM,
           backgroundColor: Colors.red,
           colorText: Colors.white,
-          duration: const Duration(seconds: 5),
+          duration: const Duration(seconds: 2),
         );
       }
     };
@@ -307,13 +283,13 @@ class _HomeScreenState extends State<HomeScreen> {
           snackPosition: SnackPosition.BOTTOM,
           backgroundColor: Colors.red,
           colorText: Colors.white,
-          duration: const Duration(seconds: 5),
+          duration: const Duration(seconds: 2),
         );
       }
     };
     data['functions'][10] = () {
       if (widget.roles
-              .where((element) => element.roleName == "WO PutAway")
+              .where((element) => element.roleName == "WMS RMA Put-Away")
               .isNotEmpty ||
           widget.roles
               .where((element) => element.roleName == "Admin")
@@ -326,7 +302,7 @@ class _HomeScreenState extends State<HomeScreen> {
           snackPosition: SnackPosition.BOTTOM,
           backgroundColor: Colors.red,
           colorText: Colors.white,
-          duration: const Duration(seconds: 5),
+          duration: const Duration(seconds: 2),
         );
       }
     };
@@ -346,13 +322,14 @@ class _HomeScreenState extends State<HomeScreen> {
           snackPosition: SnackPosition.BOTTOM,
           backgroundColor: Colors.red,
           colorText: Colors.white,
-          duration: const Duration(seconds: 5),
+          duration: const Duration(seconds: 2),
         );
       }
     };
     data['functions'][12] = () {
       if (widget.roles
-              .where((element) => element.roleName == "WO Journal Movement")
+              .where((element) =>
+                  element.roleName == "WMS Journal Movement Counting")
               .isNotEmpty ||
           widget.roles
               .where((element) => element.roleName == "Admin")
@@ -365,32 +342,13 @@ class _HomeScreenState extends State<HomeScreen> {
           snackPosition: SnackPosition.BOTTOM,
           backgroundColor: Colors.red,
           colorText: Colors.white,
-          duration: const Duration(seconds: 5),
-        );
-      }
-    };
-    data['functions'][13] = () {
-      if (widget.roles
-              .where((element) => element.roleName == "WO Journal Counting")
-              .isNotEmpty ||
-          widget.roles
-              .where((element) => element.roleName == "Admin")
-              .isNotEmpty) {
-        Get.to(() => const PhysicalInventoryScreen());
-      } else {
-        Get.snackbar(
-          'Access Denied',
-          'This feature is not available yet.',
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
-          duration: const Duration(seconds: 3),
+          duration: const Duration(seconds: 2),
         );
       }
     };
     data['functions'][14] = () {
       if (widget.roles
-              .where((element) => element.roleName == "WO Journal ProfitLoss")
+              .where((element) => element.roleName == "WMS Profit and Loss")
               .isNotEmpty ||
           widget.roles
               .where((element) => element.roleName == "Admin")
@@ -403,13 +361,13 @@ class _HomeScreenState extends State<HomeScreen> {
           snackPosition: SnackPosition.BOTTOM,
           backgroundColor: Colors.red,
           colorText: Colors.white,
-          duration: const Duration(seconds: 3),
+          duration: const Duration(seconds: 2),
         );
       }
     };
     data['functions'][15] = () {
       if (widget.roles
-              .where((element) => element.roleName == "WO Re-Allocation Picked")
+              .where((element) => element.roleName == "WMS Item Re Allocation")
               .isNotEmpty ||
           widget.roles
               .where((element) => element.roleName == "Admin")
@@ -422,18 +380,9 @@ class _HomeScreenState extends State<HomeScreen> {
           snackPosition: SnackPosition.BOTTOM,
           backgroundColor: Colors.red,
           colorText: Colors.white,
-          duration: const Duration(seconds: 3),
+          duration: const Duration(seconds: 2),
         );
       }
-    };
-    data['functions'][16] = () {
-      Get.to(() => const UnAllocatedItemsScreen1());
-    };
-    data['functions'][17] = () {
-      Get.to(() => const PalletIdInquiryScreen());
-    };
-    data['functions'][18] = () async {
-      Get.offAll(() => const LoginScreen());
     };
 
     Future.delayed(
