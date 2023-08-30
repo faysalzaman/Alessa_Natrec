@@ -156,6 +156,7 @@ class _PhysicalInventoryScreenState extends State<PhysicalInventoryScreen> {
                   ),
                 ),
                 Container(
+                  alignment: Alignment.topCenter,
                   height: MediaQuery.of(context).size.height * 0.4,
                   decoration: BoxDecoration(
                     border: Border.all(
@@ -200,66 +201,66 @@ class _PhysicalInventoryScreenState extends State<PhysicalInventoryScreen> {
                             'ITEM NAME',
                             style: TextStyle(color: Colors.white),
                           )),
-                          DataColumn(
-                              label: Text(
-                            'ITEM GROUP ID',
-                            style: TextStyle(color: Colors.white),
-                            textAlign: TextAlign.center,
-                          )),
-                          DataColumn(
-                              label: Text(
-                            'GROUP NAME',
-                            style: TextStyle(color: Colors.white),
-                            textAlign: TextAlign.center,
-                          )),
+                          // DataColumn(
+                          //     label: Text(
+                          //   'ITEM GROUP ID',
+                          //   style: TextStyle(color: Colors.white),
+                          //   textAlign: TextAlign.center,
+                          // )),
+                          // DataColumn(
+                          //     label: Text(
+                          //   'GROUP NAME',
+                          //   style: TextStyle(color: Colors.white),
+                          //   textAlign: TextAlign.center,
+                          // )),
                           // DataColumn(
                           //     label: Text(
                           //   'INVENTORY BY',
                           //   style: TextStyle(color: Colors.white),
                           //   textAlign: TextAlign.center,
                           // )),
-                          DataColumn(
-                              label: Text(
-                            'TRX DATE TIME',
-                            style: TextStyle(color: Colors.white),
-                            textAlign: TextAlign.center,
-                          )),
-                          DataColumn(
-                              label: Text(
-                            'TRX USER ID ASSIGNED',
-                            style: TextStyle(color: Colors.white),
-                            textAlign: TextAlign.center,
-                          )),
-                          DataColumn(
-                              label: Text(
-                            'TRX USER ID ASSIGNED BY',
-                            style: TextStyle(color: Colors.white),
-                            textAlign: TextAlign.center,
-                          )),
-                          DataColumn(
-                              label: Text(
-                            'QTY SCANNED',
-                            style: TextStyle(color: Colors.white),
-                            textAlign: TextAlign.center,
-                          )),
-                          DataColumn(
-                              label: Text(
-                            'QTY DIFFERENCE',
-                            style: TextStyle(color: Colors.white),
-                            textAlign: TextAlign.center,
-                          )),
-                          DataColumn(
-                              label: Text(
-                            'QTY ON HAND',
-                            style: TextStyle(color: Colors.white),
-                            textAlign: TextAlign.center,
-                          )),
-                          DataColumn(
-                              label: Text(
-                            'JOURNAL ID',
-                            style: TextStyle(color: Colors.white),
-                            textAlign: TextAlign.center,
-                          )),
+                          // DataColumn(
+                          //     label: Text(
+                          //   'TRX DATE TIME',
+                          //   style: TextStyle(color: Colors.white),
+                          //   textAlign: TextAlign.center,
+                          // )),
+                          // DataColumn(
+                          //     label: Text(
+                          //   'TRX USER ID ASSIGNED',
+                          //   style: TextStyle(color: Colors.white),
+                          //   textAlign: TextAlign.center,
+                          // )),
+                          // DataColumn(
+                          //     label: Text(
+                          //   'TRX USER ID ASSIGNED BY',
+                          //   style: TextStyle(color: Colors.white),
+                          //   textAlign: TextAlign.center,
+                          // )),
+                          // DataColumn(
+                          //     label: Text(
+                          //   'QTY SCANNED',
+                          //   style: TextStyle(color: Colors.white),
+                          //   textAlign: TextAlign.center,
+                          // )),
+                          // DataColumn(
+                          //     label: Text(
+                          //   'QTY DIFFERENCE',
+                          //   style: TextStyle(color: Colors.white),
+                          //   textAlign: TextAlign.center,
+                          // )),
+                          // DataColumn(
+                          //     label: Text(
+                          //   'QTY ON HAND',
+                          //   style: TextStyle(color: Colors.white),
+                          //   textAlign: TextAlign.center,
+                          // )),
+                          // DataColumn(
+                          //     label: Text(
+                          //   'JOURNAL ID',
+                          //   style: TextStyle(color: Colors.white),
+                          //   textAlign: TextAlign.center,
+                          // )),
                           // DataColumn(
                           //     label: Text(
                           //   'BIN LOCATION',
@@ -269,29 +270,29 @@ class _PhysicalInventoryScreenState extends State<PhysicalInventoryScreen> {
                         ],
                         rows: BinToBinJournalTableList.map((e) {
                           return DataRow(onSelectChanged: (value) {}, cells: [
-                            DataCell(Text(
+                            DataCell(SelectableText(
                                 (BinToBinJournalTableList.indexOf(e) + 1)
                                     .toString())),
-                            DataCell(Text(e.iTEMID ?? "")),
-                            DataCell(Text(e.iTEMNAME ?? "")),
-                            DataCell(Text(e.iTEMGROUPID ?? "")),
-                            DataCell(Text(e.gROUPNAME ?? "")),
-                            // DataCell(Text(e.iNVENTORYBY ?? "")),
-                            DataCell(Text(e.tRXDATETIME ?? "")),
-                            DataCell(Text(e.tRXUSERIDASSIGNED ?? "")),
-                            DataCell(Text(e.tRXUSERIDASSIGNEDBY ?? "")),
-                            DataCell(Text(e.qTYSCANNED.toString() == "null"
-                                ? "0"
-                                : e.qTYSCANNED.toString())),
-                            DataCell(Text(e.qTYDIFFERENCE.toString() == "null"
-                                ? "0"
-                                : e.qTYDIFFERENCE.toString())),
-                            DataCell(Text(e.qTYONHAND.toString() == "null"
-                                ? "0"
-                                : e.qTYONHAND.toString())),
-                            DataCell(Text(e.jOURNALID.toString() == "null"
-                                ? "0"
-                                : e.jOURNALID.toString())),
+                            DataCell(SelectableText(e.iTEMID ?? "")),
+                            DataCell(SelectableText(e.iTEMNAME ?? "")),
+                            // DataCell(Text(e.iTEMGROUPID ?? "")),
+                            // DataCell(Text(e.gROUPNAME ?? "")),
+                            // // DataCell(Text(e.iNVENTORYBY ?? "")),
+                            // DataCell(Text(e.tRXDATETIME ?? "")),
+                            // DataCell(Text(e.tRXUSERIDASSIGNED ?? "")),
+                            // DataCell(Text(e.tRXUSERIDASSIGNEDBY ?? "")),
+                            // DataCell(Text(e.qTYSCANNED.toString() == "null"
+                            //     ? "0"
+                            //     : e.qTYSCANNED.toString())),
+                            // DataCell(Text(e.qTYDIFFERENCE.toString() == "null"
+                            //     ? "0"
+                            //     : e.qTYDIFFERENCE.toString())),
+                            // DataCell(Text(e.qTYONHAND.toString() == "null"
+                            //     ? "0"
+                            //     : e.qTYONHAND.toString())),
+                            // DataCell(Text(e.jOURNALID.toString() == "null"
+                            //     ? "0"
+                            //     : e.jOURNALID.toString())),
                             // DataCell(Text(e.bINLOCATION ?? "")),
                           ]);
                         }).toList(),

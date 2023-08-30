@@ -1,3 +1,5 @@
+// ignore_for_file: camel_case_types, avoid_print
+
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';

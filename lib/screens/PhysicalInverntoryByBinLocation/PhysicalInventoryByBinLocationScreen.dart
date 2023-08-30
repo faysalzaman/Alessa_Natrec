@@ -303,16 +303,17 @@ class _PhysicalInventoryByBinLocationScreenState
                             style: TextStyle(color: Colors.white),
                             textAlign: TextAlign.center,
                           )),
-                          // DataColumn(
-                          //     label: Text(
-                          //   'ITEM ID',
-                          //   style: TextStyle(color: Colors.white),
-                          // )),
                           DataColumn(
                               label: Text(
                             'ITEM NAME',
                             style: TextStyle(color: Colors.white),
                           )),
+                          DataColumn(
+                              label: Text(
+                            'ITEM ID',
+                            style: TextStyle(color: Colors.white),
+                          )),
+
                           // DataColumn(
                           //     label: Text(
                           //   'ITEM GROUP ID',
@@ -376,10 +377,11 @@ class _PhysicalInventoryByBinLocationScreenState
                         ],
                         rows: tbl1.map((e) {
                           return DataRow(onSelectChanged: (value) {}, cells: [
-                            DataCell(Text((tbl1.indexOf(e) + 1).toString())),
-                            DataCell(Text(e.bINLOCATION ?? "")),
-                            // DataCell(Text(e.iTEMID ?? "")),
-                            DataCell(Text(e.iTEMNAME ?? "")),
+                            DataCell(SelectableText(
+                                (tbl1.indexOf(e) + 1).toString())),
+                            DataCell(SelectableText(e.bINLOCATION ?? "")),
+                            DataCell(SelectableText(e.iTEMNAME ?? "")),
+                            DataCell(SelectableText(e.iTEMID ?? "")),
                             // DataCell(Text(e.iTEMGROUPID ?? "")),
                             // DataCell(Text(e.gROUPNAME ?? "")),
                             // DataCell(Text(e.iNVENTORYBY ?? "")),
@@ -412,8 +414,8 @@ class _PhysicalInventoryByBinLocationScreenState
                       const TextWidget(text: "TOTAL"),
                       const SizedBox(width: 5),
                       Container(
-                        width: MediaQuery.of(context).size.width * 0.4,
-                        height: 50,
+                        width: MediaQuery.of(context).size.width * 0.2,
+                        height: 30,
                         decoration: BoxDecoration(
                           border: Border.all(
                             color: Colors.blue,
@@ -522,17 +524,17 @@ class _PhysicalInventoryByBinLocationScreenState
                                   .getData(_serialController.text.trim())
                                   .then((response) {
                                 var table2 = response.allData![0];
-                                print(table2.itemCode);
+                                print(table2.binLocation);
 
                                 for (var element in tbl2) {
-                                  if (element.iTEMID.toString() !=
-                                      table2.itemCode.toString()) {
+                                  if (element.bINLOCATION.toString().trim() !=
+                                      table2.binLocation.toString().trim()) {
                                     Navigator.of(context).pop();
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       const SnackBar(
                                         backgroundColor: Colors.red,
                                         content: Text(
-                                          "Mapped ITEMID not found in the list",
+                                          "Mapped Bin Location not found in the list",
                                         ),
                                       ),
                                     );
