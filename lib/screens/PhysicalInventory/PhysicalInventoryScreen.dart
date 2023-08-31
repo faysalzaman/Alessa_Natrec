@@ -437,7 +437,7 @@ class _PhysicalInventoryScreenState extends State<PhysicalInventoryScreen> {
 
                                   total2 = tbl2.length.toString();
 
-                                  total = tbl1.length.toString();
+                                  // total = tbl1.length.toString();
                                 });
 
                                 incrementQTYSCANNEDInJournalCountingOnlyCLController

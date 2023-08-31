@@ -561,7 +561,7 @@ class _PhysicalInventoryByBinLocationScreenState
 
                                   total2 = tbl2.length.toString();
 
-                                  total = tbl1.length.toString();
+                                  // total = tbl1.length.toString();
                                 });
                                 incrementQTYSCANNEDInJournalCountingOnlyCLByBinLocationController
                                     .getData(
