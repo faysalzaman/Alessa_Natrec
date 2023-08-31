@@ -449,11 +449,15 @@ class _PhysicalInventoryScreenState extends State<PhysicalInventoryScreen> {
                                     .then((value) {
                                   insertIntoWmsJournalCountingOnlyCLDetsController
                                       .getData(
-                                          table2.classification.toString(),
-                                          table2.binLocation.toString(),
-                                          value.toString(),
-                                          table2.itemSerialNo.toString(),
-                                          tbl2)
+                                    table2.classification.toString(),
+                                    table2.binLocation.toString(),
+                                    value.toString(),
+                                    table2.itemSerialNo.toString(),
+                                    tbl1[0],
+                                    table2.itemCode.toString(),
+                                    table2.itemDesc.toString(),
+                                    "physicalInventoryBinLocation",
+                                  )
                                       .then((value) {
                                     Navigator.of(context).pop();
                                     ScaffoldMessenger.of(context).showSnackBar(
