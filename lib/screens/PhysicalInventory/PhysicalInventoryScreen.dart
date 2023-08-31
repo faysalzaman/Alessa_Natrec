@@ -409,7 +409,7 @@ class _PhysicalInventoryScreenState extends State<PhysicalInventoryScreen> {
                                 for (var element in tbl1) {
                                   if (element.iTEMID.toString().trim() !=
                                           table2.itemCode.toString().trim() ||
-                                      tbl2.isNotEmpty) {
+                                      tbl1.isEmpty) {
                                     Navigator.of(context).pop();
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       const SnackBar(

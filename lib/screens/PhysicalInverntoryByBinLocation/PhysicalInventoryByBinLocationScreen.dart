@@ -532,7 +532,7 @@ class _PhysicalInventoryByBinLocationScreenState
                                           table2.binLocation
                                               .toString()
                                               .trim() ||
-                                      tbl2.isNotEmpty) {
+                                      tbl1.isEmpty) {
                                     Navigator.of(context).pop();
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       const SnackBar(
@@ -547,7 +547,6 @@ class _PhysicalInventoryByBinLocationScreenState
                                 }
 
                                 setState(() {
-                                  // add table2 to tbl2
                                   tbl2.add(response);
 
                                   // // remove the selected pallet code row from the GetShipmentPalletizingList
