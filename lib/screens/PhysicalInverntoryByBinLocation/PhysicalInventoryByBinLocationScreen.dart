@@ -528,7 +528,10 @@ class _PhysicalInventoryByBinLocationScreenState
 
                                 for (var element in tbl2) {
                                   if (element.bINLOCATION.toString().trim() !=
-                                      table2.binLocation.toString().trim()) {
+                                          table2.binLocation
+                                              .toString()
+                                              .trim() ||
+                                      tbl2.isNotEmpty) {
                                     Navigator.of(context).pop();
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       const SnackBar(
@@ -542,12 +545,14 @@ class _PhysicalInventoryByBinLocationScreenState
                                   }
                                 }
 
+                                print('1');
+
                                 setState(() {
                                   tbl2.add(
                                     tbl1.firstWhere(
                                       (element) =>
-                                          element.iTEMID ==
-                                          table2.itemCode.toString(),
+                                          element.bINLOCATION ==
+                                          table2.binLocation.toString(),
                                     ),
                                   );
 
@@ -555,8 +560,8 @@ class _PhysicalInventoryByBinLocationScreenState
                                   tbl1.removeAt(
                                     tbl1.indexWhere(
                                       (element) =>
-                                          element.iTEMID ==
-                                          table2.itemCode.toString(),
+                                          element.bINLOCATION ==
+                                          table2.binLocation.toString(),
                                     ),
                                   );
 
@@ -564,11 +569,12 @@ class _PhysicalInventoryByBinLocationScreenState
 
                                   total = tbl1.length.toString();
                                 });
+                                print('2');
                                 incrementQTYSCANNEDInJournalCountingOnlyCLByBinLocationController
                                     .getData(
-                                  tbl2.last.tRXUSERIDASSIGNED.toString(),
-                                  tbl2.last.tRXDATETIME.toString(),
-                                  tbl2.last.bINLOCATION.toString(),
+                                  tbl2[0].tRXUSERIDASSIGNED.toString(),
+                                  tbl2[0].tRXDATETIME.toString(),
+                                  tbl2[0].bINLOCATION.toString(),
                                 )
                                     .then((value) {
                                   insertIntoWmsJournalCountingOnlyCLDetsController

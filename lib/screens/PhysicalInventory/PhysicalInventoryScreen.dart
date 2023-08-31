@@ -413,8 +413,9 @@ class _PhysicalInventoryScreenState extends State<PhysicalInventoryScreen> {
                                 var table2 = response.allData![0];
 
                                 for (var element in BinToBinJournalTableList2) {
-                                  if (element.iTEMID.toString() !=
-                                      table2.itemCode.toString()) {
+                                  if (element.iTEMID.toString().trim() !=
+                                          table2.itemCode.toString().trim() ||
+                                      BinToBinJournalTableList2.isNotEmpty) {
                                     Navigator.of(context).pop();
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       const SnackBar(
