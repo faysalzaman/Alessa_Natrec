@@ -1,5 +1,6 @@
 // ignore_for_file: avoid_print, non_constant_identifier_names
 
+import 'package:alessa_v2/models/validateItemSerialNumberForJournalCountingOnlyCLDetsModel.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../controllers/PhysicalInventory/getWmsJournalCountingOnlyCLByAssignedToUserIdController.dart';
@@ -29,14 +30,9 @@ class _PhysicalInventoryScreenState extends State<PhysicalInventoryScreen> {
   String total = "0";
   String total2 = "0";
 
-  List<getWmsJournalCountingOnlyCLByAssignedToUserIdModel>
-      BinToBinJournalTableList = [];
+  List<getWmsJournalCountingOnlyCLByAssignedToUserIdModel> tbl1 = [];
 
-  List<getWmsJournalCountingOnlyCLByAssignedToUserIdModel>
-      BinToBinJournalTableList2 = [];
-
-  List<getWmsJournalCountingOnlyCLByAssignedToUserIdModel>
-      BinToBinJournalTableList3 = [];
+  List<validateItemSerialNumberForJournalCountingOnlyCLDetsModel> tbl2 = [];
 
   List<bool> isMarked = [];
 
@@ -69,11 +65,10 @@ class _PhysicalInventoryScreenState extends State<PhysicalInventoryScreen> {
           .getData()
           .then((value) {
         setState(() {
-          BinToBinJournalTableList = value;
+          tbl1 = value;
 
-          isMarked = List<bool>.generate(
-              BinToBinJournalTableList.length, (index) => false);
-          total = BinToBinJournalTableList.length.toString();
+          isMarked = List<bool>.generate(tbl1.length, (index) => false);
+          total = tbl1.length.toString();
         });
         Navigator.of(context).pop();
       }).onError((error, stackTrace) {
@@ -268,11 +263,10 @@ class _PhysicalInventoryScreenState extends State<PhysicalInventoryScreen> {
                           //   textAlign: TextAlign.center,
                           // )),
                         ],
-                        rows: BinToBinJournalTableList.map((e) {
+                        rows: tbl1.map((e) {
                           return DataRow(onSelectChanged: (value) {}, cells: [
                             DataCell(SelectableText(
-                                (BinToBinJournalTableList.indexOf(e) + 1)
-                                    .toString())),
+                                (tbl1.indexOf(e) + 1).toString())),
                             DataCell(SelectableText(e.iTEMID ?? "")),
                             DataCell(SelectableText(e.iTEMNAME ?? "")),
                             // DataCell(Text(e.iTEMGROUPID ?? "")),
@@ -412,10 +406,10 @@ class _PhysicalInventoryScreenState extends State<PhysicalInventoryScreen> {
                                   .then((response) {
                                 var table2 = response.allData![0];
 
-                                for (var element in BinToBinJournalTableList2) {
+                                for (var element in tbl1) {
                                   if (element.iTEMID.toString().trim() !=
                                           table2.itemCode.toString().trim() ||
-                                      BinToBinJournalTableList2.isNotEmpty) {
+                                      tbl2.isNotEmpty) {
                                     Navigator.of(context).pop();
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       const SnackBar(
@@ -430,39 +424,27 @@ class _PhysicalInventoryScreenState extends State<PhysicalInventoryScreen> {
                                 }
 
                                 setState(() {
-                                  BinToBinJournalTableList2.add(
-                                    BinToBinJournalTableList.firstWhere(
-                                      (element) =>
-                                          element.iTEMID ==
-                                          table2.itemCode.toString(),
-                                    ),
-                                  );
+                                  tbl2.add(response);
 
                                   // remove the selected pallet code row from the GetShipmentPalletizingList
-                                  BinToBinJournalTableList.removeAt(
-                                    BinToBinJournalTableList.indexWhere(
-                                      (element) =>
-                                          element.iTEMID ==
-                                          table2.itemCode.toString(),
-                                    ),
-                                  );
+                                  // tbl1.removeAt(
+                                  //   tbl1.indexWhere(
+                                  //     (element) =>
+                                  //         element.iTEMID ==
+                                  //         table2.itemCode.toString(),
+                                  //   ),
+                                  // );
 
-                                  total2 = BinToBinJournalTableList2.length
-                                      .toString();
+                                  total2 = tbl2.length.toString();
 
-                                  total = BinToBinJournalTableList.length
-                                      .toString();
+                                  total = tbl1.length.toString();
                                 });
 
                                 incrementQTYSCANNEDInJournalCountingOnlyCLController
                                     .getData(
-                                  BinToBinJournalTableList2
-                                      .last.tRXUSERIDASSIGNED
-                                      .toString(),
-                                  BinToBinJournalTableList2.last.tRXDATETIME
-                                      .toString(),
-                                  BinToBinJournalTableList2.last.iTEMID
-                                      .toString(),
+                                  tbl1.last.tRXUSERIDASSIGNED.toString(),
+                                  tbl1.last.tRXDATETIME.toString(),
+                                  tbl1.last.iTEMID.toString(),
                                 )
                                     .then((value) {
                                   insertIntoWmsJournalCountingOnlyCLDetsController
@@ -471,7 +453,7 @@ class _PhysicalInventoryScreenState extends State<PhysicalInventoryScreen> {
                                           table2.binLocation.toString(),
                                           value.toString(),
                                           table2.itemSerialNo.toString(),
-                                          BinToBinJournalTableList2)
+                                          tbl2)
                                       .then((value) {
                                     Navigator.of(context).pop();
                                     ScaffoldMessenger.of(context).showSnackBar(
@@ -576,97 +558,55 @@ class _PhysicalInventoryScreenState extends State<PhysicalInventoryScreen> {
                           )),
                           DataColumn(
                               label: Text(
-                            'ITEM GROUP ID',
+                            'GTIN',
                             style: TextStyle(color: Colors.white),
                             textAlign: TextAlign.center,
                           )),
                           DataColumn(
                               label: Text(
-                            'GROUP NAME',
-                            style: TextStyle(color: Colors.white),
-                            textAlign: TextAlign.center,
-                          )),
-                          // DataColumn(
-                          //     label: Text(
-                          //   'INVENTORY BY',
-                          //   style: TextStyle(color: Colors.white),
-                          //   textAlign: TextAlign.center,
-                          // )),
-                          DataColumn(
-                              label: Text(
-                            'TRX DATE TIME',
+                            'TRANS',
                             style: TextStyle(color: Colors.white),
                             textAlign: TextAlign.center,
                           )),
                           DataColumn(
                               label: Text(
-                            'TRX USER ID ASSIGNED',
+                            'CLASSIFICATION',
                             style: TextStyle(color: Colors.white),
                             textAlign: TextAlign.center,
                           )),
                           DataColumn(
                               label: Text(
-                            'TRX USER ID ASSIGNED BY',
+                            'ITEM SERIAL NO.',
                             style: TextStyle(color: Colors.white),
                             textAlign: TextAlign.center,
                           )),
                           DataColumn(
                               label: Text(
-                            'QTY SCANNED',
+                            'MAIN LOCATION',
                             style: TextStyle(color: Colors.white),
                             textAlign: TextAlign.center,
                           )),
                           DataColumn(
                               label: Text(
-                            'QTY DIFFERENCE',
+                            'BIN LOCATION',
                             style: TextStyle(color: Colors.white),
                             textAlign: TextAlign.center,
                           )),
-                          DataColumn(
-                              label: Text(
-                            'QTY ON HAND',
-                            style: TextStyle(color: Colors.white),
-                            textAlign: TextAlign.center,
-                          )),
-                          DataColumn(
-                              label: Text(
-                            'JOURNAL ID',
-                            style: TextStyle(color: Colors.white),
-                            textAlign: TextAlign.center,
-                          )),
-                          // DataColumn(
-                          //     label: Text(
-                          //   'BIN LOCATION',
-                          //   style: TextStyle(color: Colors.white),
-                          //   textAlign: TextAlign.center,
-                          // )),
                         ],
-                        rows: BinToBinJournalTableList2.map((e) {
+                        rows: tbl2.map((e) {
                           return DataRow(onSelectChanged: (value) {}, cells: [
+                            DataCell(Text((tbl2.indexOf(e) + 1).toString())),
+                            DataCell(Text(e.allData![0].itemCode ?? "")),
+                            DataCell(Text(e.allData![0].itemDesc ?? "")),
+                            DataCell(Text(e.allData![0].gTIN ?? "")),
                             DataCell(Text(
-                                (BinToBinJournalTableList2.indexOf(e) + 1)
-                                    .toString())),
-                            DataCell(Text(e.iTEMID ?? "")),
-                            DataCell(Text(e.iTEMNAME ?? "")),
-                            DataCell(Text(e.iTEMGROUPID ?? "")),
-                            DataCell(Text(e.gROUPNAME ?? "")),
-                            // DataCell(Text(e.iNVENTORYBY ?? "")),
-                            DataCell(Text(e.tRXDATETIME ?? "")),
-                            DataCell(Text(e.tRXUSERIDASSIGNED ?? "")),
-                            DataCell(Text(e.tRXUSERIDASSIGNEDBY ?? "")),
-                            DataCell(Text(e.qTYSCANNED.toString() == "null"
-                                ? ""
-                                : e.qTYSCANNED.toString())),
-                            DataCell(Text(e.qTYDIFFERENCE.toString() == "null"
-                                ? ""
-                                : e.qTYDIFFERENCE.toString())),
-                            DataCell(Text(e.qTYONHAND.toString() == "null"
-                                ? ""
-                                : e.qTYONHAND.toString())),
-                            DataCell(Text(e.jOURNALID.toString() == "null"
-                                ? ""
-                                : e.jOURNALID.toString())),
-                            // DataCell(Text(e.bINLOCATION ?? "")),
+                                e.allData![0].trans.toString() == "null"
+                                    ? ""
+                                    : e.allData![0].trans.toString())),
+                            DataCell(Text(e.allData![0].classification ?? "")),
+                            DataCell(Text(e.allData![0].itemSerialNo ?? "")),
+                            DataCell(Text(e.allData![0].mainLocation ?? "")),
+                            DataCell(Text(e.allData![0].binLocation ?? "")),
                           ]);
                         }).toList(),
                       ),

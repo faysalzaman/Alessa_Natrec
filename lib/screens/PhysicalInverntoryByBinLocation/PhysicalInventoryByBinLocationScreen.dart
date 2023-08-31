@@ -6,6 +6,7 @@ import 'package:alessa_v2/controllers/PhysicalInventoryByBinLocation/getBinLocat
 import 'package:alessa_v2/controllers/PhysicalInventoryByBinLocation/getWmsJournalCountingOnlyCLByBinLocationController.dart';
 import 'package:alessa_v2/controllers/PhysicalInventoryByBinLocation/incrementQTYSCANNEDInJournalCountingOnlyCLByBinLocationController.dart';
 import 'package:alessa_v2/models/getWmsJournalCountingOnlyCLByAssignedToUserIdModel.dart';
+import 'package:alessa_v2/models/validateItemSerialNumberForJournalCountingOnlyCLDetsModel.dart';
 import 'package:alessa_v2/widgets/AppBarWidget.dart';
 import 'package:alessa_v2/widgets/TextFormField.dart';
 import 'package:alessa_v2/widgets/TextWidget.dart';
@@ -31,7 +32,7 @@ class _PhysicalInventoryByBinLocationScreenState
   String total2 = "0";
 
   List<getWmsJournalCountingOnlyCLByAssignedToUserIdModel> tbl1 = [];
-  List<getWmsJournalCountingOnlyCLByAssignedToUserIdModel> tbl2 = [];
+  List<validateItemSerialNumberForJournalCountingOnlyCLDetsModel> tbl2 = [];
 
   List<bool> isMarked = [];
 
@@ -526,7 +527,7 @@ class _PhysicalInventoryByBinLocationScreenState
                                 var table2 = response.allData![0];
                                 print(table2.binLocation);
 
-                                for (var element in tbl2) {
+                                for (var element in tbl1) {
                                   if (element.bINLOCATION.toString().trim() !=
                                           table2.binLocation
                                               .toString()
@@ -545,36 +546,28 @@ class _PhysicalInventoryByBinLocationScreenState
                                   }
                                 }
 
-                                print('1');
-
                                 setState(() {
-                                  tbl2.add(
-                                    tbl1.firstWhere(
-                                      (element) =>
-                                          element.bINLOCATION ==
-                                          table2.binLocation.toString(),
-                                    ),
-                                  );
+                                  // add table2 to tbl2
+                                  tbl2.add(response);
 
-                                  // remove the selected pallet code row from the GetShipmentPalletizingList
-                                  tbl1.removeAt(
-                                    tbl1.indexWhere(
-                                      (element) =>
-                                          element.bINLOCATION ==
-                                          table2.binLocation.toString(),
-                                    ),
-                                  );
+                                  // // remove the selected pallet code row from the GetShipmentPalletizingList
+                                  // tbl1.removeAt(
+                                  //   tbl1.indexWhere(
+                                  //     (element) =>
+                                  //         element.bINLOCATION ==
+                                  //         table2.binLocation.toString(),
+                                  //   ),
+                                  // );
 
                                   total2 = tbl2.length.toString();
 
                                   total = tbl1.length.toString();
                                 });
-                                print('2');
                                 incrementQTYSCANNEDInJournalCountingOnlyCLByBinLocationController
                                     .getData(
-                                  tbl2[0].tRXUSERIDASSIGNED.toString(),
-                                  tbl2[0].tRXDATETIME.toString(),
-                                  tbl2[0].bINLOCATION.toString(),
+                                  tbl1[0].tRXUSERIDASSIGNED.toString(),
+                                  tbl1[0].tRXDATETIME.toString(),
+                                  tbl1[0].bINLOCATION.toString(),
                                 )
                                     .then((value) {
                                   insertIntoWmsJournalCountingOnlyCLDetsController
@@ -687,61 +680,31 @@ class _PhysicalInventoryByBinLocationScreenState
                           )),
                           DataColumn(
                               label: Text(
-                            'ITEM GROUP ID',
+                            'GTIN',
                             style: TextStyle(color: Colors.white),
                             textAlign: TextAlign.center,
                           )),
                           DataColumn(
                               label: Text(
-                            'GROUP NAME',
+                            'TRANS',
                             style: TextStyle(color: Colors.white),
                             textAlign: TextAlign.center,
                           )),
                           DataColumn(
                               label: Text(
-                            'INVENTORY BY',
+                            'CLASSIFICATION',
                             style: TextStyle(color: Colors.white),
                             textAlign: TextAlign.center,
                           )),
                           DataColumn(
                               label: Text(
-                            'TRX DATE TIME',
+                            'ITEM SERIAL NO.',
                             style: TextStyle(color: Colors.white),
                             textAlign: TextAlign.center,
                           )),
                           DataColumn(
                               label: Text(
-                            'TRX USER ID ASSIGNED',
-                            style: TextStyle(color: Colors.white),
-                            textAlign: TextAlign.center,
-                          )),
-                          DataColumn(
-                              label: Text(
-                            'TRX USER ID ASSIGNED BY',
-                            style: TextStyle(color: Colors.white),
-                            textAlign: TextAlign.center,
-                          )),
-                          DataColumn(
-                              label: Text(
-                            'QTY SCANNED',
-                            style: TextStyle(color: Colors.white),
-                            textAlign: TextAlign.center,
-                          )),
-                          DataColumn(
-                              label: Text(
-                            'QTY DIFFERENCE',
-                            style: TextStyle(color: Colors.white),
-                            textAlign: TextAlign.center,
-                          )),
-                          DataColumn(
-                              label: Text(
-                            'QTY ON HAND',
-                            style: TextStyle(color: Colors.white),
-                            textAlign: TextAlign.center,
-                          )),
-                          DataColumn(
-                              label: Text(
-                            'JOURNAL ID',
+                            'MAIN LOCATION',
                             style: TextStyle(color: Colors.white),
                             textAlign: TextAlign.center,
                           )),
@@ -755,19 +718,17 @@ class _PhysicalInventoryByBinLocationScreenState
                         rows: tbl2.map((e) {
                           return DataRow(onSelectChanged: (value) {}, cells: [
                             DataCell(Text((tbl2.indexOf(e) + 1).toString())),
-                            DataCell(Text(e.iTEMID ?? "")),
-                            DataCell(Text(e.iTEMNAME ?? "")),
-                            DataCell(Text(e.iTEMGROUPID ?? "")),
-                            DataCell(Text(e.gROUPNAME ?? "")),
-                            DataCell(Text(e.iNVENTORYBY ?? "")),
-                            DataCell(Text(e.tRXDATETIME ?? "")),
-                            DataCell(Text(e.tRXUSERIDASSIGNED ?? "")),
-                            DataCell(Text(e.tRXUSERIDASSIGNEDBY ?? "")),
-                            DataCell(Text(e.qTYSCANNED.toString())),
-                            DataCell(Text(e.qTYDIFFERENCE.toString())),
-                            DataCell(Text(e.qTYONHAND.toString())),
-                            DataCell(Text(e.jOURNALID.toString())),
-                            DataCell(Text(e.bINLOCATION ?? "")),
+                            DataCell(Text(e.allData![0].itemCode ?? "")),
+                            DataCell(Text(e.allData![0].itemDesc ?? "")),
+                            DataCell(Text(e.allData![0].gTIN ?? "")),
+                            DataCell(Text(
+                                e.allData![0].trans.toString() == "null"
+                                    ? ""
+                                    : e.allData![0].trans.toString())),
+                            DataCell(Text(e.allData![0].classification ?? "")),
+                            DataCell(Text(e.allData![0].itemSerialNo ?? "")),
+                            DataCell(Text(e.allData![0].mainLocation ?? "")),
+                            DataCell(Text(e.allData![0].binLocation ?? "")),
                           ]);
                         }).toList(),
                       ),

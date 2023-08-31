@@ -1,10 +1,10 @@
 // ignore_for_file: camel_case_types, depend_on_referenced_packages, non_constant_identifier_names, avoid_print
 
+import 'package:alessa_v2/models/validateItemSerialNumberForJournalCountingOnlyCLDetsModel.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
-import '../../models/getWmsJournalCountingOnlyCLByAssignedToUserIdModel.dart';
 import '../../utils/Constants.dart';
 
 class insertIntoWmsJournalCountingOnlyCLDetsController {
@@ -13,7 +13,7 @@ class insertIntoWmsJournalCountingOnlyCLDetsController {
     String BINLOCATION,
     String QTYSCANNED,
     String ITEMSERIALNO,
-    List<getWmsJournalCountingOnlyCLByAssignedToUserIdModel> ITEM,
+    List<validateItemSerialNumberForJournalCountingOnlyCLDetsModel> ITEM,
   ) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String token = prefs.getString('token').toString();
