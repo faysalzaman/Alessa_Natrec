@@ -59,51 +59,6 @@ class _SaveScreenState extends State<SaveScreen> {
   FocusNode firstFocusNode = FocusNode();
   FocusNode secondFocusNode = FocusNode();
 
-  void method() {
-    Constants.showLoadingDialog(context);
-    FocusScope.of(context).unfocus();
-
-    InsertShipmentReceivedDataController.insertShipmentData(
-      widget.shipmentId,
-      widget.containerId,
-      "",
-      widget.itemName,
-      widget.itemId,
-      widget.purchId,
-      0,
-      _serialNoController.text.trim(),
-      dropdownValue,
-      DateTime.now().toString(),
-      widget.gtin,
-      widget.rZone,
-      DateTime.now().toString(),
-      "",
-      "",
-      _remarksController.text,
-      int.parse(widget.qty.toString()),
-      widget.length,
-      widget.width,
-      widget.height,
-      widget.weight,
-    ).then((value) {
-      setState(() {
-        serialNoList.add(_serialNoController.text);
-        configList.add(dropdownValue);
-        remarksList.add(_remarksController.text);
-
-        _serialNoController.clear();
-      });
-      Navigator.pop(context);
-    }).onError((error, stackTrace) {
-      Navigator.pop(context);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Serial Number already exists."),
-        ),
-      );
-    });
-  }
-
   @override
   void initState() {
     super.initState();
@@ -397,7 +352,6 @@ class _SaveScreenState extends State<SaveScreen> {
 
                         RCQTY = RCQTY + 1;
 
-                        _serialNoController.clear();
                         // focus back to serial no field
                       });
                       UpdateStockMasterDataController.insertShipmentData(
@@ -417,7 +371,7 @@ class _SaveScreenState extends State<SaveScreen> {
                           DateTime.now().toString(),
                           "",
                           widget.gtin,
-                          "",
+                          _remarksController.text.trim(),
                           "",
                           widget.shipmentId,
                           widget.purchId,
@@ -430,26 +384,69 @@ class _SaveScreenState extends State<SaveScreen> {
                         )
                             .then((value) {
                           Navigator.pop(context);
-                          FocusScope.of(context).requestFocus(secondFocusNode);
-                        }).onError((error, stackTrace) {
                           _serialNoController.clear();
                           FocusScope.of(context).requestFocus(secondFocusNode);
+                        }).onError((error, stackTrace) {
+                          setState(() {
+                            _serialNoController.clear();
+                            serialNoList.clear();
+                            configList.clear();
+                            remarksList.clear();
+                          });
                           Navigator.pop(context);
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text("Serial Number already exists!"),
+                            SnackBar(
+                              content: Text(error
+                                  .toString()
+                                  .replaceAll("Exception:", "")),
                             ),
                           );
                         });
                       }).onError((error, stackTrace) {
-                        _serialNoController.clear();
-                        FocusScope.of(context).requestFocus(secondFocusNode);
+                        setState(() {
+                          _serialNoController.clear();
+                          serialNoList.clear();
+                          configList.clear();
+                          remarksList.clear();
+                        });
                         Navigator.pop(context);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                                error.toString().replaceAll("Exception:", "")),
+                          ),
+                        );
                       });
-                    }).onError((error, stackTrace) {
-                      _serialNoController.clear();
-                      FocusScope.of(context).requestFocus(secondFocusNode);
+                    }).onError(
+                      (error, stackTrace) {
+                        setState(() {
+                          _serialNoController.clear();
+                          serialNoList.clear();
+                          configList.clear();
+                          remarksList.clear();
+                        });
+                        Navigator.pop(context);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                                error.toString().replaceAll("Exception:", "")),
+                          ),
+                        );
+                      },
+                    ).onError((error, stackTrace) {
+                      setState(() {
+                        _serialNoController.clear();
+                        serialNoList.clear();
+                        configList.clear();
+                        remarksList.clear();
+                      });
                       Navigator.pop(context);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                              error.toString().replaceAll("Exception:", "")),
+                        ),
+                      );
                     });
                   },
                 ),
