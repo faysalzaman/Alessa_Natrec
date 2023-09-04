@@ -1,4 +1,4 @@
-// ignore_for_file: non_constant_identifier_names
+// ignore_for_file: non_constant_identifier_names, avoid_print
 
 import 'dart:convert';
 
@@ -30,7 +30,7 @@ class UpdateStockMasterDataController {
     };
 
     var body = {
-      "ITEMID": "$ITEMID",
+      "ITEMID": ITEMID,
       "Length": Length,
       "Width": Width,
       "Height": Height,
@@ -48,7 +48,9 @@ class UpdateStockMasterDataController {
         print("Status Code: ${response.statusCode}");
       } else {
         print("Status Code: ${response.statusCode}");
-        throw Exception('Failed to load Data');
+        var data = json.decode(response.body);
+        var msg = data['message'];
+        throw Exception(msg);
       }
     } catch (e) {
       print(e);

@@ -63,11 +63,16 @@ class insertManyIntoMappedBarcodeNewController {
       "weight": weight,
     };
 
-    print("Body: ${jsonEncode([body])}");
+    print("Body: ${jsonEncode({
+          "records": [body]
+        })}");
 
     try {
       var response = await http.post(uri,
-          headers: headers, body: jsonEncode({"records": body}));
+          headers: headers,
+          body: jsonEncode({
+            "records": [body]
+          }));
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         print("Status Code: ${response.statusCode}");

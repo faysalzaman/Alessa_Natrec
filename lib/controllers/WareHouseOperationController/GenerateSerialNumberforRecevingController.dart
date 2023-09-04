@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -40,7 +42,9 @@ class GenerateSerialNumberforRecevingController {
         return serialNo;
       } else {
         print("Status Code: ${response.statusCode}");
-        throw Exception();
+        var data = json.decode(response.body);
+        var msg = data['message'];
+        throw Exception(msg);
       }
     } catch (e) {
       print(e);

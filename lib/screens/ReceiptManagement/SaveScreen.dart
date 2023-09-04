@@ -71,7 +71,7 @@ class _SaveScreenState extends State<SaveScreen> {
       widget.itemId,
       widget.purchId,
       0,
-      _serialNoController.text,
+      _serialNoController.text.trim(),
       dropdownValue,
       DateTime.now().toString(),
       widget.gtin,
@@ -464,9 +464,21 @@ class _SaveScreenState extends State<SaveScreen> {
                   width: MediaQuery.of(context).size.width * 0.9,
                   height: 50,
                   onPressed: () {
+                    if (RCQTY >= widget.qty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content:
+                              Text("Sorry! The Remaining Quantity is Zero."),
+                          backgroundColor: Colors.red,
+                          duration: Duration(seconds: 2),
+                        ),
+                      );
+                      return;
+                    }
+
                     GenerateSerialNumberforRecevingController.generateSerialNo(
-                            widget.itemId)
-                        .then(
+                      widget.itemId,
+                    ).then(
                       (value) {
                         Constants.showLoadingDialog(context);
                         FocusScope.of(context).unfocus();
@@ -501,23 +513,23 @@ class _SaveScreenState extends State<SaveScreen> {
                             RCQTY = RCQTY + 1;
                           });
                           UpdateStockMasterDataController.insertShipmentData(
-                                  widget.itemId,
-                                  widget.length,
-                                  widget.width,
-                                  widget.height,
-                                  widget.weight)
-                              .then((value) {
+                            widget.itemId,
+                            widget.length,
+                            widget.width,
+                            widget.height,
+                            widget.weight,
+                          ).then((vl) {
                             insertManyIntoMappedBarcodeNewController
                                 .getData(
                               widget.itemId,
                               widget.itemName,
                               "0",
                               "",
-                              _serialNoController.text.trim(),
+                              value,
                               DateTime.now().toString(),
                               "",
                               widget.gtin,
-                              "",
+                              _remarksController.text.trim(),
                               "",
                               widget.shipmentId,
                               widget.purchId,
@@ -531,37 +543,69 @@ class _SaveScreenState extends State<SaveScreen> {
                                 .then((value) {
                               Navigator.pop(context);
                             }).onError((error, stackTrace) {
-                              Navigator.pop(context);
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text("Serial No. not generated!"),
-                                ),
-                              );
                               setState(() {
                                 _serialNoController.clear();
+                                serialNoList.clear();
+                                configList.clear();
+                                remarksList.clear();
                               });
+                              Navigator.pop(context);
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(error
+                                      .toString()
+                                      .replaceAll("Exception:", "")),
+                                ),
+                              );
                             });
                           }).onError((error, stackTrace) {
-                            Navigator.pop(context);
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text("Serial No. not generated!"),
-                              ),
-                            );
                             setState(() {
                               _serialNoController.clear();
+                              serialNoList.clear();
+                              configList.clear();
+                              remarksList.clear();
                             });
+                            Navigator.pop(context);
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(error
+                                    .toString()
+                                    .replaceAll("Exception:", "")),
+                              ),
+                            );
                           });
-                        }).onError((error, stackTrace) {
-                          Navigator.pop(context);
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text("Serial No. not generated!"),
-                            ),
-                          );
+                        }).onError(
+                          (error, stackTrace) {
+                            setState(() {
+                              _serialNoController.clear();
+                              serialNoList.clear();
+                              configList.clear();
+                              remarksList.clear();
+                            });
+                            Navigator.pop(context);
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(error
+                                    .toString()
+                                    .replaceAll("Exception:", "")),
+                              ),
+                            );
+                          },
+                        ).onError((error, stackTrace) {
                           setState(() {
                             _serialNoController.clear();
+                            serialNoList.clear();
+                            configList.clear();
+                            remarksList.clear();
                           });
+                          Navigator.pop(context);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(error
+                                  .toString()
+                                  .replaceAll("Exception:", "")),
+                            ),
+                          );
                         });
                       },
                     );

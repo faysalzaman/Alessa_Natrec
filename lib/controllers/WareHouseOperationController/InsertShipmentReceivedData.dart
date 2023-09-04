@@ -1,3 +1,7 @@
+// ignore_for_file: avoid_print
+
+import 'dart:convert';
+
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -36,8 +40,8 @@ class InsertShipmentReceivedDataController {
     final uri = Uri.parse(url);
 
     final headers = <String, String>{
-      "Authorization": "$token",
-      "Host": "${Constants.host}",
+      "Authorization": token,
+      "Host": Constants.host,
       "Accept": "application/json",
     };
 
@@ -48,7 +52,9 @@ class InsertShipmentReceivedDataController {
         print("Status Code: ${response.statusCode}");
       } else {
         print("Status Code: ${response.statusCode}");
-        throw Exception('Failed to load Data');
+        var data = json.decode(response.body);
+        var msg = data['message'];
+        throw Exception(msg);
       }
     } catch (e) {
       print(e);

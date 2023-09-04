@@ -31,7 +31,9 @@ class GetItemNameByItemIdController {
             data.map((e) => BinToBinInternalModel.fromJson(e)).toList();
         return allData;
       } else {
-        throw Exception("No Data Found");
+        var data = json.decode(response.body);
+        var msg = data['message'];
+        throw Exception(msg);
       }
     } catch (e) {
       print(e);

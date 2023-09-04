@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
@@ -34,7 +36,9 @@ class GetAllTableZoneController {
         return shipmentData;
       } else {
         print("Status Code: ${response.statusCode}");
-        throw Exception('Failed to load Data');
+        var data = json.decode(response.body);
+        var msg = data['message'];
+        throw Exception(msg);
       }
     } catch (e) {
       print(e);
