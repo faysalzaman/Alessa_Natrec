@@ -7,16 +7,13 @@ import 'dart:convert';
 
 import '../../utils/Constants.dart';
 
-class insertIntoWmsJournalCountingOnlyCLController {
-  static Future<void> postData(
-    List<GetmapBarcodeDataByBinLocationModel> mapData,
-    String TRXUSERIDASSIGNED,
-    String INVENTORYBY,
-  ) async {
+class GetmapBarcodeDataByMultipleBinLocations {
+  static Future<List<GetmapBarcodeDataByBinLocationModel>> postData(
+      List<String> list) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String token = prefs.getString('token').toString();
 
-    String url = "${Constants.baseUrl}insertIntoWmsJournalCountingOnlyCL";
+    String url = "${Constants.baseUrl}getmapBarcodeDataByMultipleBinLocations";
     print("url: $url");
 
     final uri = Uri.parse(url);
@@ -28,27 +25,19 @@ class insertIntoWmsJournalCountingOnlyCLController {
       "Content-Type": "application/json"
     };
 
-    final data = mapData.map(
-      (e) {
-        return {
-          "TRXUSERIDASSIGNED": TRXUSERIDASSIGNED,
-          "INVENTORYBY": INVENTORYBY,
-          "BINLOCATION": e.binLocation,
-          "ITEMID": e.itemCode,
-          "ITEMNAME": e.itemDesc,
-          "CLASSFICATION": e.classification
-        };
-      },
-    );
-
-    print(jsonEncode([...data]));
-
     try {
-      var response =
-          await http.post(uri, headers: headers, body: jsonEncode([...data]));
+      var response = await http.post(uri,
+          headers: headers,
+          body: jsonEncode({
+            "binLocations": [...list]
+          }));
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        print("Status Code: ${response.statusCode}");
+        var data = json.decode(response.body) as List;
+        List<GetmapBarcodeDataByBinLocationModel> allData = data
+            .map((e) => GetmapBarcodeDataByBinLocationModel.fromJson(e))
+            .toList();
+        return allData;
       } else {
         print("Status Code: ${response.statusCode}");
 

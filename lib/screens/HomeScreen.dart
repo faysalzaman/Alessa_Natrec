@@ -4,6 +4,7 @@ import 'package:alessa_v2/models/GetRolesAssignedToUserModel.dart';
 import 'package:alessa_v2/screens/BarcodeMapping/BarcodeMappingScreen.dart';
 import 'package:alessa_v2/screens/PalletIdInquiry/PalletIdInquiryScreen.dart';
 import 'package:alessa_v2/screens/UnAllocatedItem/UnAllocatedItemsScreen1.dart';
+import 'package:alessa_v2/screens/WMSInventory/WMSInventoryScreen.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 
 import '../../screens/Authentication/LoginScreen.dart';
@@ -57,6 +58,7 @@ class _HomeScreenState extends State<HomeScreen> {
       "assets/allocation.png",
       "assets/receipt_management.png",
       "assets/inventory.png",
+      "assets/picking.png",
       "assets/logout.jpg",
     ],
     "titles": [
@@ -78,6 +80,7 @@ class _HomeScreenState extends State<HomeScreen> {
       "Items Re-Allocation",
       "Un-Allocated Items",
       "Pallet ID Inquiry",
+      "WMS Inventory",
       "Logout",
     ],
     "functions": [
@@ -102,12 +105,15 @@ class _HomeScreenState extends State<HomeScreen> {
         Get.to(() => const PhysicalInventoryScreen());
       },
       () {},
+      () {},
       () {
         Get.to(() => const UnAllocatedItemsScreen1());
       },
-      () {},
       () {
         Get.to(() => const PalletIdInquiryScreen());
+      },
+      () {
+        Get.to(() => WMSInventoryScreen());
       },
       () {
         Get.offAll(() => const LoginScreen());

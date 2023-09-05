@@ -1,7 +1,18 @@
+// ignore_for_file: use_key_in_widget_constructors, deprecated_member_use, unused_element, avoid_print
+
+import 'package:alessa_v2/controllers/WMSInventory/GetDistinctMappedBarcodeItemIdsController.dart';
+import 'package:alessa_v2/controllers/WMSInventory/GetmapBarcodeDataByBinLocationController.dart';
+import 'package:alessa_v2/controllers/WMSInventory/GetDistinctMappedBarcodeBinLocationsController.dart';
+import 'package:alessa_v2/controllers/WMSInventory/GetmapBarcodeDataByMultipleBinLocations.dart';
+import 'package:alessa_v2/models/GetmapBarcodeDataByBinLocationModel.dart';
 import 'package:dropdown_search/dropdown_search.dart';
+import 'package:multi_select_flutter/chip_display/multi_select_chip_display.dart';
+import 'package:multi_select_flutter/chip_field/multi_select_chip_field.dart';
+import 'package:multi_select_flutter/dialog/multi_select_dialog_field.dart';
+import 'package:multi_select_flutter/util/multi_select_item.dart';
+import 'package:multi_select_flutter/util/multi_select_list_type.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../controllers/BarcodeMapping/getAllTblMappedBarcodesController.dart';
 import '../../controllers/WMSInventory/getAllTblUsersController.dart';
 import '../../controllers/WMSInventory/insertIntoWmsJournalCountingOnlyCLController.dart';
 import '../../models/getInventTableWMSDataByItemIdOrItemNameModel.dart';
@@ -11,7 +22,6 @@ import 'package:get/get.dart';
 
 import '../../../../widgets/AppBarWidget.dart';
 import '../../widgets/ElevatedButtonWidget.dart';
-import '../../widgets/TextFormField.dart';
 
 List<getInventTableWMSDataByItemIdOrItemNameModel> selectedRow = [];
 RxList<dynamic> markedList = [].obs;
@@ -24,19 +34,31 @@ class WMSInventoryScreen extends StatefulWidget {
 class _WMSInventoryScreenState extends State<WMSInventoryScreen> {
   final TextEditingController _searchController = TextEditingController();
 
-  String? dropDownValue = "itemid";
-  List<String> dropDownList = [
-    "itemid",
-    "binlocation",
-  ];
+  String? binDropDownValue = "";
+  List<String> binDropDownList = [];
 
-  String? dropDownValue1;
-  List<String>? dropDownList1 = [];
+  String? itemDropDownValue = "";
+  List<String> itemDropDownList = [];
+
+  List<String> binLocationDDValues = [];
+  List<String> binLocationDDList = [];
+
+  String configDropDownValue = "G";
+  List<String> configDropDownList = ["G", "D", "DC", "MCI", "S"];
+
+  String? assignDropDownValue;
+  List<String>? assignDropDownList = [];
+
+  String containerIdValue = "";
+  List<String> containerIdList = [];
+
+  String itemNoAndDiscValue = "";
+  List<String> itemNoAndDiscList = [];
 
   String total = "0";
 
-  List<getInventTableWMSDataByItemIdOrItemNameModel> BinToBinJournalTableList =
-      [];
+  List<GetmapBarcodeDataByBinLocationModel> table = [];
+  List<GetmapBarcodeDataByBinLocationModel> filterTable = [];
 
   String userName = "";
   String userID = "";
@@ -59,14 +81,44 @@ class _WMSInventoryScreenState extends State<WMSInventoryScreen> {
   void initState() {
     super.initState();
     _showUserInfo();
-    getAllTblUsersController.getData().then((value) {
-      setState(() {
-        dropDownList1 =
-            value.map((e) => "${e.fullname!} - ${e.userID}").toList();
+    Future.delayed(Duration.zero, () {
+      Constants.showLoadingDialog(context);
+      getAllTblUsersController.getData().then((val) {
+        setState(
+          () {
+            assignDropDownList =
+                val.map((e) => "${e.fullname!} - ${e.userID}").toList();
 
-        dropDownValue1 = dropDownList1!.first.toString();
+            assignDropDownValue = assignDropDownList!.first.toString();
+          },
+        );
+        GetDistinctMappedBarcodeBinLocationsController.getData1().then((value) {
+          setState(() {
+            itemDropDownList = value.toSet().toList();
+            itemDropDownList.removeWhere((element) => element == "");
+            itemDropDownValue = itemDropDownList.first;
+          });
+        });
+      }).onError((error, stackTrace) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(error.toString().replaceAll("Exception:", "")),
+          ),
+        );
+      });
+      GetDistinctMappedBarcodeBinLocationsController.getData().then((value) {
+        // convert list to set and then back to list to remove duplicates
+        // and remove empty value
+
+        setState(() {
+          binDropDownList = value.toSet().toList();
+          binDropDownList.removeWhere((element) => element == "");
+          binDropDownValue = binDropDownList.first;
+        });
+        Navigator.pop(context);
       });
     }).onError((error, stackTrace) {
+      Navigator.pop(context);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(error.toString().replaceAll("Exception:", "")),
@@ -79,13 +131,10 @@ class _WMSInventoryScreenState extends State<WMSInventoryScreen> {
   void dispose() {
     super.dispose();
     markedList.clear();
-    BinToBinJournalTableList.clear();
+    table.clear();
   }
 
-  String itemName = '';
-  String itemID = '';
-  String itemGroupId = '';
-  String groupName = '';
+  String? gender = "bin";
 
   @override
   Widget build(BuildContext context) {
@@ -117,7 +166,7 @@ class _WMSInventoryScreenState extends State<WMSInventoryScreen> {
             ],
           ),
         ),
-        body: Container(
+        body: SizedBox(
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height,
           child: SingleChildScrollView(
@@ -155,167 +204,463 @@ class _WMSInventoryScreenState extends State<WMSInventoryScreen> {
                     ],
                   ),
                 ),
-                Container(
-                  margin: const EdgeInsets.only(left: 20),
-                  child: Text(
-                    "Search",
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.blue[900]!,
+                // Container(
+                //   margin: const EdgeInsets.only(left: 20),
+                //   child: Text(
+                //     "Search",
+                //     style: TextStyle(
+                //       fontSize: 16,
+                //       fontWeight: FontWeight.bold,
+                //       color: Colors.blue[900]!,
+                //     ),
+                //   ),
+                // ),
+                // SingleChildScrollView(
+                //   scrollDirection: Axis.horizontal,
+                //   child: Row(
+                //     mainAxisAlignment: MainAxisAlignment.start,
+                //     children: [
+                //       Container(
+                //         margin: const EdgeInsets.only(left: 20),
+                //         child: TextFormFieldWidget(
+                //           hintText: "Search item...",
+                //           controller: _searchController,
+                //           width: MediaQuery.of(context).size.width * 0.73,
+                //           onEditingComplete: () {
+                //             FocusScope.of(context).unfocus();
+                //             Constants.showLoadingDialog(context);
+                //             getAllTblMappedBarcodesController
+                //                 .getData(_searchController.text.trim())
+                //                 .then((value) {
+                //               setState(() {
+                //                 itemName = "${value[0].iTEMNAME}";
+                //                 itemID = "${value[0].iTEMID}";
+                //                 itemGroupId = "${value[0].iTEMGROUPID}";
+                //                 groupName = "${value[0].gROUPNAME}";
+                //               });
+                //               Navigator.of(context).pop();
+                //             }).onError((error, stackTrace) {
+                //               ScaffoldMessenger.of(context).showSnackBar(
+                //                 SnackBar(
+                //                   content: Text(error
+                //                       .toString()
+                //                       .replaceAll("Exception:", "")),
+                //                 ),
+                //               );
+                //               Navigator.of(context).pop();
+                //             });
+                //           },
+                //         ),
+                //       ),
+                //       const SizedBox(width: 10),
+                //       Container(
+                //         decoration: BoxDecoration(
+                //           color: Colors.transparent,
+                //           borderRadius: BorderRadius.circular(20),
+                //         ),
+                //         child: GestureDetector(
+                //           onTap: () {
+                //             FocusScope.of(context).unfocus();
+                //             Constants.showLoadingDialog(context);
+                //             getAllTblMappedBarcodesController
+                //                 .getData(_searchController.text.trim())
+                //                 .then((value) {
+                //               // if item is already in the list then dont add it again
+                //               if (table.any((element) =>
+                //                   element.iTEMID == value[0].iTEMID)) {
+                //                 ScaffoldMessenger.of(context).showSnackBar(
+                //                   const SnackBar(
+                //                     content: Text("Item already exists!"),
+                //                   ),
+                //                 );
+                //                 Navigator.of(context).pop();
+                //                 return;
+                //               }
+                //               setState(() {
+                //                 itemName = "${value[0].iTEMNAME}";
+                //                 itemID = "${value[0].iTEMID}";
+                //                 itemGroupId = "${value[0].iTEMGROUPID}";
+                //                 groupName = "${value[0].gROUPNAME}";
+
+                //                 // append the new entry BinToBinJournalList
+                //                 table.add(value[0]);
+                //               });
+                //               Navigator.of(context).pop();
+                //             }).onError((error, stackTrace) {
+                //               ScaffoldMessenger.of(context).showSnackBar(
+                //                 SnackBar(
+                //                   content: Text(error
+                //                       .toString()
+                //                       .replaceAll("Exception:", "")),
+                //                 ),
+                //               );
+                //               Navigator.of(context).pop();
+                //             });
+                //           },
+                //           child: Image.asset('assets/finder.png',
+                //               width: MediaQuery.of(context).size.width * 0.15,
+                //               height: 60,
+                //               fit: BoxFit.cover),
+                //         ),
+                //       ),
+                //     ],
+                //   ),
+                // ),
+                const SizedBox(height: 10),
+                RadioListTile(
+                  title: const Text("Item ID"),
+                  value: "item",
+                  groupValue: gender,
+                  onChanged: (value) {
+                    setState(() {
+                      gender = value.toString();
+                      print(gender);
+                    });
+                  },
+                ),
+                RadioListTile(
+                  title: const Text("Bin Location"),
+                  value: "bin",
+                  groupValue: gender,
+                  onChanged: (value) {
+                    setState(() {
+                      gender = value.toString();
+                      print(gender);
+                    });
+                  },
+                ),
+                const SizedBox(height: 10),
+
+                gender == "bin"
+                    ? Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            margin: const EdgeInsets.only(left: 20),
+                            child: Text(
+                              "Bin Location",
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.blue[900]!,
+                              ),
+                            ),
+                          ),
+                          Container(
+                            decoration: const BoxDecoration(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(20)),
+                              color: Colors.white,
+                            ),
+                            width: MediaQuery.of(context).size.width * 0.9,
+                            margin: const EdgeInsets.only(left: 20),
+                            child: DropdownSearch<String>(
+                              items: binDropDownList,
+                              onChanged: (value) {
+                                setState(() {
+                                  binDropDownValue = value!;
+                                });
+
+                                Constants.showLoadingDialog(context);
+                                dataToTable(binDropDownValue.toString());
+                              },
+                              selectedItem: binDropDownValue,
+                            ),
+                          ),
+
+                          const SizedBox(height: 10),
+                          Visibility(
+                            visible: binDropDownValue == null ? false : true,
+                            child: Container(
+                              margin: const EdgeInsets.only(left: 20),
+                              child: Text(
+                                "Filter by Classification",
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.blue[900]!,
+                                ),
+                              ),
+                            ),
+                          ),
+                          Visibility(
+                            visible: binDropDownValue == null ? false : true,
+                            child: Container(
+                              decoration: const BoxDecoration(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(20)),
+                                color: Colors.white,
+                              ),
+                              width: MediaQuery.of(context).size.width * 0.9,
+                              margin: const EdgeInsets.only(left: 20),
+                              child: DropdownSearch<String>(
+                                items: containerIdList,
+                                onChanged: (value) {
+                                  setState(() {
+                                    containerIdValue = value!;
+                                    // filter the filterTable by containerIdValue
+                                    filterTable = table
+                                        .where((element) =>
+                                            element.classification ==
+                                            containerIdValue)
+                                        .toList();
+                                    total = filterTable.length.toString();
+                                  });
+                                },
+                                selectedItem: containerIdValue,
+                              ),
+                            ),
+                          ),
+                          // MultiSelect(
+                          //   items: _selectedItems,
+                          // ),
+                          const SizedBox(height: 10),
+                          Visibility(
+                            visible: binDropDownValue == null ? false : true,
+                            child: Container(
+                              margin: const EdgeInsets.only(left: 20),
+                              child: Text(
+                                "Filter by Item Id",
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.blue[900]!,
+                                ),
+                              ),
+                            ),
+                          ),
+                          Visibility(
+                            visible: binDropDownValue == null ? false : true,
+                            child: Container(
+                              decoration: const BoxDecoration(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(20)),
+                                color: Colors.white,
+                              ),
+                              width: MediaQuery.of(context).size.width * 0.9,
+                              margin: const EdgeInsets.only(left: 20),
+                              child: DropdownSearch<String>(
+                                items: itemNoAndDiscList,
+                                onChanged: (value) {
+                                  setState(() {
+                                    itemNoAndDiscValue = value!;
+                                    // filter the filterTable by itemNoAndDiscValue
+                                    filterTable = table
+                                        .where((element) =>
+                                            element.itemCode ==
+                                            itemNoAndDiscValue)
+                                        .toList();
+                                    total = filterTable.length.toString();
+                                  });
+                                },
+                                selectedItem: itemNoAndDiscValue,
+                              ),
+                            ),
+                          ),
+                        ],
+                      )
+                    : Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            margin: const EdgeInsets.only(left: 20),
+                            child: Text(
+                              "Item ID",
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.blue[900]!,
+                              ),
+                            ),
+                          ),
+                          Container(
+                            decoration: const BoxDecoration(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(20)),
+                              color: Colors.white,
+                            ),
+                            width: MediaQuery.of(context).size.width * 0.9,
+                            margin: const EdgeInsets.only(left: 20),
+                            child: DropdownSearch<String>(
+                              items: itemDropDownList,
+                              onChanged: (value) {
+                                setState(() {
+                                  itemDropDownValue = value!;
+                                });
+
+                                Constants.showLoadingDialog(context);
+                                dataToTable1(itemDropDownValue.toString());
+                              },
+                              selectedItem: itemDropDownValue,
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          Visibility(
+                            visible: itemDropDownValue == null ? false : true,
+                            child: Container(
+                              margin: const EdgeInsets.only(left: 20),
+                              child: Text(
+                                "Bin Location",
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.blue[900]!,
+                                ),
+                              ),
+                            ),
+                          ),
+                          Center(
+                            child: Visibility(
+                              visible: itemDropDownValue == null ? false : true,
+                              child: Container(
+                                width: MediaQuery.of(context).size.width * 0.9,
+                                decoration: BoxDecoration(
+                                  border:
+                                      Border.all(width: 1, color: Colors.grey),
+                                ),
+                                child: MultiSelectDialogField(
+                                  items: binLocationDDList
+                                      .map((e) => MultiSelectItem(e, e))
+                                      .toList(),
+                                  listType: MultiSelectListType.CHIP,
+                                  onConfirm: (values) {
+                                    binLocationDDValues = values;
+                                    Constants.showLoadingDialog(context);
+                                    GetmapBarcodeDataByMultipleBinLocations
+                                            .postData(binLocationDDValues)
+                                        .then((value) {
+                                      setState(() {
+                                        table = value;
+                                        filterTable = value;
+                                        total = table.length.toString();
+                                      });
+                                      Navigator.pop(context);
+                                    }).onError((error, stackTrace) {
+                                      Navigator.pop(context);
+                                    });
+                                  },
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          Visibility(
+                            visible: itemDropDownValue == null ? false : true,
+                            child: Container(
+                              margin: const EdgeInsets.only(left: 20),
+                              child: Text(
+                                "List of Item Config",
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.blue[900]!,
+                                ),
+                              ),
+                            ),
+                          ),
+                          Visibility(
+                            visible: itemDropDownValue == null ? false : true,
+                            child: Container(
+                              decoration: const BoxDecoration(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(20)),
+                                color: Colors.white,
+                              ),
+                              width: MediaQuery.of(context).size.width * 0.9,
+                              margin: const EdgeInsets.only(left: 20),
+                              child: DropdownSearch<String>(
+                                items: configDropDownList,
+                                onChanged: (value) {
+                                  setState(() {
+                                    configDropDownValue = value!;
+                                  });
+                                },
+                                selectedItem: configDropDownValue,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+
+                const SizedBox(height: 10),
+                SingleChildScrollView(
+                  child: Container(
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: Colors.blue[900]!,
+                        width: 2,
+                      ),
                     ),
-                  ),
-                ),
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Container(
-                        margin: const EdgeInsets.only(left: 20),
-                        child: TextFormFieldWidget(
-                          hintText: "Search item...",
-                          controller: _searchController,
-                          width: MediaQuery.of(context).size.width * 0.73,
-                          onEditingComplete: () {
-                            FocusScope.of(context).unfocus();
-                            Constants.showLoadingDialog(context);
-                            getAllTblMappedBarcodesController
-                                .getData(_searchController.text.trim())
-                                .then((value) {
-                              setState(() {
-                                itemName = "${value[0].iTEMNAME}";
-                                itemID = "${value[0].iTEMID}";
-                                itemGroupId = "${value[0].iTEMGROUPID}";
-                                groupName = "${value[0].gROUPNAME}";
-                              });
-                              Navigator.of(context).pop();
-                            }).onError((error, stackTrace) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(error
-                                      .toString()
-                                      .replaceAll("Exception:", "")),
-                                ),
-                              );
-                              Navigator.of(context).pop();
-                            });
-                          },
-                        ),
-                      ),
-                      const SizedBox(width: 10),
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Colors.transparent,
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: GestureDetector(
-                          onTap: () {
-                            FocusScope.of(context).unfocus();
-                            Constants.showLoadingDialog(context);
-                            getAllTblMappedBarcodesController
-                                .getData(_searchController.text.trim())
-                                .then((value) {
-                              // if item is already in the list then dont add it again
-                              if (BinToBinJournalTableList.any((element) =>
-                                  element.iTEMID == value[0].iTEMID)) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text("Item already exists!"),
-                                  ),
-                                );
-                                Navigator.of(context).pop();
-                                return;
-                              }
-                              setState(() {
-                                itemName = "${value[0].iTEMNAME}";
-                                itemID = "${value[0].iTEMID}";
-                                itemGroupId = "${value[0].iTEMGROUPID}";
-                                groupName = "${value[0].gROUPNAME}";
+                    child: PaginatedDataTable(
+                      // header: Text(
+                      //   "Total: $total",
+                      //   style: TextStyle(
+                      //     fontSize: 20,
+                      //     fontWeight: FontWeight.bold,
+                      //     color: Colors.blue[900]!,
+                      //   ),
+                      // ),
 
-                                // append the new entry BinToBinJournalList
-                                BinToBinJournalTableList.add(value[0]);
-                              });
-                              Navigator.of(context).pop();
-                            }).onError((error, stackTrace) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(error
-                                      .toString()
-                                      .replaceAll("Exception:", "")),
-                                ),
-                              );
-                              Navigator.of(context).pop();
-                            });
-                          },
-                          child: Image.asset('assets/finder.png',
-                              width: MediaQuery.of(context).size.width * 0.15,
-                              height: 60,
-                              fit: BoxFit.cover),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                SingleChildScrollView(
-                  child: PaginatedDataTable(
-                    // header: Text(
-                    //   "Total: $total",
-                    //   style: TextStyle(
-                    //     fontSize: 20,
-                    //     fontWeight: FontWeight.bold,
-                    //     color: Colors.blue[900]!,
-                    //   ),
-                    // ),
-
-                    columnSpacing: 10,
-                    horizontalMargin: 20,
-                    showCheckboxColumn: false,
-                    headingRowHeight: 30,
-                    dataRowHeight: 60,
-                    primary: true,
-                    showFirstLastButtons: true,
-                    source:
-                        StudentDataSource(BinToBinJournalTableList, context),
-                    rowsPerPage: 5,
-                    checkboxHorizontalMargin: 10,
-                    columns: [
-                      DataColumn(
+                      columnSpacing: 10,
+                      horizontalMargin: 20,
+                      showCheckboxColumn: false,
+                      headingRowHeight: 30,
+                      dataRowHeight: 60,
+                      primary: true,
+                      showFirstLastButtons: true,
+                      source: StudentDataSource(filterTable, context),
+                      rowsPerPage: 5,
+                      checkboxHorizontalMargin: 10,
+                      columns: const [
+                        DataColumn(
+                            label: Text(
+                          'Item Code',
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.black,
+                          ),
+                        )),
+                        DataColumn(
                           label: Text(
-                        'Item Id',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.blue[900]!,
-                        ),
-                      )),
-                      DataColumn(
-                        label: Text(
-                          'Item Name',
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.blue[900]!,
+                            'Item Desc',
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.black,
+                            ),
                           ),
                         ),
-                      ),
-                      DataColumn(
-                        label: Text(
-                          'Item Group Id',
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.blue[900]!,
+                        DataColumn(
+                          label: Text(
+                            'Classification',
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.black,
+                            ),
                           ),
                         ),
-                      ),
-                      DataColumn(
-                        label: Text(
-                          'Group Name',
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.blue[900]!,
+                        DataColumn(
+                          label: Text(
+                            'Bin Location',
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.black,
+                            ),
                           ),
                         ),
-                      ),
-                    ], // Adjust the number of rows per page as needed
+                        DataColumn(
+                          label: Text(
+                            'Item Serial No',
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ),
+                      ], // Adjust the number of rows per page as needed
+                    ),
                   ),
                 ),
                 const SizedBox(height: 10),
@@ -338,13 +683,13 @@ class _WMSInventoryScreenState extends State<WMSInventoryScreen> {
                   width: MediaQuery.of(context).size.width * 0.9,
                   margin: const EdgeInsets.only(left: 20),
                   child: DropdownSearch<String>(
-                    items: dropDownList1!,
+                    items: assignDropDownList!,
                     onChanged: (value) {
                       setState(() {
-                        dropDownValue1 = value!;
+                        assignDropDownValue = value!;
                       });
                     },
-                    selectedItem: dropDownValue1,
+                    selectedItem: assignDropDownValue,
                   ),
                 ),
                 const SizedBox(height: 10),
@@ -354,13 +699,33 @@ class _WMSInventoryScreenState extends State<WMSInventoryScreen> {
                     width: MediaQuery.of(context).size.width * 0.9,
                     title: "Save",
                     onPressed: () {
+                      if (table.isEmpty) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text("No data to save!"),
+                            backgroundColor: Colors.red,
+                          ),
+                        );
+                        return;
+                      }
+
+                      if (assignDropDownValue == null) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text("Please select a user!"),
+                            backgroundColor: Colors.red,
+                          ),
+                        );
+                        return;
+                      }
+
                       FocusScope.of(context).unfocus();
                       Constants.showLoadingDialog(context);
                       insertIntoWmsJournalCountingOnlyCLController
                           .postData(
-                        BinToBinJournalTableList,
-                        "",
-                        dropDownValue1.toString(),
+                        table,
+                        assignDropDownValue.toString(),
+                        gender == "bin" ? "Bin Location" : "Item Id",
                       )
                           .then((value) {
                         Get.back();
@@ -372,12 +737,18 @@ class _WMSInventoryScreenState extends State<WMSInventoryScreen> {
                           ),
                         );
                         setState(() {
-                          BinToBinJournalTableList.clear();
+                          table.clear();
                           selectedRow.clear();
-                          markedList.value = List.generate(
-                              BinToBinJournalTableList.length,
-                              (index) => false);
+                          markedList.value =
+                              List.generate(table.length, (index) => false);
                           _searchController.clear();
+                          binDropDownList.clear();
+                          itemDropDownList.clear();
+                          binLocationDDValues.clear();
+                          binLocationDDList.clear();
+                          containerIdList.clear();
+                          itemNoAndDiscList.clear();
+                          total = "0";
                         });
                       }).onError((error, stackTrace) {
                         Get.back();
@@ -390,9 +761,8 @@ class _WMSInventoryScreenState extends State<WMSInventoryScreen> {
                         );
                         setState(() {
                           selectedRow.clear();
-                          markedList.value = List.generate(
-                              BinToBinJournalTableList.length,
-                              (index) => false);
+                          markedList.value =
+                              List.generate(table.length, (index) => false);
                         });
                       });
                     },
@@ -400,6 +770,7 @@ class _WMSInventoryScreenState extends State<WMSInventoryScreen> {
                     color: Colors.orange,
                   ),
                 ),
+                const SizedBox(height: 20),
               ],
             ),
           ),
@@ -407,10 +778,84 @@ class _WMSInventoryScreenState extends State<WMSInventoryScreen> {
       ),
     );
   }
+
+  void dataToTable(val) {
+    GetmapBarcodeDataByBinLocationController.getData(val).then((value) {
+      setState(() {
+        table = value;
+        filterTable = value;
+
+        total = table.length.toString();
+
+        for (var i = 0; i < value.length; i++) {
+          containerIdList.add(value[i].classification ?? "");
+        }
+        containerIdList = containerIdList.toSet().toList();
+        containerIdList.removeWhere((element) => element == "");
+        containerIdValue = containerIdList.first;
+
+        for (var i = 0; i < value.length; i++) {
+          itemNoAndDiscList.add(value[i].itemCode ?? "");
+        }
+        itemNoAndDiscList = itemNoAndDiscList.toSet().toList();
+        itemNoAndDiscList.removeWhere((element) => element == "");
+        itemNoAndDiscValue = itemNoAndDiscList.first;
+      });
+      Navigator.of(context).pop();
+    }).onError((error, stackTrace) {
+      setState(() {
+        table.clear();
+        total = table.length.toString();
+      });
+      Navigator.of(context).pop();
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            error.toString().replaceAll("Exception:", ""),
+          ),
+          duration: const Duration(seconds: 2),
+        ),
+      );
+    });
+  }
+
+  void dataToTable1(val) {
+    GetmapBarcodeDataByItemCodeController.getData(val).then((value) {
+      setState(() {
+        table = value;
+        filterTable = value;
+
+        total = table.length.toString();
+
+        for (var i = 0; i < value.length; i++) {
+          binLocationDDList.add(value[i].binLocation ?? "");
+        }
+        binLocationDDList = binLocationDDList.toSet().toList();
+        binLocationDDList.removeWhere((element) => element == "");
+      });
+      Navigator.of(context).pop();
+    }).onError((error, stackTrace) {
+      setState(() {
+        table.clear();
+        total = table.length.toString();
+      });
+      Navigator.of(context).pop();
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            error.toString().replaceAll("Exception:", ""),
+          ),
+          duration: const Duration(seconds: 2),
+        ),
+      );
+    });
+  }
 }
 
 class StudentDataSource extends DataTableSource {
-  List<getInventTableWMSDataByItemIdOrItemNameModel> students;
+  List<GetmapBarcodeDataByBinLocationModel> students;
   BuildContext ctx;
 
   StudentDataSource(
@@ -430,10 +875,11 @@ class StudentDataSource extends DataTableSource {
       index: index,
       onSelectChanged: (value) {},
       cells: [
-        DataCell(SelectableText(student.iTEMID ?? "")),
-        DataCell(SelectableText(student.iTEMNAME ?? "")),
-        DataCell(SelectableText(student.iTEMGROUPID ?? "")),
-        DataCell(SelectableText(student.gROUPNAME ?? "")),
+        DataCell(SelectableText(student.itemCode ?? "")),
+        DataCell(SelectableText(student.itemDesc ?? "")),
+        DataCell(SelectableText(student.classification ?? "")),
+        DataCell(SelectableText(student.binLocation ?? "")),
+        DataCell(SelectableText(student.itemSerialNo ?? "")),
       ],
     );
   }

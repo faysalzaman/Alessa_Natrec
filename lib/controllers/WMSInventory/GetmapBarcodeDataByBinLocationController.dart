@@ -1,19 +1,20 @@
 // ignore_for_file: avoid_print, depend_on_referenced_packages
 
+import 'package:alessa_v2/models/GetmapBarcodeDataByBinLocationModel.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
-import '../../models/GetTblStockMasterByItemIdModel.dart';
 import '../../utils/Constants.dart';
 
-class GetTblStockMasterByItemIdController {
-  static Future<List<GetTblStockMasterByItemIdModel>> getData(
-      String itemId) async {
+class GetmapBarcodeDataByBinLocationController {
+  static Future<List<GetmapBarcodeDataByBinLocationModel>> getData(
+      String binLocation) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String token = prefs.getString('token').toString();
 
-    String url = "${Constants.baseUrl}getTblStockMasterByItemId?itemid=$itemId";
+    String url =
+        "${Constants.baseUrl}getmapBarcodeDataByBinLocation?BinLocation=$binLocation";
     print("url: $url");
 
     final uri = Uri.parse(url);
@@ -31,8 +32,8 @@ class GetTblStockMasterByItemIdController {
         print("Status Code: ${response.statusCode}");
 
         var data = json.decode(response.body) as List;
-        List<GetTblStockMasterByItemIdModel> shipmentData = data
-            .map((e) => GetTblStockMasterByItemIdModel.fromJson(e))
+        List<GetmapBarcodeDataByBinLocationModel> shipmentData = data
+            .map((e) => GetmapBarcodeDataByBinLocationModel.fromJson(e))
             .toList();
         return shipmentData;
       } else {
