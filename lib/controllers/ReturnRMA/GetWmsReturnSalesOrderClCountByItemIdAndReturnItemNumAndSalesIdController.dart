@@ -1,19 +1,22 @@
-// ignore_for_file: avoid_print, depend_on_referenced_packages
+// ignore_for_file: camel_case_types, avoid_print
 
-import 'package:alessa_v2/models/GetmapBarcodeDataByBinLocationModel.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
 import '../../utils/Constants.dart';
 
-class GetmapBarcodeDataByItemCodeController {
-  static Future<List<GetmapBarcodeDataByBinLocationModel>> getData(
-      String itemcode) async {
+class GetWmsReturnSalesOrderClCountByItemIdAndReturnItemNumAndSalesIdController {
+  static Future<int> getData(
+    String itemId,
+    String returnItemNum,
+    String salesId,
+  ) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String token = prefs.getString('token').toString();
 
-    String url = "${Constants.baseUrl}getDistinctMapBarcodeDataByItemCode";
+    String url =
+        "${Constants.baseUrl}getWmsReturnSalesOrderClCountByItemIdAndReturnItemNumAndSalesId";
     print("url: $url");
 
     final uri = Uri.parse(url);
@@ -22,20 +25,23 @@ class GetmapBarcodeDataByItemCodeController {
       "Authorization": token,
       "Host": Constants.host,
       "Accept": "application/json",
-      "itemcode": itemcode,
+      "Content-Type": "application/json",
+    };
+
+    var body = {
+      "ITEMID": itemId,
+      "RETURNITEMNUM": returnItemNum,
+      "SALESID": salesId,
     };
 
     try {
-      var response = await http.post(uri, headers: headers);
+      var response =
+          await http.post(uri, headers: headers, body: jsonEncode(body));
 
       if (response.statusCode == 200) {
-        print("Status Code: ${response.statusCode}");
-
-        var data = json.decode(response.body) as List;
-        List<GetmapBarcodeDataByBinLocationModel> shipmentData = data
-            .map((e) => GetmapBarcodeDataByBinLocationModel.fromJson(e))
-            .toList();
-        return shipmentData;
+        var data = json.decode(response.body);
+        var returnItemsCount = data["returnItemsCount"];
+        return returnItemsCount;
       } else {
         print("Status Code: ${response.statusCode}");
         var data = json.decode(response.body);

@@ -495,6 +495,11 @@ class _UnAllocatedItemsScreen2State extends State<UnAllocatedItemsScreen2> {
             ? _scanPalletController.text.trim()
             : dropDownValue.toString(),
         widget.binLocation,
+        "",
+        "",
+        "",
+        "",
+        "",
       );
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -544,6 +549,11 @@ class _UnAllocatedItemsScreen2State extends State<UnAllocatedItemsScreen2> {
             ? _scanPalletController.text.trim()
             : dropDownValue.toString(),
         widget.binLocation,
+        "",
+        "",
+        "",
+        "",
+        "",
       );
       _scanPalletController.clear();
 

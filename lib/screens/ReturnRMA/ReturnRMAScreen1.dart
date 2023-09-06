@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_final_fields, sized_box_for_whitespace
+
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -11,6 +13,8 @@ import '../../../../widgets/AppBarWidget.dart';
 import '../../../../widgets/TextWidget.dart';
 import '../../widgets/TextFormField.dart';
 import 'ReturnRMAScreen2.dart';
+
+var recQty;
 
 class ReturnRMAScreen1 extends StatefulWidget {
   const ReturnRMAScreen1({super.key});
@@ -162,6 +166,8 @@ class _ReturnRMAScreen1State extends State<ReturnRMAScreen1> {
                                 isMarked = List<bool>.generate(
                                     table.length, (index) => false);
                                 total = table.length.toString();
+
+                                recQty = table[0].eXPECTEDRETQTY;
                               });
                               Navigator.of(context).pop();
                             }).onError((error, stackTrace) {
@@ -218,6 +224,8 @@ class _ReturnRMAScreen1State extends State<ReturnRMAScreen1> {
                                 isMarked = List<bool>.generate(
                                     table.length, (index) => false);
                                 total = table.length.toString();
+
+                                recQty = table[0].eXPECTEDRETQTY;
                               });
                               Navigator.of(context).pop();
                             }).onError((error, stackTrace) {
@@ -347,8 +355,7 @@ class _ReturnRMAScreen1State extends State<ReturnRMAScreen1> {
                               onSelectChanged: (value) {
                                 Get.to(() => ReturnRMAScreen2(
                                       cONFIGID: e.cONFIGID.toString(),
-                                      eXPECTEDRETQTY: int.parse(
-                                          e.eXPECTEDRETQTY.toString()),
+                                      eXPECTEDRETQTY: recQty,
                                       iNVENTLOCATIONID:
                                           e.iNVENTLOCATIONID.toString(),
                                       iNVENTSITEID: e.iNVENTSITEID.toString(),

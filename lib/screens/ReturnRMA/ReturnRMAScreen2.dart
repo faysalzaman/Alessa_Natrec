@@ -1,11 +1,10 @@
-// ignore_for_file: file_names
+// ignore_for_file: file_names, avoid_print
 
 import 'package:alessa_v2/controllers/BinToBinFromAXAPTA/getmapBarcodeDataByItemCodeController.dart';
-import 'package:alessa_v2/controllers/ReturnRMA/DeleteMultipleRecordsFromWmsReturnSalesOrderClController.dart';
+import 'package:alessa_v2/controllers/ReturnRMA/GetWmsReturnSalesOrderClCountByItemIdAndReturnItemNumAndSalesIdController.dart';
 import 'package:alessa_v2/controllers/ReturnRMA/inset.dart';
 import 'package:alessa_v2/widgets/ElevatedButtonWidget.dart';
 
-import '../../controllers/ReturnRMA/InsertManyIntoMappedBarcodeController.dart';
 import '../../controllers/ReturnRMA/ReturnDZones.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 
@@ -68,6 +67,8 @@ class _ReturnRMAScreen2State extends State<ReturnRMAScreen2> {
   List<String> serialNoList = [];
   List<bool> isMarked = [];
 
+  var recQty;
+
   List<getWmsReturnSalesOrderByReturnItemNum2Model> table = [];
 
   updateWmsJournalMovementClQtyScannedModel
@@ -120,13 +121,27 @@ class _ReturnRMAScreen2State extends State<ReturnRMAScreen2> {
               dDownValue = dDownList[0];
               fltrList = dDownList;
             });
-            Navigator.pop(context);
+            GetWmsReturnSalesOrderClCountByItemIdAndReturnItemNumAndSalesIdController
+                .getData(
+              widget.iTEMID,
+              widget.rETURNITEMNUM,
+              widget.sALESID,
+            ).then((returnItemsCount) {
+              setState(() {
+                recQty = returnItemsCount;
+              });
+              Navigator.pop(context);
+            }).onError((error, stackTrace) {
+              setState(() {
+                recQty = 0;
+              });
+              Navigator.pop(context);
+            });
           }).onError((error, stackTrace) {
             setState(() {
               dDownValue = "";
               fltrList = [];
             });
-            Navigator.pop(context);
           });
 
           // GetPickListTableDataController.getData(
@@ -209,14 +224,14 @@ class _ReturnRMAScreen2State extends State<ReturnRMAScreen2> {
                           const TextWidget(
                             text: "From:",
                             color: Colors.white,
-                            fontSize: 18,
+                            fontSize: 15,
                           ),
                           const SizedBox(width: 10),
                           Text(
                             widget.iNVENTSITEID,
                             style: const TextStyle(
                               color: Colors.white,
-                              fontSize: 16,
+                              fontSize: 15,
                             ),
                           ),
                         ],
@@ -232,7 +247,7 @@ class _ReturnRMAScreen2State extends State<ReturnRMAScreen2> {
                                 "Item ID:",
                                 style: TextStyle(
                                   color: Colors.white,
-                                  fontSize: 18,
+                                  fontSize: 15,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
@@ -240,7 +255,7 @@ class _ReturnRMAScreen2State extends State<ReturnRMAScreen2> {
                                 widget.iTEMID,
                                 style: const TextStyle(
                                   color: Colors.white,
-                                  fontSize: 16,
+                                  fontSize: 15,
                                 ),
                               ),
                             ],
@@ -252,7 +267,7 @@ class _ReturnRMAScreen2State extends State<ReturnRMAScreen2> {
                                 "Sales ID: ",
                                 style: TextStyle(
                                   color: Colors.white,
-                                  fontSize: 18,
+                                  fontSize: 15,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
@@ -260,7 +275,7 @@ class _ReturnRMAScreen2State extends State<ReturnRMAScreen2> {
                                 widget.sALESID.toString(),
                                 style: const TextStyle(
                                   color: Colors.white,
-                                  fontSize: 16,
+                                  fontSize: 15,
                                 ),
                               ),
                             ],
@@ -277,27 +292,7 @@ class _ReturnRMAScreen2State extends State<ReturnRMAScreen2> {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 const Text(
-                                  "Return Qty: ",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                Text(
-                                  widget.rETURNITEMNUM.toString(),
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 15,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                const Text(
-                                  "Expected Ret QTY: ",
+                                  "Ret QTY: ",
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 15,
@@ -311,6 +306,28 @@ class _ReturnRMAScreen2State extends State<ReturnRMAScreen2> {
                                     fontSize: 15,
                                   ),
                                   textAlign: TextAlign.center,
+                                ),
+                              ],
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                const Text(
+                                  "Received Qty: ",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Text(
+                                  recQty.toString() == "null"
+                                      ? "0"
+                                      : recQty.toString(),
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 15,
+                                  ),
                                 ),
                               ],
                             ),
@@ -467,10 +484,12 @@ class _ReturnRMAScreen2State extends State<ReturnRMAScreen2> {
                           value: "No Barcode",
                           groupValue: _barCode,
                           onChanged: (String? value) {
-                            setState(() {
-                              _barCode = value!;
-                              print(_barCode);
-                            });
+                            setState(
+                              () {
+                                _barCode = value!;
+                                print(_barCode);
+                              },
+                            );
                           },
                         ),
                       ),
@@ -895,11 +914,9 @@ class _ReturnRMAScreen2State extends State<ReturnRMAScreen2> {
                       table,
                     )
                         .then((value) {
-                      DeleteMultipleRecordsFromWmsReturnSalesOrderClController
-                          .getData(
-                        table.map((e) => e.itemSerialNo.toString()).toList(),
-                      ).then((value) {
-                        // delete the selected rows from table
+                      insertIntoWmsReturnSalesOrderClController
+                          .getData(table)
+                          .then((value) {
                         setState(() {
                           table.removeWhere(
                               (element) => table.contains(element));
@@ -914,16 +931,52 @@ class _ReturnRMAScreen2State extends State<ReturnRMAScreen2> {
                           content: Text("Data Inserted Successfully"),
                           backgroundColor: Colors.green,
                         ));
-                      }).onError((error, stackTrace) {
-                        Navigator.of(context).pop();
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(
-                                error.toString().replaceAll("Exception:", "")),
-                            backgroundColor: Colors.red,
-                          ),
-                        );
-                      });
+                      }).onError(
+                        (error, stackTrace) {
+                          Navigator.pop(context);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: TextWidget(
+                                text: error
+                                    .toString()
+                                    .replaceAll("Exception:", ""),
+                                color: Colors.white,
+                              ),
+                              backgroundColor: Colors.red,
+                              duration: const Duration(seconds: 2),
+                            ),
+                          );
+                        },
+                      );
+                      // DeleteMultipleRecordsFromWmsReturnSalesOrderClController
+                      //     .getData(
+                      //   table.map((e) => e.itemSerialNo.toString()).toList(),
+                      // ).then((value) {
+                      //   // delete the selected rows from table
+                      //   setState(() {
+                      //     table.removeWhere(
+                      //         (element) => table.contains(element));
+                      //     table = [];
+                      //     isMarked = List<bool>.generate(
+                      //         table.length, (index) => false);
+                      //     result = table.length.toString();
+                      //   });
+                      //   Navigator.of(context).pop();
+                      //   ScaffoldMessenger.of(context)
+                      //       .showSnackBar(const SnackBar(
+                      //     content: Text("Data Inserted Successfully"),
+                      //     backgroundColor: Colors.green,
+                      //   ));
+                      // }).onError((error, stackTrace) {
+                      //   Navigator.of(context).pop();
+                      //   ScaffoldMessenger.of(context).showSnackBar(
+                      //     SnackBar(
+                      //       content: Text(
+                      //           error.toString().replaceAll("Exception:", "")),
+                      //       backgroundColor: Colors.red,
+                      //     ),
+                      //   );
+                      // });
                     }).onError((error, stackTrace) {
                       Navigator.of(context).pop();
                       ScaffoldMessenger.of(context).showSnackBar(
@@ -946,6 +999,22 @@ class _ReturnRMAScreen2State extends State<ReturnRMAScreen2> {
   }
 
   void onSerialNo() async {
+    var expectedQty = widget.eXPECTEDRETQTY * -1;
+
+    if (recQty >= expectedQty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            "Received Qty has been completed.\nYou can't insert more records.",
+            textAlign: TextAlign.center,
+          ),
+          backgroundColor: Colors.red,
+          duration: Duration(seconds: 2),
+        ),
+      );
+      return;
+    }
+
     if (dropDownValue == "") {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -958,10 +1027,13 @@ class _ReturnRMAScreen2State extends State<ReturnRMAScreen2> {
       );
       return;
     }
+
     if (_serialNoController.text.trim() == "") {
       FocusScope.of(context).unfocus();
       return;
     }
+
+    // check if the serial no. is already exists in the table
 
     if (table
         .where((element) =>
@@ -981,87 +1053,61 @@ class _ReturnRMAScreen2State extends State<ReturnRMAScreen2> {
       return;
     }
 
-    Constants.showLoadingDialog(context);
-    insertIntoWmsReturnSalesOrderClController
-        .getData(
-      widget.tble,
-      _serialNoController.text.trim(),
-    )
-        .then((value) {
-      setState(
-        () {
-          // append the selected pallet code row to the GetShipmentPalletizingList2
-          table.add(
-            getWmsReturnSalesOrderByReturnItemNum2Model(
-              iTEMID: widget.iTEMID,
-              nAME: widget.nAME,
-              eXPECTEDRETQTY: widget.eXPECTEDRETQTY,
-              sALESID: widget.sALESID,
-              rETURNITEMNUM: widget.rETURNITEMNUM,
-              iNVENTSITEID: widget.iNVENTSITEID,
-              iNVENTLOCATIONID: widget.iNVENTLOCATIONID,
-              cONFIGID: widget.cONFIGID,
-              wMSLOCATIONID: widget.wMSLOCATIONID,
-              itemSerialNo: _serialNoController.text.trim(),
-            ),
-          );
-          result = table.length.toString();
-        },
-      );
+    setState(
+      () {
+        // append the selected pallet code row to the GetShipmentPalletizingList2
+        table.add(
+          getWmsReturnSalesOrderByReturnItemNum2Model(
+            iTEMID: widget.iTEMID,
+            nAME: widget.nAME,
+            eXPECTEDRETQTY: widget.eXPECTEDRETQTY,
+            sALESID: widget.sALESID,
+            rETURNITEMNUM: widget.rETURNITEMNUM,
+            iNVENTSITEID: widget.iNVENTSITEID,
+            iNVENTLOCATIONID: widget.iNVENTLOCATIONID,
+            cONFIGID: widget.cONFIGID,
+            wMSLOCATIONID: widget.wMSLOCATIONID,
+            itemSerialNo: _serialNoController.text.trim(),
+          ),
+        );
+        result = table.length.toString();
+        _serialNoController.clear();
 
-      InsertManyIntoMappedBarcodeController.getData(
-        widget.iTEMID,
-        widget.nAME,
-        _serialNoController.text.trim(),
-        dropDownValue.toString(),
-      ).then((value) {
-        setState(() {
-          _serialNoController.clear();
-        });
-        Navigator.pop(context);
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(
-              "Record inserted Successfully.",
-              textAlign: TextAlign.center,
-            ),
-            backgroundColor: Colors.green,
-            duration: Duration(seconds: 1),
-          ),
-        );
-      }).onError((error, stackTrace) {
-        Navigator.pop(context);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              error.toString().replaceAll("Exception:", ""),
-              textAlign: TextAlign.center,
-            ),
-            duration: const Duration(seconds: 2),
-            backgroundColor: Colors.red,
-          ),
-        );
-      });
-    }).onError(
-      (error, stackTrace) {
-        Navigator.pop(context);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: TextWidget(
-              text: error.toString().replaceAll("Exception:", ""),
-              color: Colors.white,
-            ),
-            backgroundColor: Colors.red,
-            duration: const Duration(seconds: 2),
-          ),
-        );
+        recQty = recQty + 1;
       },
+    );
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text(
+          "Record inserted Successfully.",
+          textAlign: TextAlign.center,
+        ),
+        backgroundColor: Colors.green,
+        duration: Duration(seconds: 1),
+      ),
     );
   }
 
   /////////////////////////////// 2nd Method ///////////////////////////////
 
   void onGenerateBarcode() async {
+    var expectedQty = widget.eXPECTEDRETQTY * -1;
+
+    if (recQty >= expectedQty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            "Received Qty has been completed.\nYou can't insert more records.",
+            textAlign: TextAlign.center,
+          ),
+          backgroundColor: Colors.red,
+          duration: Duration(seconds: 2),
+        ),
+      );
+      return;
+    }
+
     if (_modelNoController.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -1094,74 +1140,40 @@ class _ReturnRMAScreen2State extends State<ReturnRMAScreen2> {
       widget.iTEMID,
       _modelNoController.text.trim(),
     ).then((value) {
-      insertIntoWmsReturnSalesOrderClController
-          .getData(widget.tble, value)
-          .then((val) {
-        setState(
-          () {
-            // append the selected pallet code row to the GetShipmentPalletizingList2
-            table.add(
-              getWmsReturnSalesOrderByReturnItemNum2Model(
-                iTEMID: widget.iTEMID,
-                nAME: widget.nAME,
-                eXPECTEDRETQTY: widget.eXPECTEDRETQTY,
-                sALESID: widget.sALESID,
-                rETURNITEMNUM: widget.rETURNITEMNUM,
-                iNVENTSITEID: widget.iNVENTSITEID,
-                iNVENTLOCATIONID: widget.iNVENTLOCATIONID,
-                cONFIGID: widget.cONFIGID,
-                wMSLOCATIONID: widget.wMSLOCATIONID,
-                itemSerialNo: value,
-              ),
-            );
-            result = table.length.toString();
-          },
-        );
+      setState(
+        () {
+          // append the selected pallet code row to the GetShipmentPalletizingList2
+          table.add(
+            getWmsReturnSalesOrderByReturnItemNum2Model(
+              iTEMID: widget.iTEMID,
+              nAME: widget.nAME,
+              eXPECTEDRETQTY: widget.eXPECTEDRETQTY,
+              sALESID: widget.sALESID,
+              rETURNITEMNUM: widget.rETURNITEMNUM,
+              iNVENTSITEID: widget.iNVENTSITEID,
+              iNVENTLOCATIONID: widget.iNVENTLOCATIONID,
+              cONFIGID: widget.cONFIGID,
+              wMSLOCATIONID: widget.wMSLOCATIONID,
+              itemSerialNo: value,
+            ),
+          );
+          result = table.length.toString();
 
-        InsertManyIntoMappedBarcodeController.getData(
-          widget.iTEMID,
-          widget.nAME,
-          value,
-          dropDownValue.toString(),
-        ).then((vl) {
-          setState(() {
-            _modelNoController.clear();
-          });
-          Navigator.pop(context);
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text(
-                "Record inserted Successfully.",
-                textAlign: TextAlign.center,
-              ),
-              backgroundColor: Colors.green,
-              duration: Duration(seconds: 2),
-            ),
-          );
-        }).onError((error, stackTrace) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                error.toString().replaceAll("Exception:", ""),
-                textAlign: TextAlign.center,
-              ),
-              duration: const Duration(seconds: 2),
-            ),
-          );
-          Navigator.pop(context);
-        });
-      }).onError(
-        (error, stackTrace) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: TextWidget(
-                text: error.toString().replaceAll("Exception:", ""),
-                color: Colors.white,
-              ),
-              backgroundColor: Colors.red,
-            ),
-          );
+          _modelNoController.clear();
+
+          recQty = recQty + 1;
         },
+      );
+      Navigator.pop(context);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            "Record inserted Successfully.",
+            textAlign: TextAlign.center,
+          ),
+          backgroundColor: Colors.green,
+          duration: Duration(seconds: 2),
+        ),
       );
     }).onError((error, stackTrace) {
       Navigator.pop(context);

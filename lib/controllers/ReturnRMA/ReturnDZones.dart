@@ -11,7 +11,6 @@ class ReturnDZones {
     String token = prefs.getString('token').toString();
 
     String url = "${Constants.baseUrl}getAllTblRZones";
-    print("url: $url");
 
     final uri = Uri.parse(url);
 
@@ -25,20 +24,16 @@ class ReturnDZones {
       var response = await http.get(uri, headers: headers);
 
       if (response.statusCode == 200) {
-        print("Status Code: ${response.statusCode}");
-
         var data = json.decode(response.body) as List;
         List<GetAllTblRZonesModel> shipmentData =
             data.map((e) => GetAllTblRZonesModel.fromJson(e)).toList();
         return shipmentData;
       } else {
-        print("Status Code: ${response.statusCode}");
         var data = json.decode(response.body);
         var msg = data['message'];
         throw Exception(msg);
       }
     } catch (e) {
-      print(e);
       throw Exception(e);
     }
   }

@@ -32,7 +32,7 @@ class WMSInventoryScreen extends StatefulWidget {
 class _WMSInventoryScreenState extends State<WMSInventoryScreen> {
   final TextEditingController _searchController = TextEditingController();
 
-  String? binDropDownValue = "";
+  List<String> binDropDownValue = [];
   List<String> binDropDownList = [];
 
   String? itemDropDownValue = "";
@@ -41,8 +41,8 @@ class _WMSInventoryScreenState extends State<WMSInventoryScreen> {
   List<String> binLocationDDValues = [];
   List<String> binLocationDDList = [];
 
-  String configDropDownValue = "G";
-  List<String> configDropDownList = ["G", "D", "DC", "MCI", "S"];
+  String classDropDownValue = "";
+  List<String> classDropDownList = [];
 
   String? assignDropDownValue;
   List<String>? assignDropDownList = [];
@@ -111,7 +111,6 @@ class _WMSInventoryScreenState extends State<WMSInventoryScreen> {
         setState(() {
           binDropDownList = value.toSet().toList();
           binDropDownList.removeWhere((element) => element == "");
-          binDropDownValue = binDropDownList.first;
         });
         Navigator.pop(context);
       });
@@ -306,24 +305,26 @@ class _WMSInventoryScreenState extends State<WMSInventoryScreen> {
                 // ),
                 const SizedBox(height: 10),
                 RadioListTile(
-                  title: const Text("Item ID"),
+                  title: const Text("Filter By Item Code"),
                   value: "item",
                   groupValue: gender,
                   onChanged: (value) {
                     setState(() {
                       gender = value.toString();
                       print(gender);
+                      table.clear();
                     });
                   },
                 ),
                 RadioListTile(
-                  title: const Text("Bin Location"),
+                  title: const Text("Filter by Bin Location"),
                   value: "bin",
                   groupValue: gender,
                   onChanged: (value) {
                     setState(() {
                       gender = value.toString();
                       print(gender);
+                      table.clear();
                     });
                   },
                 ),
@@ -334,42 +335,78 @@ class _WMSInventoryScreenState extends State<WMSInventoryScreen> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Container(
-                            margin: const EdgeInsets.only(left: 20),
-                            child: Text(
-                              "Bin Location",
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.blue[900]!,
+                          Visibility(
+                            visible: itemDropDownValue == null ? false : true,
+                            child: Container(
+                              margin: const EdgeInsets.only(left: 20),
+                              child: Text(
+                                "Bin Location",
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.blue[900]!,
+                                ),
                               ),
                             ),
                           ),
-                          Container(
-                            decoration: const BoxDecoration(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(20)),
-                              color: Colors.white,
-                            ),
-                            width: MediaQuery.of(context).size.width * 0.9,
-                            margin: const EdgeInsets.only(left: 20),
-                            child: DropdownSearch<String>(
-                              items: binDropDownList,
-                              onChanged: (value) {
-                                setState(() {
-                                  binDropDownValue = value!;
-                                });
+                          Center(
+                            child: Container(
+                              width: MediaQuery.of(context).size.width * 0.9,
+                              decoration: BoxDecoration(
+                                border:
+                                    Border.all(width: 1, color: Colors.grey),
+                              ),
+                              child: MultiSelectDialogField(
+                                items: binDropDownList
+                                    .map((e) => MultiSelectItem(e, e))
+                                    .toList(),
+                                listType: MultiSelectListType.CHIP,
+                                onConfirm: (values) {
+                                  binDropDownValue = values;
+                                  Constants.showLoadingDialog(context);
+                                  GetmapBarcodeDataByMultipleBinLocations
+                                          .postData(binDropDownValue)
+                                      .then((value) {
+                                    setState(() {
+                                      table = value;
+                                      filterTable = value;
+                                      total = table.length.toString();
 
-                                Constants.showLoadingDialog(context);
-                                dataToTable(binDropDownValue.toString());
-                              },
-                              selectedItem: binDropDownValue,
+                                      for (var i = 0; i < value.length; i++) {
+                                        containerIdList
+                                            .add(value[i].classification ?? "");
+                                      }
+                                      // remove empty values
+                                      containerIdList.removeWhere(
+                                          (element) => element == "");
+                                      containerIdList =
+                                          containerIdList.toSet().toList();
+
+                                      for (var i = 0; i < value.length; i++) {
+                                        itemNoAndDiscList
+                                            .add(value[i].itemCode ?? "");
+                                      }
+                                      // remove empty values
+                                      itemNoAndDiscList.removeWhere(
+                                          (element) => element == "");
+                                      itemNoAndDiscList =
+                                          itemNoAndDiscList.toSet().toList();
+                                    });
+                                    Navigator.pop(context);
+                                  }).onError((error, stackTrace) {
+                                    setState(() {
+                                      table.clear();
+                                      total = table.length.toString();
+                                    });
+                                    Navigator.pop(context);
+                                  });
+                                },
+                              ),
                             ),
                           ),
-
                           const SizedBox(height: 10),
                           Visibility(
-                            visible: binDropDownValue == null ? false : true,
+                            visible: binDropDownValue.isEmpty ? false : true,
                             child: Container(
                               margin: const EdgeInsets.only(left: 20),
                               child: Text(
@@ -383,7 +420,7 @@ class _WMSInventoryScreenState extends State<WMSInventoryScreen> {
                             ),
                           ),
                           Visibility(
-                            visible: binDropDownValue == null ? false : true,
+                            visible: binDropDownValue.isEmpty ? false : true,
                             child: Container(
                               decoration: const BoxDecoration(
                                 borderRadius:
@@ -410,12 +447,9 @@ class _WMSInventoryScreenState extends State<WMSInventoryScreen> {
                               ),
                             ),
                           ),
-                          // MultiSelect(
-                          //   items: _selectedItems,
-                          // ),
                           const SizedBox(height: 10),
                           Visibility(
-                            visible: binDropDownValue == null ? false : true,
+                            visible: binDropDownValue.isEmpty ? false : true,
                             child: Container(
                               margin: const EdgeInsets.only(left: 20),
                               child: Text(
@@ -429,7 +463,7 @@ class _WMSInventoryScreenState extends State<WMSInventoryScreen> {
                             ),
                           ),
                           Visibility(
-                            visible: binDropDownValue == null ? false : true,
+                            visible: binDropDownValue.isEmpty ? false : true,
                             child: Container(
                               decoration: const BoxDecoration(
                                 borderRadius:
@@ -533,6 +567,17 @@ class _WMSInventoryScreenState extends State<WMSInventoryScreen> {
                                         table = value;
                                         filterTable = value;
                                         total = table.length.toString();
+
+                                        for (var i = 0; i < value.length; i++) {
+                                          classDropDownList.add(
+                                              value[i].classification ?? "");
+                                        }
+                                        // remove empty value
+                                        classDropDownList.removeWhere(
+                                            (element) => element == "");
+
+                                        classDropDownList =
+                                            classDropDownList.toSet().toList();
                                       });
                                       Navigator.pop(context);
                                     }).onError((error, stackTrace) {
@@ -549,7 +594,7 @@ class _WMSInventoryScreenState extends State<WMSInventoryScreen> {
                             child: Container(
                               margin: const EdgeInsets.only(left: 20),
                               child: Text(
-                                "List of Item Config",
+                                "Filter by Classification",
                                 style: TextStyle(
                                   fontSize: 14,
                                   fontWeight: FontWeight.bold,
@@ -569,13 +614,20 @@ class _WMSInventoryScreenState extends State<WMSInventoryScreen> {
                               width: MediaQuery.of(context).size.width * 0.9,
                               margin: const EdgeInsets.only(left: 20),
                               child: DropdownSearch<String>(
-                                items: configDropDownList,
+                                items: classDropDownList,
                                 onChanged: (value) {
                                   setState(() {
-                                    configDropDownValue = value!;
+                                    classDropDownValue = value!;
+                                    // filter the filterTable by containerIdValue
+                                    filterTable = table
+                                        .where((element) =>
+                                            element.classification ==
+                                            containerIdValue)
+                                        .toList();
+                                    total = filterTable.length.toString();
                                   });
                                 },
-                                selectedItem: configDropDownValue,
+                                selectedItem: classDropDownValue,
                               ),
                             ),
                           ),
@@ -831,6 +883,14 @@ class _WMSInventoryScreenState extends State<WMSInventoryScreen> {
         }
         binLocationDDList = binLocationDDList.toSet().toList();
         binLocationDDList.removeWhere((element) => element == "");
+
+        for (var i = 0; i < value.length; i++) {
+          classDropDownList.add(value[i].classification ?? "");
+        }
+        // remove empty value
+        classDropDownList.removeWhere((element) => element == "");
+
+        classDropDownList = classDropDownList.toSet().toList();
       });
       Navigator.of(context).pop();
     }).onError((error, stackTrace) {

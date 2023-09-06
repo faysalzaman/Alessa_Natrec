@@ -13,13 +13,17 @@ class InsertManyIntoMappedBarcodeController {
     String name,
     String newBarcodeValue,
     String selectedValue,
+    String mainLocation,
+    String config,
+    String user,
+    String gtin,
+    String remarks,
   ) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String token = prefs.getString('token').toString();
 
-    String url = "${Constants.baseUrl}insertManyIntoMappedBarcodeFromRma";
+    String url = "${Constants.baseUrl}insertManyIntoMappedBarcode";
     print("url: $url");
-
     final uri = Uri.parse(url);
 
     final headers = <String, String>{
@@ -29,31 +33,28 @@ class InsertManyIntoMappedBarcodeController {
       "Accept": "application/json",
     };
 
-    print(jsonEncode({
-      "records": [
-        {
-          "itemdesc": name,
-          "itemcode": itemCode,
-          "itemserialno": newBarcodeValue,
-          "mapdate": DateFormat('yyyy-MM-dd').format(DateTime.now()),
-          "palletcode": null,
-          "binlocation": selectedValue
-        }
-      ]
-    }));
-
     try {
       var response = await http.post(uri,
           headers: headers,
           body: jsonEncode({
             "records": [
               {
+                "mainlocation": mainLocation,
+                "classification": config,
                 "itemdesc": name,
-                "itemcode": itemCode,
+                // "itemcode": itemCode,
+                "itemcode": "",
                 "itemserialno": newBarcodeValue,
                 "mapdate": DateFormat('yyyy-MM-dd').format(DateTime.now()),
-                "palletcode": null,
-                "binlocation": selectedValue
+                "palletcode": "",
+                "binlocation": selectedValue,
+                "user": user,
+                "gtin": gtin,
+                "remarks": remarks,
+                "reference": "",
+                "sid": "",
+                "cid": "",
+                "po": ""
               }
             ]
           }));

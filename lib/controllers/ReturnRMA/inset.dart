@@ -32,15 +32,14 @@ class insertManyIntoMappedBarcodeController2 {
         return {
           "itemcode": e.iTEMID ?? '',
           "itemdesc": e.nAME ?? '',
-          "classification": e.rETURNITEMNUM ?? '',
-          "mainlocation": e.iNVENTSITEID ?? '',
-          "intcode": e.cONFIGID ?? '',
+          "classification": e.cONFIGID ?? '',
+          "mainlocation": binLocation.substring(0, 2),
+          "intcode": '',
           "itemserialno": e.itemSerialNo ?? '',
-          "mapdate": '',
           "user": '',
           "binlocation": binLocation,
           "gtin": "",
-          "remarks": "",
+          "remarks": e.rETURNITEMNUM,
           "palletcode": "",
           "reference": "",
           "sid": "",
@@ -50,7 +49,7 @@ class insertManyIntoMappedBarcodeController2 {
       },
     ).toList();
 
-    print("Body: ${jsonEncode([...body])}");
+    print("body: ${jsonEncode({"records": body})}");
 
     try {
       var response = await http.post(uri,

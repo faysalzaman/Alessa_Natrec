@@ -1,15 +1,15 @@
+// ignore_for_file: avoid_print, camel_case_types, depend_on_referenced_packages
+
+import 'package:alessa_v2/models/getWmsReturnSalesOrderByReturnItemNum2Model.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
-import '../../models/getWmsReturnSalesOrderByReturnItemNumModel.dart';
 import '../../utils/Constants.dart';
 
 class insertIntoWmsReturnSalesOrderClController {
   static Future<void> getData(
-    getWmsReturnSalesOrderByReturnItemNumModel
-        updateWmsJournalMovementClQtyScannedList,
-    String serialNo,
+    List<getWmsReturnSalesOrderByReturnItemNum2Model> table,
   ) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String token = prefs.getString('token').toString();
@@ -26,16 +26,18 @@ class insertIntoWmsReturnSalesOrderClController {
       "Accept": "application/json",
     };
 
-    var body = {
-      ...updateWmsJournalMovementClQtyScannedList.toJson(),
-      "ITEMSERIALNO": serialNo
-    };
+    var body = table.map((e) {
+      return {
+        ...e.toJson(),
+        "ITEMSERIALNO": e.itemSerialNo,
+      };
+    }).toList();
 
-    print("bodyyy: ${jsonEncode([body])}");
+    print("body: ${jsonEncode([body])}");
 
     try {
       var response =
-          await http.post(uri, headers: headers, body: jsonEncode([body]));
+          await http.post(uri, headers: headers, body: jsonEncode(body));
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         print("Status Code: ${response.statusCode}");

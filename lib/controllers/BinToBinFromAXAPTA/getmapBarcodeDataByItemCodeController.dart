@@ -27,14 +27,11 @@ class GetMapBarcodeDataByItemCodeController {
       var response = await http.get(uri, headers: headers);
 
       if (response.statusCode == 200) {
-        print("Status Code: ${response.statusCode}");
-
         var data = json.decode(response.body) as List;
         List<GetAllTblLocationsCLModel> shipmentData =
             data.map((e) => GetAllTblLocationsCLModel.fromJson(e)).toList();
         return shipmentData;
       } else {
-        print("Status Code: ${response.statusCode}");
         var data = json.decode(response.body);
         var msg = data['message'];
         throw Exception(msg);

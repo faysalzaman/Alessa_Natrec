@@ -10,7 +10,6 @@ import 'package:auto_size_text/auto_size_text.dart';
 import '../../screens/Authentication/LoginScreen.dart';
 import 'DispatchingForm/DispatchingScreen.dart';
 import '../../screens/JournalMovement/JournalMovementScreen1.dart';
-import '../../screens/PhysicalInventory/PhysicalInventoryScreen.dart';
 import '../../screens/ProfitAndLoss/ProfitAndLossScreen1.dart';
 import '../../screens/ReturnRMA/ReturnRMAScreen1.dart';
 
@@ -25,7 +24,6 @@ import 'ReceiptManagement/ShipmentDispatchingScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import 'PhysicalInverntoryByBinLocation/PhysicalInventoryByBinLocationScreen.dart';
 import 'PickListAssigned/PickListAssignedScreen.dart';
 import 'RMAputaway/RMAPutawayScreen.dart';
 
@@ -51,9 +49,7 @@ class _HomeScreenState extends State<HomeScreen> {
       "assets/journal.png",
       "assets/product-return.png",
       "assets/put-away.png",
-      "assets/inventory-location.png",
       "assets/movement.png",
-      "assets/wms-inventory.png",
       "assets/profit-and-loss.png",
       "assets/allocation.png",
       "assets/receipt_management.png",
@@ -73,15 +69,32 @@ class _HomeScreenState extends State<HomeScreen> {
       "Bin To Bin (Journal)",
       "Return RMA",
       "RMA Put-Away",
-      "Inventory by Bin Location",
       "Journal Movement Counting",
-      "Physical Count (WMS)",
       "Profit and Loss",
       "Items Re-Allocation",
       "Un-Allocated Items",
       "Pallet ID Inquiry",
       "WMS Inventory",
       "Logout",
+    ],
+    "names": [
+      "SHIPMENTS",
+      "",
+      "",
+      "DELIVERY",
+      "",
+      "TRANSFER",
+      "",
+      "",
+      "RMA",
+      "",
+      "INVENTORY",
+      "",
+      "",
+      "UTILITY",
+      "",
+      "",
+      "Log-Out",
     ],
     "functions": [
       () {},
@@ -100,10 +113,6 @@ class _HomeScreenState extends State<HomeScreen> {
       () {},
       () {},
       () {},
-      () {},
-      () {
-        Get.to(() => const PhysicalInventoryScreen());
-      },
       () {},
       () {},
       () {
@@ -312,26 +321,6 @@ class _HomeScreenState extends State<HomeScreen> {
         );
       }
     };
-    data['functions'][11] = () {
-      if (widget.roles
-              .where((element) =>
-                  element.roleName == "WMS Inventory by Bin Location")
-              .isNotEmpty ||
-          widget.roles
-              .where((element) => element.roleName == "Admin")
-              .isNotEmpty) {
-        Get.to(() => const PhysicalInventoryByBinLocationScreen());
-      } else {
-        Get.snackbar(
-          'Access Denied',
-          'You are not authorized to access this feature.',
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
-          duration: const Duration(seconds: 2),
-        );
-      }
-    };
     data['functions'][12] = () {
       if (widget.roles
               .where((element) =>
@@ -517,4 +506,16 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
+}
+
+class MyPanelItem {
+  MyPanelItem({
+    required this.headerValue,
+    required this.bodyValue,
+    this.isExpanded = false,
+  });
+
+  String headerValue;
+  Widget bodyValue;
+  bool isExpanded;
 }
