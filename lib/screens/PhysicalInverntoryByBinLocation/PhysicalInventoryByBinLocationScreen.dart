@@ -126,7 +126,7 @@ class _PhysicalInventoryByBinLocationScreenState
             onPressed: () {
               Get.back();
             },
-            title: "Physical Inventory\nBy Bin-Location".toUpperCase(),
+            title: "WMS Inventory".toUpperCase(),
             actions: [
               GestureDetector(
                 onTap: () {

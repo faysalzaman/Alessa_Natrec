@@ -3,8 +3,8 @@
 import 'package:alessa_v2/models/GetRolesAssignedToUserModel.dart';
 import 'package:alessa_v2/screens/BarcodeMapping/BarcodeMappingScreen.dart';
 import 'package:alessa_v2/screens/PalletIdInquiry/PalletIdInquiryScreen.dart';
+import 'package:alessa_v2/screens/PhysicalInverntoryByBinLocation/PhysicalInventoryByBinLocationScreen.dart';
 import 'package:alessa_v2/screens/UnAllocatedItem/UnAllocatedItemsScreen1.dart';
-import 'package:alessa_v2/screens/WMSInventory/WMSInventoryScreen.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 
 import '../../screens/Authentication/LoginScreen.dart';
@@ -49,12 +49,12 @@ class _HomeScreenState extends State<HomeScreen> {
       "assets/journal.png",
       "assets/product-return.png",
       "assets/put-away.png",
+      "assets/inventory.png",
+      "assets/picking.png",
       "assets/movement.png",
       "assets/profit-and-loss.png",
       "assets/allocation.png",
       "assets/receipt_management.png",
-      "assets/inventory.png",
-      "assets/picking.png",
       "assets/logout.jpg",
     ],
     "titles": [
@@ -69,32 +69,13 @@ class _HomeScreenState extends State<HomeScreen> {
       "Bin To Bin (Journal)",
       "Return RMA",
       "RMA Put-Away",
+      "WMS Inventory",
       "Journal Movement Counting",
       "Profit and Loss",
       "Items Re-Allocation",
       "Un-Allocated Items",
       "Pallet ID Inquiry",
-      "WMS Inventory",
       "Logout",
-    ],
-    "names": [
-      "SHIPMENTS",
-      "",
-      "",
-      "DELIVERY",
-      "",
-      "TRANSFER",
-      "",
-      "",
-      "RMA",
-      "",
-      "INVENTORY",
-      "",
-      "",
-      "UTILITY",
-      "",
-      "",
-      "Log-Out",
     ],
     "functions": [
       () {},
@@ -112,6 +93,9 @@ class _HomeScreenState extends State<HomeScreen> {
       () {},
       () {},
       () {},
+      () {
+        Get.to(() => const PhysicalInventoryByBinLocationScreen());
+      },
       () {},
       () {},
       () {},
@@ -120,9 +104,6 @@ class _HomeScreenState extends State<HomeScreen> {
       },
       () {
         Get.to(() => const PalletIdInquiryScreen());
-      },
-      () {
-        Get.to(() => WMSInventoryScreen());
       },
       () {
         Get.offAll(() => const LoginScreen());
@@ -341,7 +322,7 @@ class _HomeScreenState extends State<HomeScreen> {
         );
       }
     };
-    data['functions'][14] = () {
+    data['functions'][13] = () {
       if (widget.roles
               .where((element) => element.roleName == "WMS Profit and Loss")
               .isNotEmpty ||
@@ -360,7 +341,7 @@ class _HomeScreenState extends State<HomeScreen> {
         );
       }
     };
-    data['functions'][15] = () {
+    data['functions'][14] = () {
       if (widget.roles
               .where((element) => element.roleName == "WMS Item Re Allocation")
               .isNotEmpty ||
@@ -515,7 +496,7 @@ class MyPanelItem {
     this.isExpanded = false,
   });
 
-  String headerValue;
+  Widget headerValue;
   Widget bodyValue;
   bool isExpanded;
 }
