@@ -316,67 +316,6 @@ class _PhysicalInventoryByBinLocationScreenState
                             'QTY DIFFERENCE',
                             style: TextStyle(color: Colors.white),
                           )),
-
-                          // DataColumn(
-                          //     label: Text(
-                          //   'ITEM GROUP ID',
-                          //   style: TextStyle(color: Colors.white),
-                          //   textAlign: TextAlign.center,
-                          // )),
-                          // DataColumn(
-                          //     label: Text(
-                          //   'GROUP NAME',
-                          //   style: TextStyle(color: Colors.white),
-                          //   textAlign: TextAlign.center,
-                          // )),
-                          // DataColumn(
-                          //     label: Text(
-                          //   'INVENTORY BY',
-                          //   style: TextStyle(color: Colors.white),
-                          //   textAlign: TextAlign.center,
-                          // )),
-                          // DataColumn(
-                          //     label: Text(
-                          //   'TRX DATE TIME',
-                          //   style: TextStyle(color: Colors.white),
-                          //   textAlign: TextAlign.center,
-                          // )),
-                          // DataColumn(
-                          //     label: Text(
-                          //   'TRX USER ID ASSIGNED',
-                          //   style: TextStyle(color: Colors.white),
-                          //   textAlign: TextAlign.center,
-                          // )),
-                          // DataColumn(
-                          //     label: Text(
-                          //   'TRX USER ID ASSIGNED BY',
-                          //   style: TextStyle(color: Colors.white),
-                          //   textAlign: TextAlign.center,
-                          // )),
-                          // DataColumn(
-                          //     label: Text(
-                          //   'QTY SCANNED',
-                          //   style: TextStyle(color: Colors.white),
-                          //   textAlign: TextAlign.center,
-                          // )),
-                          // DataColumn(
-                          //     label: Text(
-                          //   'QTY DIFFERENCE',
-                          //   style: TextStyle(color: Colors.white),
-                          //   textAlign: TextAlign.center,
-                          // )),
-                          // DataColumn(
-                          //     label: Text(
-                          //   'QTY ON HAND',
-                          //   style: TextStyle(color: Colors.white),
-                          //   textAlign: TextAlign.center,
-                          // )),
-                          // DataColumn(
-                          //     label: Text(
-                          //   'JOURNAL ID',
-                          //   style: TextStyle(color: Colors.white),
-                          //   textAlign: TextAlign.center,
-                          // )),
                         ],
                         rows: filterTable.map((e) {
                           return DataRow(onSelectChanged: (value) {}, cells: [
@@ -394,24 +333,6 @@ class _PhysicalInventoryByBinLocationScreenState
                                 e.qTYDIFFERENCE.toString() == "null"
                                     ? ""
                                     : e.qTYDIFFERENCE.toString())),
-                            // DataCell(Text(e.iTEMGROUPID ?? "")),
-                            // DataCell(Text(e.gROUPNAME ?? "")),
-                            // DataCell(Text(e.iNVENTORYBY ?? "")),
-                            // DataCell(Text(e.tRXDATETIME ?? "")),
-                            // DataCell(Text(e.tRXUSERIDASSIGNED ?? "")),
-                            // DataCell(Text(e.tRXUSERIDASSIGNEDBY ?? "")),
-                            // DataCell(Text(e.qTYSCANNED.toString() == "null"
-                            //     ? "0"
-                            //     : e.qTYSCANNED.toString())),
-                            // DataCell(Text(e.qTYDIFFERENCE.toString() == "null"
-                            //     ? "0"
-                            //     : e.qTYDIFFERENCE.toString())),
-                            // DataCell(Text(e.qTYONHAND.toString() == "null"
-                            //     ? "0"
-                            //     : e.qTYONHAND.toString())),
-                            // DataCell(Text(e.jOURNALID.toString() == "null"
-                            //     ? "0"
-                            //     : e.jOURNALID.toString())),
                           ]);
                         }).toList(),
                       ),
@@ -684,64 +605,44 @@ class _PhysicalInventoryByBinLocationScreenState
                           )),
                           DataColumn(
                               label: Text(
-                            'ITEM ID',
-                            style: TextStyle(color: Colors.white),
-                          )),
-                          DataColumn(
-                              label: Text(
-                            'ITEM NAME',
-                            style: TextStyle(color: Colors.white),
-                          )),
-                          DataColumn(
-                              label: Text(
-                            'GTIN',
+                            'TRX USER ID ASSIGNED',
                             style: TextStyle(color: Colors.white),
                             textAlign: TextAlign.center,
                           )),
                           DataColumn(
                               label: Text(
-                            'TRANS',
+                            'TRX USER ID ASSIGNED BY',
                             style: TextStyle(color: Colors.white),
-                            textAlign: TextAlign.center,
                           )),
                           DataColumn(
                               label: Text(
-                            'CLASSIFICATION',
+                            'CONFIG',
                             style: TextStyle(color: Colors.white),
-                            textAlign: TextAlign.center,
                           )),
                           DataColumn(
                               label: Text(
                             'ITEM SERIAL NO.',
                             style: TextStyle(color: Colors.white),
-                            textAlign: TextAlign.center,
                           )),
                           DataColumn(
                               label: Text(
-                            'MAIN LOCATION',
+                            'QTY SCANNED',
                             style: TextStyle(color: Colors.white),
-                            textAlign: TextAlign.center,
                           )),
                           DataColumn(
                               label: Text(
                             'BIN LOCATION',
                             style: TextStyle(color: Colors.white),
-                            textAlign: TextAlign.center,
                           )),
                         ],
                         rows: tbl2.map((e) {
                           return DataRow(onSelectChanged: (value) {}, cells: [
                             DataCell(Text((tbl2.indexOf(e) + 1).toString())),
-                            DataCell(Text(e.allData![0].itemCode ?? "")),
-                            DataCell(Text(e.allData![0].itemDesc ?? "")),
-                            DataCell(Text(e.allData![0].gTIN ?? "")),
-                            DataCell(Text(
-                                e.allData![0].trans.toString() == "null"
-                                    ? ""
-                                    : e.allData![0].trans.toString())),
+                            DataCell(Text(e.allData![0].user ?? "")),
+                            DataCell(Text(e.allData![0].sID ?? "")),
                             DataCell(Text(e.allData![0].classification ?? "")),
                             DataCell(Text(e.allData![0].itemSerialNo ?? "")),
-                            DataCell(Text(e.allData![0].mainLocation ?? "")),
+                            DataCell(Text(e.allData![0].pO ?? "")),
                             DataCell(Text(e.allData![0].binLocation ?? "")),
                           ]);
                         }).toList(),
