@@ -2,14 +2,16 @@
 
 import 'package:alessa_v2/controllers/PhysicalInventory/insertIntoWmsJournalCountingOnlyCLDetsController.dart';
 import 'package:alessa_v2/controllers/PhysicalInventory/validateItemSerialNumberForJournalCountingOnlyCLDetsController.dart';
-import 'package:alessa_v2/controllers/PhysicalInventoryByBinLocation/getBinLocationByUserIdFromJournalCountingOnlyCLController.dart';
 import 'package:alessa_v2/controllers/PhysicalInventoryByBinLocation/getWmsJournalCountingOnlyCLByBinLocationController.dart';
 import 'package:alessa_v2/controllers/PhysicalInventoryByBinLocation/incrementQTYSCANNEDInJournalCountingOnlyCLByBinLocationController.dart';
-import 'package:alessa_v2/models/getWmsJournalCountingOnlyCLByAssignedToUserIdModel.dart';
+import 'package:alessa_v2/models/GetWmsJournalCountingOnlyCLByAssignedToUserIdModel.dart';
 import 'package:alessa_v2/models/validateItemSerialNumberForJournalCountingOnlyCLDetsModel.dart';
 import 'package:alessa_v2/widgets/AppBarWidget.dart';
 import 'package:alessa_v2/widgets/TextFormField.dart';
 import 'package:alessa_v2/widgets/TextWidget.dart';
+import 'package:multi_select_flutter/dialog/multi_select_dialog_field.dart';
+import 'package:multi_select_flutter/util/multi_select_item.dart';
+import 'package:multi_select_flutter/util/multi_select_list_type.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../utils/Constants.dart';
@@ -31,7 +33,8 @@ class _PhysicalInventoryByBinLocationScreenState
   String total = "0";
   String total2 = "0";
 
-  List<getWmsJournalCountingOnlyCLByAssignedToUserIdModel> tbl1 = [];
+  List<GetWmsJournalCountingOnlyCLByAssignedToUserIdModel> tbl1 = [];
+  List<GetWmsJournalCountingOnlyCLByAssignedToUserIdModel> filterTable = [];
   List<validateItemSerialNumberForJournalCountingOnlyCLDetsModel> tbl2 = [];
 
   List<bool> isMarked = [];
@@ -62,56 +65,36 @@ class _PhysicalInventoryByBinLocationScreenState
 
     Future.delayed(const Duration(seconds: 1)).then((value) {
       Constants.showLoadingDialog(context);
-
-      getBinLocationByUserIdFromJournalCountingOnlyCLController
+      getWmsJournalCountingOnlyCLByBinLocationController
           .getData()
           .then((value) {
-        dropDownList.clear();
-        for (int i = 0; i < value.length; i++) {
-          setState(() {
-            if (value[i] != "") {
-              dropDownList.add(value[i]);
-            }
-          });
-        }
-
-        // convert list to set to remove duplicate values
-        Set<String> set = dropDownList.toSet();
-        // convert set to list to get all values
-        dropDownList = set.toList();
-
         setState(() {
-          dropDownValue = dropDownList[0];
-        });
+          tbl1 = value;
+          isMarked = List<bool>.generate(tbl1.length, (index) => false);
+          total = tbl1.length.toString();
+          filterTable = value;
 
-        getWmsJournalCountingOnlyCLByBinLocationController
-            .getData(dropDownValue.toString())
-            .then((value) {
-          setState(() {
-            tbl1 = value;
-            isMarked = List<bool>.generate(tbl1.length, (index) => false);
-            total = tbl1.length.toString();
-          });
-          Navigator.of(context).pop();
-        }).onError((error, stackTrace) {
-          Navigator.of(context).pop();
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(error.toString().replaceAll("Exception:", "")),
-            ),
-          );
+          for (var element in tbl1) {
+            dropDownList.add(element.bINLOCATION.toString());
+          }
+          dropDownList
+              .removeWhere((element) => element == "null" || element == "");
+          dropDownList = dropDownList.toSet().toList();
+          dropDownList.sort();
         });
+        Navigator.of(context).pop();
       }).onError((error, stackTrace) {
-        setState(() {
-          dropDownList.add("No Data Found");
-          dropDownValue = dropDownList[0];
-        });
-        Navigator.pop(context);
+        Navigator.of(context).pop();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(error.toString().replaceAll("Exception:", "")),
+          ),
+        );
       });
     });
   }
 
-  String? dropDownValue;
+  List<String> dropDownValue = [];
   List<String> dropDownList = [];
 
   @override
@@ -182,86 +165,105 @@ class _PhysicalInventoryByBinLocationScreenState
                     ],
                   ),
                 ),
+                // Container(
+                //   margin: const EdgeInsets.only(left: 20, top: 10),
+                //   child: TextWidget(
+                //     text: "From",
+                //     color: Colors.blue[900]!,
+                //     fontSize: 15,
+                //   ),
+                // ),
+                // Center(
+                //   child: ClipRRect(
+                //     borderRadius: BorderRadius.circular(10),
+                //     child: Container(
+                //       margin: const EdgeInsets.only(bottom: 10),
+                //       padding: const EdgeInsets.only(left: 30, right: 30),
+                //       width: MediaQuery.of(context).size.width * 0.9,
+                //       height: 50,
+                //       decoration: BoxDecoration(
+                //         border: Border.all(
+                //           color: Colors.grey,
+                //           width: 1,
+                //         ),
+                //         borderRadius: BorderRadius.circular(10),
+                //       ),
+                //       child: DropdownButtonHideUnderline(
+                //         child: DropdownButtonFormField(
+                //           items: dropDownList.map((String value) {
+                //             return DropdownMenuItem<String>(
+                //               value: value,
+                //               child: TextWidget(
+                //                 text: value,
+                //                 color: Colors.black,
+                //                 fontSize: 16,
+                //               ),
+                //             );
+                //           }).toList(),
+                //           style: const TextStyle(
+                //             color: Colors.black,
+                //             fontSize: 16,
+                //           ),
+                //           onChanged: (value) {
+                //             setState(() {
+                //               dropDownValue = value.toString();
+                //               filterTable = tbl1
+                //                   .where((element) =>
+                //                       element.bINLOCATION == value.toString())
+                //                   .toList();
+                //               total = filterTable.length.toString();
+                //             });
+                //           },
+                //           icon: const Icon(
+                //             Icons.arrow_downward,
+                //             color: Colors.black,
+                //             size: 20,
+                //           ),
+                //           value: dropDownValue,
+                //           elevation: 10,
+                //         ),
+                //       ),
+                //     ),
+                //   ),
+                // ),
                 Container(
                   margin: const EdgeInsets.only(left: 20, top: 10),
-                  child: TextWidget(
-                    text: "From",
-                    color: Colors.blue[900]!,
-                    fontSize: 15,
-                  ),
-                ),
-                Center(
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
-                    child: Container(
-                      margin: const EdgeInsets.only(bottom: 10),
-                      padding: const EdgeInsets.only(left: 30, right: 30),
-                      width: MediaQuery.of(context).size.width * 0.9,
-                      height: 50,
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: Colors.grey,
-                          width: 1,
-                        ),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: DropdownButtonHideUnderline(
-                        child: DropdownButtonFormField(
-                          items: dropDownList.map((String value) {
-                            return DropdownMenuItem<String>(
-                              value: value,
-                              child: TextWidget(
-                                text: value,
-                                color: Colors.black,
-                                fontSize: 16,
-                              ),
-                            );
-                          }).toList(),
-                          style: const TextStyle(
-                            color: Colors.black,
-                            fontSize: 16,
-                          ),
-                          onChanged: (value) {
-                            setState(() {
-                              dropDownValue = value.toString();
-                            });
-
-                            Constants.showLoadingDialog(context);
-                            getWmsJournalCountingOnlyCLByBinLocationController
-                                .getData(dropDownValue.toString())
-                                .then((value) {
-                              setState(() {
-                                tbl1 = value;
-
-                                isMarked = List<bool>.generate(
-                                    tbl1.length, (index) => false);
-                                total = tbl1.length.toString();
-                              });
-                              Navigator.of(context).pop();
-                            }).onError((error, stackTrace) {
-                              tbl1 = [];
-                              Navigator.of(context).pop();
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(error
-                                      .toString()
-                                      .replaceAll("Exception:", "")),
-                                ),
-                              );
-                            });
-                          },
-                          icon: const Icon(
-                            Icons.arrow_downward,
-                            color: Colors.black,
-                            size: 20,
-                          ),
-                          value: dropDownValue,
-                          elevation: 10,
-                        ),
-                      ),
+                  child: Text(
+                    "Filter By Bin Location",
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.blue[900]!,
                     ),
                   ),
                 ),
+                Center(
+                  child: Container(
+                    width: MediaQuery.of(context).size.width * 0.9,
+                    decoration: BoxDecoration(
+                      border: Border.all(width: 1, color: Colors.grey),
+                    ),
+                    child: MultiSelectDialogField(
+                      items: dropDownList
+                          .map((e) => MultiSelectItem(e, e))
+                          .toList(),
+                      listType: MultiSelectListType.CHIP,
+                      onConfirm: (values) {
+                        setState(() {
+                          dropDownValue = values;
+                          // filter the table based on the selected bin locations in the values
+                          filterTable = tbl1
+                              .where((element) =>
+                                  values.contains(element.bINLOCATION))
+                              .toList();
+
+                          total = filterTable.length.toString();
+                        });
+                      },
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 10),
                 Container(
                   alignment: Alignment.topCenter,
                   height: MediaQuery.of(context).size.height * 0.4,
@@ -300,18 +302,18 @@ class _PhysicalInventoryByBinLocationScreenState
                           )),
                           DataColumn(
                               label: Text(
-                            'BIN LOCATION',
+                            'QTY ON HAND',
                             style: TextStyle(color: Colors.white),
                             textAlign: TextAlign.center,
                           )),
                           DataColumn(
                               label: Text(
-                            'ITEM NAME',
+                            'QTY SCANNED',
                             style: TextStyle(color: Colors.white),
                           )),
                           DataColumn(
                               label: Text(
-                            'ITEM ID',
+                            'QTY DIFFERENCE',
                             style: TextStyle(color: Colors.white),
                           )),
 
@@ -376,13 +378,22 @@ class _PhysicalInventoryByBinLocationScreenState
                           //   textAlign: TextAlign.center,
                           // )),
                         ],
-                        rows: tbl1.map((e) {
+                        rows: filterTable.map((e) {
                           return DataRow(onSelectChanged: (value) {}, cells: [
+                            DataCell(
+                                Text((filterTable.indexOf(e) + 1).toString())),
                             DataCell(SelectableText(
-                                (tbl1.indexOf(e) + 1).toString())),
-                            DataCell(SelectableText(e.bINLOCATION ?? "")),
-                            DataCell(SelectableText(e.iTEMNAME ?? "")),
-                            DataCell(SelectableText(e.iTEMID ?? "")),
+                                e.qTYONHAND.toString() == "null"
+                                    ? ""
+                                    : e.qTYONHAND.toString())),
+                            DataCell(SelectableText(
+                                e.qTYSCANNED.toString() == "null"
+                                    ? ""
+                                    : e.qTYSCANNED.toString())),
+                            DataCell(SelectableText(
+                                e.qTYDIFFERENCE.toString() == "null"
+                                    ? ""
+                                    : e.qTYDIFFERENCE.toString())),
                             // DataCell(Text(e.iTEMGROUPID ?? "")),
                             // DataCell(Text(e.gROUPNAME ?? "")),
                             // DataCell(Text(e.iNVENTORYBY ?? "")),

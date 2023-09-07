@@ -4,17 +4,17 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
-import '../../models/getWmsJournalCountingOnlyCLByAssignedToUserIdModel.dart';
+import '../../models/GetWmsJournalCountingOnlyCLByAssignedToUserIdModel.dart';
 import '../../utils/Constants.dart';
 
 class getWmsJournalCountingOnlyCLByBinLocationController {
-  static Future<List<getWmsJournalCountingOnlyCLByAssignedToUserIdModel>>
-      getData(String binLocation) async {
+  static Future<List<GetWmsJournalCountingOnlyCLByAssignedToUserIdModel>>
+      getData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String token = prefs.getString('token').toString();
 
     String url =
-        "${Constants.baseUrl}getWmsJournalCountingOnlyCLByBinLocation?binloacation=$binLocation";
+        "${Constants.baseUrl}getWmsJournalCountingOnlyCLByAssignedToUserId";
     print("url: $url");
 
     final uri = Uri.parse(url);
@@ -32,10 +32,11 @@ class getWmsJournalCountingOnlyCLByBinLocationController {
         print("Status Code: ${response.statusCode}");
 
         var data = json.decode(response.body) as List;
-        List<getWmsJournalCountingOnlyCLByAssignedToUserIdModel> shipmentData =
+        List<GetWmsJournalCountingOnlyCLByAssignedToUserIdModel> shipmentData =
             data
-                .map((e) => getWmsJournalCountingOnlyCLByAssignedToUserIdModel
-                    .fromJson(e))
+                .map((e) =>
+                    GetWmsJournalCountingOnlyCLByAssignedToUserIdModel.fromJson(
+                        e))
                 .toList();
         return shipmentData;
       } else {

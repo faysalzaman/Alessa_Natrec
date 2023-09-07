@@ -7,7 +7,7 @@ import '../../controllers/PhysicalInventory/getWmsJournalCountingOnlyCLByAssigne
 import '../../controllers/PhysicalInventory/incrementQTYSCANNEDInJournalCountingOnlyCLController.dart';
 import '../../controllers/PhysicalInventory/insertIntoWmsJournalCountingOnlyCLDetsController.dart';
 import '../../controllers/PhysicalInventory/validateItemSerialNumberForJournalCountingOnlyCLDetsController.dart';
-import '../../models/getWmsJournalCountingOnlyCLByAssignedToUserIdModel.dart';
+import '../../models/GetWmsJournalCountingOnlyCLByAssignedToUserIdModel.dart';
 import '../../utils/Constants.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -30,7 +30,7 @@ class _PhysicalInventoryScreenState extends State<PhysicalInventoryScreen> {
   String total = "0";
   String total2 = "0";
 
-  List<getWmsJournalCountingOnlyCLByAssignedToUserIdModel> tbl1 = [];
+  List<GetWmsJournalCountingOnlyCLByAssignedToUserIdModel> tbl1 = [];
 
   List<validateItemSerialNumberForJournalCountingOnlyCLDetsModel> tbl2 = [];
 

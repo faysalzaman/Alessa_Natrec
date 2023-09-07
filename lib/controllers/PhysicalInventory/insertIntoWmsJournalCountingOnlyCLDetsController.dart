@@ -1,6 +1,6 @@
 // ignore_for_file: camel_case_types, depend_on_referenced_packages, non_constant_identifier_names, avoid_print
 
-import 'package:alessa_v2/models/getWmsJournalCountingOnlyCLByAssignedToUserIdModel.dart';
+import 'package:alessa_v2/models/GetWmsJournalCountingOnlyCLByAssignedToUserIdModel.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
@@ -13,7 +13,7 @@ class insertIntoWmsJournalCountingOnlyCLDetsController {
     String BINLOCATION,
     String QTYSCANNED,
     String ITEMSERIALNO,
-    getWmsJournalCountingOnlyCLByAssignedToUserIdModel ITEM,
+    GetWmsJournalCountingOnlyCLByAssignedToUserIdModel ITEM,
     String ITEMID,
     String ITEMNAME,
     String eventName,

@@ -1,6 +1,4 @@
-// ignore_for_file: file_names, camel_case_types
-
-class getWmsJournalCountingOnlyCLByAssignedToUserIdModel {
+class GetWmsJournalCountingOnlyCLByAssignedToUserIdModel {
   String? iTEMID;
   String? iTEMNAME;
   String? iTEMGROUPID;
@@ -9,13 +7,14 @@ class getWmsJournalCountingOnlyCLByAssignedToUserIdModel {
   String? tRXDATETIME;
   String? tRXUSERIDASSIGNED;
   String? tRXUSERIDASSIGNEDBY;
-  num? qTYSCANNED;
-  num? qTYDIFFERENCE;
-  num? qTYONHAND;
-  num? jOURNALID;
+  int? qTYSCANNED;
+  int? qTYDIFFERENCE;
+  int? qTYONHAND;
+  int? jOURNALID;
   String? bINLOCATION;
+  String? cLASSFICATION;
 
-  getWmsJournalCountingOnlyCLByAssignedToUserIdModel(
+  GetWmsJournalCountingOnlyCLByAssignedToUserIdModel(
       {this.iTEMID,
       this.iTEMNAME,
       this.iTEMGROUPID,
@@ -28,9 +27,10 @@ class getWmsJournalCountingOnlyCLByAssignedToUserIdModel {
       this.qTYDIFFERENCE,
       this.qTYONHAND,
       this.jOURNALID,
-      this.bINLOCATION});
+      this.bINLOCATION,
+      this.cLASSFICATION});
 
-  getWmsJournalCountingOnlyCLByAssignedToUserIdModel.fromJson(
+  GetWmsJournalCountingOnlyCLByAssignedToUserIdModel.fromJson(
       Map<String, dynamic> json) {
     iTEMID = json['ITEMID'];
     iTEMNAME = json['ITEMNAME'];
@@ -45,6 +45,7 @@ class getWmsJournalCountingOnlyCLByAssignedToUserIdModel {
     qTYONHAND = json['QTYONHAND'];
     jOURNALID = json['JOURNALID'];
     bINLOCATION = json['BINLOCATION'];
+    cLASSFICATION = json['CLASSFICATION'];
   }
 
   Map<String, dynamic> toJson() {
@@ -62,6 +63,7 @@ class getWmsJournalCountingOnlyCLByAssignedToUserIdModel {
     data['QTYONHAND'] = qTYONHAND;
     data['JOURNALID'] = jOURNALID;
     data['BINLOCATION'] = bINLOCATION;
+    data['CLASSFICATION'] = cLASSFICATION;
     return data;
   }
 }
