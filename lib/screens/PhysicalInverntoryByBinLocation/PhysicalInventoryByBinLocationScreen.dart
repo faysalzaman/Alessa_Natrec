@@ -9,6 +9,7 @@ import 'package:alessa_v2/models/validateItemSerialNumberForJournalCountingOnlyC
 import 'package:alessa_v2/widgets/AppBarWidget.dart';
 import 'package:alessa_v2/widgets/TextFormField.dart';
 import 'package:alessa_v2/widgets/TextWidget.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:multi_select_flutter/dialog/multi_select_dialog_field.dart';
 import 'package:multi_select_flutter/util/multi_select_item.dart';
 import 'package:multi_select_flutter/util/multi_select_list_type.dart';
@@ -30,19 +31,23 @@ class _PhysicalInventoryByBinLocationScreenState
     extends State<PhysicalInventoryByBinLocationScreen> {
   final TextEditingController _palletController = TextEditingController();
   final TextEditingController _serialController = TextEditingController();
-  String total = "0";
-  String total2 = "0";
 
   List<GetWmsJournalCountingOnlyCLByAssignedToUserIdModel> tbl1 = [];
   List<GetWmsJournalCountingOnlyCLByAssignedToUserIdModel> filterTable = [];
   List<validateItemSerialNumberForJournalCountingOnlyCLDetsModel> tbl2 = [];
 
+  String total = "0";
+  String total2 = "0";
+
   List<bool> isMarked = [];
 
-  String _site = "By Serial";
+  String _site = "item";
 
   String userName = "";
   String userID = "";
+
+  List<num> qtyScanned = [];
+  List<num>? qtyDifference = [];
 
   void _showUserInfo() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -75,12 +80,22 @@ class _PhysicalInventoryByBinLocationScreenState
           filterTable = value;
 
           for (var element in tbl1) {
-            dropDownList.add(element.bINLOCATION.toString());
+            binDropDownList.add(element.bINLOCATION.toString());
           }
-          dropDownList
+          binDropDownList
               .removeWhere((element) => element == "null" || element == "");
-          dropDownList = dropDownList.toSet().toList();
-          dropDownList.sort();
+          binDropDownList = binDropDownList.toSet().toList();
+          binDropDownList.sort();
+
+          for (var element in tbl1) {
+            itemDropDownList.add(element.iTEMID.toString());
+          }
+          itemDropDownList
+              .removeWhere((element) => element == "null" || element == "");
+          itemDropDownList = itemDropDownList.toSet().toList();
+          itemDropDownList.sort();
+
+          itemDropDownValue = itemDropDownList[0];
         });
         Navigator.of(context).pop();
       }).onError((error, stackTrace) {
@@ -94,8 +109,11 @@ class _PhysicalInventoryByBinLocationScreenState
     });
   }
 
-  List<String> dropDownValue = [];
-  List<String> dropDownList = [];
+  List<String> binDropDownValue = [];
+  List<String> binDropDownList = [];
+
+  String itemDropDownValue = "";
+  List<String> itemDropDownList = [];
 
   @override
   Widget build(BuildContext context) {
@@ -138,7 +156,7 @@ class _PhysicalInventoryByBinLocationScreenState
                 Container(
                   padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
-                    color: Colors.orange[100],
+                    color: Colors.orange.withOpacity(0.2),
                   ),
                   width: MediaQuery.of(context).size.width,
                   child: Row(
@@ -165,101 +183,168 @@ class _PhysicalInventoryByBinLocationScreenState
                     ],
                   ),
                 ),
-                // Container(
-                //   margin: const EdgeInsets.only(left: 20, top: 10),
-                //   child: TextWidget(
-                //     text: "From",
-                //     color: Colors.blue[900]!,
-                //     fontSize: 15,
-                //   ),
-                // ),
-                // Center(
-                //   child: ClipRRect(
-                //     borderRadius: BorderRadius.circular(10),
-                //     child: Container(
-                //       margin: const EdgeInsets.only(bottom: 10),
-                //       padding: const EdgeInsets.only(left: 30, right: 30),
-                //       width: MediaQuery.of(context).size.width * 0.9,
-                //       height: 50,
-                //       decoration: BoxDecoration(
-                //         border: Border.all(
-                //           color: Colors.grey,
-                //           width: 1,
-                //         ),
-                //         borderRadius: BorderRadius.circular(10),
-                //       ),
-                //       child: DropdownButtonHideUnderline(
-                //         child: DropdownButtonFormField(
-                //           items: dropDownList.map((String value) {
-                //             return DropdownMenuItem<String>(
-                //               value: value,
-                //               child: TextWidget(
-                //                 text: value,
-                //                 color: Colors.black,
-                //                 fontSize: 16,
-                //               ),
-                //             );
-                //           }).toList(),
-                //           style: const TextStyle(
-                //             color: Colors.black,
-                //             fontSize: 16,
-                //           ),
-                //           onChanged: (value) {
-                //             setState(() {
-                //               dropDownValue = value.toString();
-                //               filterTable = tbl1
-                //                   .where((element) =>
-                //                       element.bINLOCATION == value.toString())
-                //                   .toList();
-                //               total = filterTable.length.toString();
-                //             });
-                //           },
-                //           icon: const Icon(
-                //             Icons.arrow_downward,
-                //             color: Colors.black,
-                //             size: 20,
-                //           ),
-                //           value: dropDownValue,
-                //           elevation: 10,
-                //         ),
-                //       ),
-                //     ),
-                //   ),
-                // ),
                 Container(
-                  margin: const EdgeInsets.only(left: 20, top: 10),
-                  child: Text(
-                    "Filter By Bin Location",
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Colors.orange.withOpacity(0.2),
+                  ),
+                  margin: const EdgeInsets.all(10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: <Widget>[
+                      Flexible(
+                        child: ListTile(
+                          title: const AutoSizeText(
+                            'Item Id',
+                            style: TextStyle(
+                              fontSize: 14,
+                            ),
+                          ),
+                          leading: Radio(
+                            value: "item",
+                            groupValue: _site,
+                            onChanged: (String? value) {
+                              setState(() {
+                                _site = value!;
+                                print(_site);
+                                filterTable = tbl1;
+                              });
+                            },
+                          ),
+                        ),
+                      ),
+                      Flexible(
+                        child: ListTile(
+                          title: const AutoSizeText(
+                            'Bin Location',
+                            style: TextStyle(
+                              fontSize: 14,
+                            ),
+                          ),
+                          leading: Radio(
+                            value: "bin",
+                            groupValue: _site,
+                            onChanged: (String? value) {
+                              setState(() {
+                                _site = value!;
+                                print(_site);
+                                filterTable = tbl1;
+                              });
+                            },
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Visibility(
+                  visible: _site == "item" ? true : false,
+                  child: Container(
+                    margin: const EdgeInsets.only(left: 20, top: 10),
+                    child: TextWidget(
+                      text: "Filter By Item Id",
                       color: Colors.blue[900]!,
+                      fontSize: 15,
                     ),
                   ),
                 ),
-                Center(
-                  child: Container(
-                    width: MediaQuery.of(context).size.width * 0.9,
-                    decoration: BoxDecoration(
-                      border: Border.all(width: 1, color: Colors.grey),
+                Visibility(
+                  visible: _site == "item" ? true : false,
+                  child: Center(
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: Container(
+                        margin: const EdgeInsets.only(bottom: 10),
+                        padding: const EdgeInsets.only(left: 30, right: 30),
+                        width: MediaQuery.of(context).size.width * 0.9,
+                        height: 50,
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Colors.grey,
+                            width: 1,
+                          ),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: DropdownButtonHideUnderline(
+                          child: DropdownButtonFormField(
+                            items: itemDropDownList.map((String value) {
+                              return DropdownMenuItem<String>(
+                                value: value,
+                                child: TextWidget(
+                                  text: value,
+                                  color: Colors.black,
+                                  fontSize: 16,
+                                ),
+                              );
+                            }).toList(),
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontSize: 16,
+                            ),
+                            onChanged: (value) {
+                              setState(() {
+                                itemDropDownValue = value.toString();
+                                filterTable = tbl1
+                                    .where((element) =>
+                                        element.iTEMID.toString().trim() ==
+                                        value.toString().trim())
+                                    .toList();
+                                total = filterTable.length.toString();
+                              });
+                            },
+                            icon: const Icon(
+                              Icons.arrow_downward,
+                              color: Colors.black,
+                              size: 20,
+                            ),
+                            value: itemDropDownValue,
+                            elevation: 10,
+                          ),
+                        ),
+                      ),
                     ),
-                    child: MultiSelectDialogField(
-                      items: dropDownList
-                          .map((e) => MultiSelectItem(e, e))
-                          .toList(),
-                      listType: MultiSelectListType.CHIP,
-                      onConfirm: (values) {
-                        setState(() {
-                          dropDownValue = values;
-                          // filter the table based on the selected bin locations in the values
-                          filterTable = tbl1
-                              .where((element) =>
-                                  values.contains(element.bINLOCATION))
-                              .toList();
+                  ),
+                ),
+                Visibility(
+                  visible: _site == "bin" ? true : false,
+                  child: Container(
+                    margin: const EdgeInsets.only(left: 20, top: 10),
+                    child: Text(
+                      "Filter By Bin Location",
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.blue[900]!,
+                      ),
+                    ),
+                  ),
+                ),
+                Visibility(
+                  visible: _site == "bin" ? true : false,
+                  child: Center(
+                    child: Container(
+                      width: MediaQuery.of(context).size.width * 0.9,
+                      decoration: BoxDecoration(
+                        border: Border.all(width: 1, color: Colors.grey),
+                      ),
+                      child: MultiSelectDialogField(
+                        items: binDropDownList
+                            .map((e) => MultiSelectItem(e, e))
+                            .toList(),
+                        listType: MultiSelectListType.CHIP,
+                        onConfirm: (values) {
+                          setState(() {
+                            binDropDownValue = values;
+                            // filter the table based on the selected bin locations in the values
+                            filterTable = tbl1
+                                .where((element) => values.contains(
+                                    element.bINLOCATION.toString().trim()))
+                                .toList();
 
-                          total = filterTable.length.toString();
-                        });
-                      },
+                            total = filterTable.length.toString();
+                          });
+                        },
+                      ),
                     ),
                   ),
                 ),
@@ -316,6 +401,11 @@ class _PhysicalInventoryByBinLocationScreenState
                             'QTY DIFFERENCE',
                             style: TextStyle(color: Colors.white),
                           )),
+                          DataColumn(
+                              label: Text(
+                            'BIN LOCATION',
+                            style: TextStyle(color: Colors.white),
+                          )),
                         ],
                         rows: filterTable.map((e) {
                           return DataRow(onSelectChanged: (value) {}, cells: [
@@ -323,16 +413,17 @@ class _PhysicalInventoryByBinLocationScreenState
                                 Text((filterTable.indexOf(e) + 1).toString())),
                             DataCell(SelectableText(
                                 e.qTYONHAND.toString() == "null"
-                                    ? ""
+                                    ? "0"
                                     : e.qTYONHAND.toString())),
                             DataCell(SelectableText(
                                 e.qTYSCANNED.toString() == "null"
-                                    ? ""
+                                    ? "0"
                                     : e.qTYSCANNED.toString())),
                             DataCell(SelectableText(
                                 e.qTYDIFFERENCE.toString() == "null"
-                                    ? ""
+                                    ? "0"
                                     : e.qTYDIFFERENCE.toString())),
+                            DataCell(SelectableText(e.bINLOCATION ?? '')),
                           ]);
                         }).toList(),
                       ),
@@ -513,6 +604,43 @@ class _PhysicalInventoryByBinLocationScreenState
                                     "physicalInventoryBinLocation",
                                   )
                                       .then((value) {
+                                    // qtyScanned increase + 1 with the same binLocation with table2
+                                    setState(() {
+                                      filterTable[filterTable.indexWhere(
+                                              (element) =>
+                                                  element.bINLOCATION
+                                                      .toString()
+                                                      .trim() ==
+                                                  table2.binLocation
+                                                      .toString()
+                                                      .trim())]
+                                          .qTYSCANNED = (int.parse(filterTable[
+                                                  filterTable.indexWhere(
+                                                      (element) =>
+                                                          element.bINLOCATION
+                                                              .toString()
+                                                              .trim() ==
+                                                          table2.binLocation
+                                                              .toString()
+                                                              .trim())]
+                                              .qTYSCANNED
+                                              .toString()) +
+                                          1);
+
+                                      // qtyDifference will be calculated by subtracting the qtyScanned from qtyOnHand
+                                      filterTable[filterTable.indexWhere((element) =>
+                                              element.bINLOCATION.toString().trim() ==
+                                              table2.binLocation
+                                                  .toString()
+                                                  .trim())]
+                                          .qTYDIFFERENCE = (int.parse(filterTable[
+                                                  filterTable.indexWhere((element) =>
+                                                      element.bINLOCATION.toString().trim() ==
+                                                      table2.binLocation.toString().trim())]
+                                              .qTYONHAND
+                                              .toString()) -
+                                          int.parse(filterTable[filterTable.indexWhere((element) => element.bINLOCATION.toString().trim() == table2.binLocation.toString().trim())].qTYSCANNED.toString()));
+                                    });
                                     Navigator.of(context).pop();
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       const SnackBar(
