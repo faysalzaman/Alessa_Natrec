@@ -591,25 +591,21 @@ class _PhysicalInventoryByBinLocationScreenState
                                   .getData(_serialController.text.trim())
                                   .then((response) {
                                 var table2 = response.allData![0];
-                                print(table2.binLocation);
+                                print(table2.binLocation.toString().trim());
 
-                                for (var element in tbl1) {
-                                  if (element.bINLOCATION.toString().trim() !=
-                                          table2.binLocation
-                                              .toString()
-                                              .trim() ||
-                                      tbl1.isEmpty) {
-                                    Navigator.of(context).pop();
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                        backgroundColor: Colors.red,
-                                        content: Text(
-                                          "Mapped Bin Location not found in the list",
-                                        ),
+                                if (!tbl1.any((element) =>
+                                    element.bINLOCATION.toString().trim() ==
+                                    table2.binLocation.toString().trim())) {
+                                  Navigator.of(context).pop();
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      backgroundColor: Colors.red,
+                                      content: Text(
+                                        "Mapped Bin Location not found in the list",
                                       ),
-                                    );
-                                    return;
-                                  }
+                                    ),
+                                  );
+                                  return;
                                 }
 
                                 setState(() {
