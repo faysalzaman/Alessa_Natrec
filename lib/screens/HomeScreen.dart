@@ -458,136 +458,170 @@ class _HomeScreenState extends State<HomeScreen> {
                       ],
                     ),
                   ),
-                  const Divider(color: Colors.black, thickness: 1),
-                  ListTile(
-                    leading: CircleAvatar(
-                      backgroundColor: Colors.grey[400],
-                      child: Image.asset(
-                        data["images"][0],
-                        width: 50,
-                        height: 50,
-                      ),
-                    ),
-                    title: AutoSizeText(data["titles"][0]),
-                    onTap: data["functions"][0],
-                  ),
-                  const Divider(color: Colors.black, thickness: 1),
-
-                  ExpandablePanel(
-                    header: ListTile(
+                  FadeAnimation(
+                      delay: 5,
+                      child: const Divider(color: Colors.black, thickness: 1)),
+                  FadeAnimation(
+                    delay: 5,
+                    child: ListTile(
                       leading: CircleAvatar(
                         backgroundColor: Colors.grey[400],
                         child: Image.asset(
-                          "assets/shipmentTitle.png",
+                          data["images"][0],
                           width: 50,
                           height: 50,
                         ),
                       ),
-                      title: const AutoSizeText("SHIPMENTS"),
+                      title: AutoSizeText(data["titles"][0]),
+                      onTap: data["functions"][0],
                     ),
-                    collapsed: Container(),
-                    expanded: Column(
-                      children: <Widget>[
-                        Container(
-                          margin: const EdgeInsets.only(left: 20),
-                          child: ListTile(
-                            leading: CircleAvatar(
-                              backgroundColor: Colors.grey[400],
-                              child: Image.asset(
-                                data["images"][1],
-                                width: 50,
-                                height: 50,
-                              ),
-                            ),
-                            title: AutoSizeText(data["titles"][1]),
-                            onTap: data["functions"][1],
+                  ),
+                  FadeAnimation(
+                      delay: 5,
+                      child: const Divider(color: Colors.black, thickness: 1)),
+
+                  FadeAnimation(
+                    delay: 5,
+                    child: ExpandablePanel(
+                      header: ListTile(
+                        leading: CircleAvatar(
+                          backgroundColor: Colors.grey[400],
+                          child: Image.asset(
+                            "assets/shipmentTitle.png",
+                            width: 50,
+                            height: 50,
                           ),
                         ),
-                        Container(
-                          margin: const EdgeInsets.only(left: 20),
-                          child: ListTile(
-                            leading: CircleAvatar(
-                              backgroundColor: Colors.grey[400],
-                              child: Image.asset(
-                                data["images"][2],
-                                width: 50,
-                                height: 50,
+                        title: const AutoSizeText("SHIPMENTS"),
+                      ),
+                      collapsed: Container(),
+                      expanded: Column(
+                        children: <Widget>[
+                          FadeAnimation(
+                            delay: 1,
+                            child: Container(
+                              margin: const EdgeInsets.only(left: 20),
+                              child: ListTile(
+                                leading: CircleAvatar(
+                                  backgroundColor: Colors.grey[400],
+                                  child: Image.asset(
+                                    data["images"][1],
+                                    width: 50,
+                                    height: 50,
+                                  ),
+                                ),
+                                title: AutoSizeText(data["titles"][1]),
+                                onTap: data["functions"][1],
                               ),
                             ),
-                            title: AutoSizeText(data["titles"][2]),
-                            onTap: data["functions"][2],
                           ),
-                        ),
-                        Container(
-                          margin: const EdgeInsets.only(left: 20),
-                          child: ListTile(
-                            leading: CircleAvatar(
-                              backgroundColor: Colors.grey[400],
-                              child: Image.asset(
-                                data["images"][3],
-                                width: 50,
-                                height: 50,
+                          FadeAnimation(
+                            delay: 1,
+                            child: Container(
+                              margin: const EdgeInsets.only(left: 20),
+                              child: ListTile(
+                                leading: CircleAvatar(
+                                  backgroundColor: Colors.grey[400],
+                                  child: Image.asset(
+                                    data["images"][2],
+                                    width: 50,
+                                    height: 50,
+                                  ),
+                                ),
+                                title: AutoSizeText(data["titles"][2]),
+                                onTap: data["functions"][2],
                               ),
                             ),
-                            title: AutoSizeText(data["titles"][3]),
-                            onTap: data["functions"][3],
                           ),
-                        ),
-                      ],
+                          FadeAnimation(
+                            delay: 1,
+                            child: Container(
+                              margin: const EdgeInsets.only(left: 20),
+                              child: ListTile(
+                                leading: CircleAvatar(
+                                  backgroundColor: Colors.grey[400],
+                                  child: Image.asset(
+                                    data["images"][3],
+                                    width: 50,
+                                    height: 50,
+                                  ),
+                                ),
+                                title: AutoSizeText(data["titles"][3]),
+                                onTap: data["functions"][3],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
 
-                  const Divider(color: Colors.black, thickness: 1),
-                  ExpandablePanel(
-                    header: ListTile(
-                      leading: CircleAvatar(
-                        backgroundColor: Colors.grey[400],
-                        child: Image.asset(
-                          "assets/delivery.png",
-                          width: 50,
-                          height: 50,
+                  FadeAnimation(
+                      delay: 5,
+                      child: const Divider(color: Colors.black, thickness: 1)),
+                  FadeAnimation(
+                    delay: 5,
+                    child: ExpandablePanel(
+                      header: ListTile(
+                        leading: CircleAvatar(
+                          backgroundColor: Colors.grey[400],
+                          child: Image.asset(
+                            "assets/delivery.png",
+                            width: 50,
+                            height: 50,
+                          ),
                         ),
+                        title: const AutoSizeText("DELIVERY"),
                       ),
-                      title: const AutoSizeText("DELIVERY"),
-                    ),
-                    collapsed: Container(),
-                    expanded: Column(
-                      children: <Widget>[
-                        Container(
-                          margin: const EdgeInsets.only(left: 20),
-                          child: ListTile(
-                            leading: CircleAvatar(
-                              backgroundColor: Colors.grey[400],
-                              child: Image.asset(
-                                data["images"][4],
-                                width: 50,
-                                height: 50,
+                      collapsed: Container(),
+                      expanded: Column(
+                        children: <Widget>[
+                          FadeAnimation(
+                            delay: 1,
+                            child: Container(
+                              margin: const EdgeInsets.only(left: 20),
+                              child: ListTile(
+                                leading: CircleAvatar(
+                                  backgroundColor: Colors.grey[400],
+                                  child: Image.asset(
+                                    data["images"][4],
+                                    width: 50,
+                                    height: 50,
+                                  ),
+                                ),
+                                title: AutoSizeText(data["titles"][4]),
+                                onTap: data["functions"][4],
                               ),
                             ),
-                            title: AutoSizeText(data["titles"][4]),
-                            onTap: data["functions"][4],
                           ),
-                        ),
-                        Container(
-                          margin: const EdgeInsets.only(left: 20),
-                          child: ListTile(
-                            leading: CircleAvatar(
-                              backgroundColor: Colors.grey[400],
-                              child: Image.asset(
-                                data["images"][5],
-                                width: 50,
-                                height: 50,
+                          FadeAnimation(
+                            delay: 1,
+                            child: Container(
+                              margin: const EdgeInsets.only(left: 20),
+                              child: ListTile(
+                                leading: CircleAvatar(
+                                  backgroundColor: Colors.grey[400],
+                                  child: Image.asset(
+                                    data["images"][5],
+                                    width: 50,
+                                    height: 50,
+                                  ),
+                                ),
+                                title: AutoSizeText(data["titles"][5]),
+                                onTap: data["functions"][5],
                               ),
                             ),
-                            title: AutoSizeText(data["titles"][5]),
-                            onTap: data["functions"][5],
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
-                  const Divider(color: Colors.black, thickness: 1),
-                  ExpandablePanel(
+                  FadeAnimation(
+                      delay: 5,
+                      child: const Divider(color: Colors.black, thickness: 1)),
+                  FadeAnimation(
+                    delay: 5,
+                    child: ExpandablePanel(
                       header: ListTile(
                         leading: CircleAvatar(
                           backgroundColor: Colors.grey[400],
@@ -602,242 +636,297 @@ class _HomeScreenState extends State<HomeScreen> {
                       collapsed: Container(),
                       expanded: Column(
                         children: <Widget>[
-                          Container(
-                            margin: const EdgeInsets.only(left: 20),
-                            child: ListTile(
-                              leading: CircleAvatar(
-                                backgroundColor: Colors.grey[400],
-                                child: Image.asset(
-                                  data["images"][6],
-                                  width: 50,
-                                  height: 50,
+                          FadeAnimation(
+                            delay: 1,
+                            child: Container(
+                              margin: const EdgeInsets.only(left: 20),
+                              child: ListTile(
+                                leading: CircleAvatar(
+                                  backgroundColor: Colors.grey[400],
+                                  child: Image.asset(
+                                    data["images"][6],
+                                    width: 50,
+                                    height: 50,
+                                  ),
                                 ),
+                                title: AutoSizeText(data["titles"][6]),
+                                onTap: data["functions"][6],
                               ),
-                              title: AutoSizeText(data["titles"][6]),
-                              onTap: data["functions"][6],
                             ),
                           ),
-                          Container(
-                            margin: const EdgeInsets.only(left: 20),
-                            child: ListTile(
-                              leading: CircleAvatar(
-                                backgroundColor: Colors.grey[400],
-                                child: Image.asset(
-                                  data["images"][7],
-                                  width: 50,
-                                  height: 50,
+                          FadeAnimation(
+                            delay: 1,
+                            child: Container(
+                              margin: const EdgeInsets.only(left: 20),
+                              child: ListTile(
+                                leading: CircleAvatar(
+                                  backgroundColor: Colors.grey[400],
+                                  child: Image.asset(
+                                    data["images"][7],
+                                    width: 50,
+                                    height: 50,
+                                  ),
                                 ),
+                                title: AutoSizeText(data["titles"][7]),
+                                onTap: data["functions"][7],
                               ),
-                              title: AutoSizeText(data["titles"][7]),
-                              onTap: data["functions"][7],
                             ),
                           ),
-                          Container(
-                            margin: const EdgeInsets.only(left: 20),
-                            child: ListTile(
-                              leading: CircleAvatar(
-                                backgroundColor: Colors.grey[400],
-                                child: Image.asset(
-                                  data["images"][8],
-                                  width: 50,
-                                  height: 50,
+                          FadeAnimation(
+                            delay: 1,
+                            child: Container(
+                              margin: const EdgeInsets.only(left: 20),
+                              child: ListTile(
+                                leading: CircleAvatar(
+                                  backgroundColor: Colors.grey[400],
+                                  child: Image.asset(
+                                    data["images"][8],
+                                    width: 50,
+                                    height: 50,
+                                  ),
                                 ),
+                                title: AutoSizeText(data["titles"][8]),
+                                onTap: data["functions"][8],
                               ),
-                              title: AutoSizeText(data["titles"][8]),
-                              onTap: data["functions"][8],
                             ),
                           ),
                         ],
-                      )),
-                  const Divider(color: Colors.black, thickness: 1),
-                  ExpandablePanel(
-                    header: ListTile(
+                      ),
+                    ),
+                  ),
+                  FadeAnimation(
+                      delay: 5,
+                      child: const Divider(color: Colors.black, thickness: 1)),
+                  FadeAnimation(
+                    delay: 5,
+                    child: ExpandablePanel(
+                      header: ListTile(
+                        leading: CircleAvatar(
+                          backgroundColor: Colors.grey[400],
+                          child: Image.asset(
+                            "assets/rmaMain.png",
+                            width: 50,
+                            height: 50,
+                          ),
+                        ),
+                        title: const AutoSizeText("RMA"),
+                      ),
+                      collapsed: Container(),
+                      expanded: Column(
+                        children: <Widget>[
+                          FadeAnimation(
+                            delay: 1,
+                            child: Container(
+                              margin: const EdgeInsets.only(left: 20),
+                              child: ListTile(
+                                leading: CircleAvatar(
+                                  backgroundColor: Colors.grey[400],
+                                  child: Image.asset(
+                                    data["images"][9],
+                                    width: 50,
+                                    height: 50,
+                                  ),
+                                ),
+                                title: AutoSizeText(data["titles"][9]),
+                                onTap: data["functions"][9],
+                              ),
+                            ),
+                          ),
+                          FadeAnimation(
+                            delay: 1,
+                            child: Container(
+                              margin: const EdgeInsets.only(left: 20),
+                              child: ListTile(
+                                leading: CircleAvatar(
+                                  backgroundColor: Colors.grey[400],
+                                  child: Image.asset(
+                                    data["images"][10],
+                                    width: 50,
+                                    height: 50,
+                                  ),
+                                ),
+                                title: AutoSizeText(data["titles"][10]),
+                                onTap: data["functions"][10],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  FadeAnimation(
+                      delay: 5,
+                      child: const Divider(color: Colors.black, thickness: 1)),
+                  FadeAnimation(
+                    delay: 5,
+                    child: ExpandablePanel(
+                      header: ListTile(
+                        leading: CircleAvatar(
+                          backgroundColor: Colors.grey[400],
+                          child: Image.asset(
+                            "assets/inventoryMain.png",
+                            width: 50,
+                            height: 50,
+                          ),
+                        ),
+                        title: const AutoSizeText("INVENTORY"),
+                      ),
+                      collapsed: Container(),
+                      expanded: Column(
+                        children: <Widget>[
+                          FadeAnimation(
+                            delay: 1,
+                            child: Container(
+                              margin: const EdgeInsets.only(left: 20),
+                              child: ListTile(
+                                leading: CircleAvatar(
+                                  backgroundColor: Colors.grey[400],
+                                  child: Image.asset(
+                                    data["images"][11],
+                                    width: 50,
+                                    height: 50,
+                                  ),
+                                ),
+                                title: AutoSizeText(data["titles"][11]),
+                                onTap: data["functions"][11],
+                              ),
+                            ),
+                          ),
+                          FadeAnimation(
+                            delay: 1,
+                            child: Container(
+                              margin: const EdgeInsets.only(left: 20),
+                              child: ListTile(
+                                leading: CircleAvatar(
+                                  backgroundColor: Colors.grey[400],
+                                  child: Image.asset(
+                                    data["images"][12],
+                                    width: 50,
+                                    height: 50,
+                                  ),
+                                ),
+                                title: AutoSizeText(data["titles"][12]),
+                                onTap: data["functions"][12],
+                              ),
+                            ),
+                          ),
+                          FadeAnimation(
+                            delay: 1,
+                            child: Container(
+                              margin: const EdgeInsets.only(left: 20),
+                              child: ListTile(
+                                leading: CircleAvatar(
+                                  backgroundColor: Colors.grey[400],
+                                  child: Image.asset(
+                                    data["images"][13],
+                                    width: 50,
+                                    height: 50,
+                                  ),
+                                ),
+                                title: AutoSizeText(data["titles"][13]),
+                                onTap: data["functions"][13],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  FadeAnimation(
+                      delay: 5,
+                      child: const Divider(color: Colors.black, thickness: 1)),
+                  FadeAnimation(
+                    delay: 5,
+                    child: ExpandablePanel(
+                      header: ListTile(
+                        leading: CircleAvatar(
+                          backgroundColor: Colors.grey[400],
+                          child: Image.asset(
+                            "assets/utility.png",
+                            width: 50,
+                            height: 50,
+                          ),
+                        ),
+                        title: const AutoSizeText("UTILITY"),
+                      ),
+                      collapsed: Container(),
+                      expanded: Column(
+                        children: <Widget>[
+                          FadeAnimation(
+                            delay: 1,
+                            child: Container(
+                              margin: const EdgeInsets.only(left: 20),
+                              child: ListTile(
+                                leading: CircleAvatar(
+                                  backgroundColor: Colors.grey[400],
+                                  child: Image.asset(
+                                    data["images"][14],
+                                    width: 50,
+                                    height: 50,
+                                  ),
+                                ),
+                                title: AutoSizeText(data["titles"][14]),
+                                onTap: data["functions"][14],
+                              ),
+                            ),
+                          ),
+                          FadeAnimation(
+                            delay: 1,
+                            child: Container(
+                              margin: const EdgeInsets.only(left: 20),
+                              child: ListTile(
+                                leading: CircleAvatar(
+                                  backgroundColor: Colors.grey[400],
+                                  child: Image.asset(
+                                    data["images"][15],
+                                    width: 50,
+                                    height: 50,
+                                  ),
+                                ),
+                                title: AutoSizeText(data["titles"][15]),
+                                onTap: data["functions"][15],
+                              ),
+                            ),
+                          ),
+                          FadeAnimation(
+                            delay: 1,
+                            child: Container(
+                              margin: const EdgeInsets.only(left: 20),
+                              child: ListTile(
+                                leading: CircleAvatar(
+                                  backgroundColor: Colors.grey[400],
+                                  child: Image.asset(
+                                    data["images"][16],
+                                    width: 50,
+                                    height: 50,
+                                  ),
+                                ),
+                                title: AutoSizeText(data["titles"][16]),
+                                onTap: data["functions"][16],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  FadeAnimation(
+                      delay: 5,
+                      child: const Divider(color: Colors.black, thickness: 1)),
+                  FadeAnimation(
+                    delay: 5,
+                    child: ListTile(
                       leading: CircleAvatar(
                         backgroundColor: Colors.grey[400],
                         child: Image.asset(
-                          "assets/rmaMain.png",
+                          data["images"][17],
                           width: 50,
                           height: 50,
                         ),
                       ),
-                      title: const AutoSizeText("RMA"),
+                      title: AutoSizeText(data["titles"][17]),
+                      onTap: data["functions"][17],
                     ),
-                    collapsed: Container(),
-                    expanded: Column(
-                      children: <Widget>[
-                        Container(
-                          margin: const EdgeInsets.only(left: 20),
-                          child: ListTile(
-                            leading: CircleAvatar(
-                              backgroundColor: Colors.grey[400],
-                              child: Image.asset(
-                                data["images"][9],
-                                width: 50,
-                                height: 50,
-                              ),
-                            ),
-                            title: AutoSizeText(data["titles"][9]),
-                            onTap: data["functions"][9],
-                          ),
-                        ),
-                        Container(
-                          margin: const EdgeInsets.only(left: 20),
-                          child: ListTile(
-                            leading: CircleAvatar(
-                              backgroundColor: Colors.grey[400],
-                              child: Image.asset(
-                                data["images"][10],
-                                width: 50,
-                                height: 50,
-                              ),
-                            ),
-                            title: AutoSizeText(data["titles"][10]),
-                            onTap: data["functions"][10],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const Divider(color: Colors.black, thickness: 1),
-                  ExpandablePanel(
-                    header: ListTile(
-                      leading: CircleAvatar(
-                        backgroundColor: Colors.grey[400],
-                        child: Image.asset(
-                          "assets/inventoryMain.png",
-                          width: 50,
-                          height: 50,
-                        ),
-                      ),
-                      title: const AutoSizeText("INVENTORY"),
-                    ),
-                    collapsed: Container(),
-                    expanded: Column(
-                      children: <Widget>[
-                        Container(
-                          margin: const EdgeInsets.only(left: 20),
-                          child: ListTile(
-                            leading: CircleAvatar(
-                              backgroundColor: Colors.grey[400],
-                              child: Image.asset(
-                                data["images"][11],
-                                width: 50,
-                                height: 50,
-                              ),
-                            ),
-                            title: AutoSizeText(data["titles"][11]),
-                            onTap: data["functions"][11],
-                          ),
-                        ),
-                        Container(
-                          margin: const EdgeInsets.only(left: 20),
-                          child: ListTile(
-                            leading: CircleAvatar(
-                              backgroundColor: Colors.grey[400],
-                              child: Image.asset(
-                                data["images"][12],
-                                width: 50,
-                                height: 50,
-                              ),
-                            ),
-                            title: AutoSizeText(data["titles"][12]),
-                            onTap: data["functions"][12],
-                          ),
-                        ),
-                        Container(
-                          margin: const EdgeInsets.only(left: 20),
-                          child: ListTile(
-                            leading: CircleAvatar(
-                              backgroundColor: Colors.grey[400],
-                              child: Image.asset(
-                                data["images"][13],
-                                width: 50,
-                                height: 50,
-                              ),
-                            ),
-                            title: AutoSizeText(data["titles"][13]),
-                            onTap: data["functions"][13],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const Divider(color: Colors.black, thickness: 1),
-                  ExpandablePanel(
-                    header: ListTile(
-                      leading: CircleAvatar(
-                        backgroundColor: Colors.grey[400],
-                        child: Image.asset(
-                          "assets/utility.png",
-                          width: 50,
-                          height: 50,
-                        ),
-                      ),
-                      title: const AutoSizeText("UTILITY"),
-                    ),
-                    collapsed: Container(),
-                    expanded: Column(
-                      children: <Widget>[
-                        Container(
-                          margin: const EdgeInsets.only(left: 20),
-                          child: ListTile(
-                            leading: CircleAvatar(
-                              backgroundColor: Colors.grey[400],
-                              child: Image.asset(
-                                data["images"][14],
-                                width: 50,
-                                height: 50,
-                              ),
-                            ),
-                            title: AutoSizeText(data["titles"][14]),
-                            onTap: data["functions"][14],
-                          ),
-                        ),
-                        Container(
-                          margin: const EdgeInsets.only(left: 20),
-                          child: ListTile(
-                            leading: CircleAvatar(
-                              backgroundColor: Colors.grey[400],
-                              child: Image.asset(
-                                data["images"][15],
-                                width: 50,
-                                height: 50,
-                              ),
-                            ),
-                            title: AutoSizeText(data["titles"][15]),
-                            onTap: data["functions"][15],
-                          ),
-                        ),
-                        Container(
-                          margin: const EdgeInsets.only(left: 20),
-                          child: ListTile(
-                            leading: CircleAvatar(
-                              backgroundColor: Colors.grey[400],
-                              child: Image.asset(
-                                data["images"][16],
-                                width: 50,
-                                height: 50,
-                              ),
-                            ),
-                            title: AutoSizeText(data["titles"][16]),
-                            onTap: data["functions"][16],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const Divider(color: Colors.black, thickness: 1),
-                  ListTile(
-                    leading: CircleAvatar(
-                      backgroundColor: Colors.grey[400],
-                      child: Image.asset(
-                        data["images"][17],
-                        width: 50,
-                        height: 50,
-                      ),
-                    ),
-                    title: AutoSizeText(data["titles"][17]),
-                    onTap: data["functions"][17],
                   ),
                   // FadeAnimation(
                   //   delay: 1,
@@ -864,7 +953,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   //     itemCount: data["images"].length,
                   //   ),
                   // ),
-                  const Divider(color: Colors.black, thickness: 1),
+                  FadeAnimation(
+                      delay: 5,
+                      child: const Divider(color: Colors.black, thickness: 1)),
                 ],
               ),
             ),

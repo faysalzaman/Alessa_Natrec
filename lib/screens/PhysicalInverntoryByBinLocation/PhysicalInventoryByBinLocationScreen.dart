@@ -387,6 +387,42 @@ class _PhysicalInventoryByBinLocationScreenState
                           )),
                           DataColumn(
                               label: Text(
+                            'ITEM ID',
+                            style: TextStyle(color: Colors.white),
+                            textAlign: TextAlign.center,
+                          )),
+                          DataColumn(
+                              label: Text(
+                            'ITEM NAME',
+                            style: TextStyle(color: Colors.white),
+                            textAlign: TextAlign.center,
+                          )),
+                          DataColumn(
+                              label: Text(
+                            'INVERNTORY BY',
+                            style: TextStyle(color: Colors.white),
+                            textAlign: TextAlign.center,
+                          )),
+                          DataColumn(
+                              label: Text(
+                            'TRX DATE TIME',
+                            style: TextStyle(color: Colors.white),
+                            textAlign: TextAlign.center,
+                          )),
+                          DataColumn(
+                              label: Text(
+                            'TRX USER ID ASSIGNED',
+                            style: TextStyle(color: Colors.white),
+                            textAlign: TextAlign.center,
+                          )),
+                          DataColumn(
+                              label: Text(
+                            'TRX USER ID ASSIGNED BY',
+                            style: TextStyle(color: Colors.white),
+                            textAlign: TextAlign.center,
+                          )),
+                          DataColumn(
+                              label: Text(
                             'QTY ON HAND',
                             style: TextStyle(color: Colors.white),
                             textAlign: TextAlign.center,
@@ -411,6 +447,13 @@ class _PhysicalInventoryByBinLocationScreenState
                           return DataRow(onSelectChanged: (value) {}, cells: [
                             DataCell(
                                 Text((filterTable.indexOf(e) + 1).toString())),
+                            DataCell(SelectableText(e.iTEMID ?? '')),
+                            DataCell(SelectableText(e.iTEMNAME ?? '')),
+                            DataCell(SelectableText(e.iNVENTORYBY ?? '')),
+                            DataCell(SelectableText(e.tRXDATETIME ?? '')),
+                            DataCell(SelectableText(e.tRXUSERIDASSIGNED ?? '')),
+                            DataCell(
+                                SelectableText(e.tRXUSERIDASSIGNEDBY ?? '')),
                             DataCell(SelectableText(
                                 e.qTYONHAND.toString() == "null"
                                     ? "0"
@@ -733,14 +776,27 @@ class _PhysicalInventoryByBinLocationScreenState
                           )),
                           DataColumn(
                               label: Text(
-                            'TRX USER ID ASSIGNED',
+                            'ITEM ID',
                             style: TextStyle(color: Colors.white),
                             textAlign: TextAlign.center,
                           )),
                           DataColumn(
                               label: Text(
-                            'TRX USER ID ASSIGNED BY',
+                            'ITEM NAME',
                             style: TextStyle(color: Colors.white),
+                            textAlign: TextAlign.center,
+                          )),
+                          DataColumn(
+                              label: Text(
+                            'USER',
+                            style: TextStyle(color: Colors.white),
+                            textAlign: TextAlign.center,
+                          )),
+                          DataColumn(
+                              label: Text(
+                            'SID',
+                            style: TextStyle(color: Colors.white),
+                            textAlign: TextAlign.center,
                           )),
                           DataColumn(
                               label: Text(
@@ -766,6 +822,8 @@ class _PhysicalInventoryByBinLocationScreenState
                         rows: tbl2.map((e) {
                           return DataRow(onSelectChanged: (value) {}, cells: [
                             DataCell(Text((tbl2.indexOf(e) + 1).toString())),
+                            DataCell(Text(e.allData![0].itemCode ?? "")),
+                            DataCell(Text(e.allData![0].itemDesc ?? "")),
                             DataCell(Text(e.allData![0].user ?? "")),
                             DataCell(Text(e.allData![0].sID ?? "")),
                             DataCell(Text(e.allData![0].classification ?? "")),
