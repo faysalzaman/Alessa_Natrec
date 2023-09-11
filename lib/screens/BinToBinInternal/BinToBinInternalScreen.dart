@@ -73,6 +73,9 @@ class _BinToBinInternalScreenState extends State<BinToBinInternalScreen> {
   List<String> dropDownList3 = [];
   List<String> filterList3 = [];
 
+  // ScrollController
+  final ScrollController _scrollController = ScrollController();
+
   @override
   void initState() {
     super.initState();
@@ -167,6 +170,7 @@ class _BinToBinInternalScreenState extends State<BinToBinInternalScreen> {
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
         child: SingleChildScrollView(
+          controller: _scrollController,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.start,
@@ -1089,19 +1093,19 @@ class _BinToBinInternalScreenState extends State<BinToBinInternalScreen> {
                       textColor: Colors.white,
                       color: Colors.orange,
                       onPressed: () {
-                        List<String> binLocationList = [];
-                        for (int i = 0; i < filterTable.length; i++) {
-                          binLocationList
-                              .add(filterTable[i].binLocation.toString());
-                        }
+                        // List<String> binLocationList = [];
+                        // for (int i = 0; i < filterTable.length; i++) {
+                        //   binLocationList
+                        //       .add(filterTable[i].binLocation.toString());
+                        // }
 
-                        List<String> serialNoList = [];
-                        for (int i = 0; i < filterTable.length; i++) {
-                          serialNoList
-                              .add(filterTable[i].itemSerialNo.toString());
-                        }
+                        // List<String> serialNoList = [];
+                        // for (int i = 0; i < filterTable.length; i++) {
+                        //   serialNoList
+                        //       .add(filterTable[i].itemSerialNo.toString());
+                        // }
 
-                        setState(() {});
+                        // setState(() {});
 
                         FocusScope.of(context).requestFocus(FocusNode());
                         Constants.showLoadingDialog(context);
@@ -1109,9 +1113,8 @@ class _BinToBinInternalScreenState extends State<BinToBinInternalScreen> {
                         if (_site == "By Pallet") {
                           updateByPalletController
                               .updateBin(
-                            binLocationList,
+                            filterTable,
                             dropDownValue.toString(),
-                            _palletIdController.text.trim(),
                           )
                               .then((value) {
                             Navigator.pop(context);
@@ -1122,9 +1125,15 @@ class _BinToBinInternalScreenState extends State<BinToBinInternalScreen> {
                             );
                             setState(() {
                               filterTable.clear();
-
+                              table.clear();
                               _palletIdController.clear();
                               total2 = "0";
+
+                              _scrollController.animateTo(
+                                0.0,
+                                curve: Curves.easeOut,
+                                duration: const Duration(milliseconds: 300),
+                              );
                             });
                           }).onError((error, stackTrace) {
                             Navigator.pop(context);
@@ -1141,9 +1150,8 @@ class _BinToBinInternalScreenState extends State<BinToBinInternalScreen> {
                         if (_site == "By Serial") {
                           updateBySerialController
                               .updateBin(
-                            binLocationList,
+                            filterTable,
                             dropDownValue.toString(),
-                            _serialNumberController.text.toString().trim(),
                           )
                               .then((value) {
                             Navigator.pop(context);
@@ -1154,9 +1162,19 @@ class _BinToBinInternalScreenState extends State<BinToBinInternalScreen> {
                               ),
                             );
                             setState(() {
+                              table.clear();
                               filterTable.clear();
+
                               _serialNumberController.clear();
+
                               total2 = "0";
+
+                              // scroll the page up to the top automatically
+                              _scrollController.animateTo(
+                                0.0,
+                                curve: Curves.easeOut,
+                                duration: const Duration(milliseconds: 300),
+                              );
                             });
                           }).onError(
                             (error, stackTrace) {
@@ -1245,6 +1263,22 @@ class _BinToBinInternalScreenState extends State<BinToBinInternalScreen> {
         FocusScope.of(context).requestFocus(FocusNode());
       }
 
+      // if pallet code is already exists on filterTable then show an error message
+      if (filterTable
+          .map((e) => e.palletCode.toString())
+          .toList()
+          .contains(_palletIdController.text.trim())) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Pallet ID already exists on the table."),
+            backgroundColor: Colors.red,
+          ),
+        );
+        FocusScope.of(context).requestFocus(FocusNode());
+
+        return;
+      }
+
       // if pallet id is not contain in the list
       if (!table
           .map((e) => e.palletCode.toString())
@@ -1281,6 +1315,22 @@ class _BinToBinInternalScreenState extends State<BinToBinInternalScreen> {
       // if serial number is empty
       if (_serialNumberController.text.toString().trim().isEmpty) {
         FocusScope.of(context).requestFocus(FocusNode());
+      }
+
+      // if serial no is already exists on filterTable then show an error message
+      if (filterTable
+          .map((e) => e.itemSerialNo.toString())
+          .toList()
+          .contains(_serialNumberController.text.trim())) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Serial No. already exists on table."),
+            backgroundColor: Colors.red,
+          ),
+        );
+        FocusScope.of(context).requestFocus(FocusNode());
+
+        return;
       }
 
       // if serial no is not contain in the list

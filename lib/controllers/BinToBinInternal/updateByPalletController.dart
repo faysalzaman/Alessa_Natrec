@@ -1,3 +1,6 @@
+// ignore_for_file: camel_case_types, avoid_print, depend_on_referenced_packages
+
+import 'package:alessa_v2/models/getMappedBarcodedsByItemCodeAndBinLocationModel.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -6,9 +9,8 @@ import '../../utils/Constants.dart';
 
 class updateByPalletController {
   static Future<void> updateBin(
-    List<String> oldBin,
+    List<getMappedBarcodedsByItemCodeAndBinLocationModel> oldBin,
     String newBin,
-    String palletCode,
   ) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String token = prefs.getString('token').toString();
@@ -26,16 +28,20 @@ class updateByPalletController {
       "Content-Type": "application/json",
     };
 
-    final body = jsonEncode({
-      "oldBinLocation": oldBin[0],
-      "newBinLocation": newBin,
-      "palletCode": palletCode
+    var body = oldBin.map((element) {
+      return {
+        "oldBinLocation": element.binLocation,
+        "newBinLocation": newBin,
+        "palletCode": element.palletCode
+      };
     });
 
-    print("body : $body");
-
     try {
-      var response = await http.put(uri, headers: headers, body: body);
+      var response = await http.put(uri,
+          headers: headers,
+          body: jsonEncode({
+            "records": [...body]
+          }));
 
       if (response.statusCode == 200) {
         print("Status Code: ${response.statusCode}");

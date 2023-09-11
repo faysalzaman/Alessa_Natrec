@@ -1,3 +1,6 @@
+// ignore_for_file: camel_case_types, depend_on_referenced_packages, avoid_print
+
+import 'package:alessa_v2/models/getMappedBarcodedsByItemCodeAndBinLocationModel.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -6,9 +9,8 @@ import '../../utils/Constants.dart';
 
 class updateBySerialController {
   static Future<void> updateBin(
-    List<String> oldBin,
+    List<getMappedBarcodedsByItemCodeAndBinLocationModel> oldBin,
     String newBin,
-    String serialNo,
   ) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String token = prefs.getString('token').toString();
@@ -23,19 +25,27 @@ class updateBySerialController {
     final headers = <String, String>{
       "Authorization": token,
       "Host": Constants.host,
-      "Content-Type": "application/json",
+      "Content-Type": "application/json"
     };
 
-    final body = jsonEncode({
-      "oldBinLocation": oldBin[0],
-      "newBinLocation": newBin,
-      "serialNumber": serialNo
-    });
+    var body = oldBin.map((element) {
+      return {
+        "oldBinLocation": element.binLocation,
+        "newBinLocation": newBin,
+        "serialNumber": element.itemSerialNo
+      };
+    }).toList();
 
-    print("body : $body");
+    print(jsonEncode({"records": body}));
 
     try {
-      var response = await http.put(uri, headers: headers, body: body);
+      var response = await http.put(
+        uri,
+        headers: headers,
+        body: jsonEncode({
+          "records": [...body]
+        }),
+      );
 
       if (response.statusCode == 200) {
         print("Status Code: ${response.statusCode}");
