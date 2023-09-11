@@ -41,13 +41,11 @@ class _PhysicalInventoryByBinLocationScreenState
 
   List<bool> isMarked = [];
 
-  String _site = "item";
+  String _site = "By Serial";
+  String _site1 = "bin";
 
   String userName = "";
   String userID = "";
-
-  List<num> qtyScanned = [];
-  List<num>? qtyDifference = [];
 
   void _showUserInfo() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -202,11 +200,11 @@ class _PhysicalInventoryByBinLocationScreenState
                           ),
                           leading: Radio(
                             value: "item",
-                            groupValue: _site,
+                            groupValue: _site1,
                             onChanged: (String? value) {
                               setState(() {
-                                _site = value!;
-                                print(_site);
+                                _site1 = value!;
+                                print(_site1);
                                 filterTable = tbl1;
                               });
                             },
@@ -223,11 +221,11 @@ class _PhysicalInventoryByBinLocationScreenState
                           ),
                           leading: Radio(
                             value: "bin",
-                            groupValue: _site,
+                            groupValue: _site1,
                             onChanged: (String? value) {
                               setState(() {
-                                _site = value!;
-                                print(_site);
+                                _site1 = value!;
+                                print(_site1);
                                 filterTable = tbl1;
                               });
                             },
@@ -238,7 +236,7 @@ class _PhysicalInventoryByBinLocationScreenState
                   ),
                 ),
                 Visibility(
-                  visible: _site == "item" ? true : false,
+                  visible: _site1 == "item" ? true : false,
                   child: Container(
                     margin: const EdgeInsets.only(left: 20, top: 10),
                     child: TextWidget(
@@ -249,7 +247,7 @@ class _PhysicalInventoryByBinLocationScreenState
                   ),
                 ),
                 Visibility(
-                  visible: _site == "item" ? true : false,
+                  visible: _site1 == "item" ? true : false,
                   child: Center(
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(10),
@@ -306,7 +304,7 @@ class _PhysicalInventoryByBinLocationScreenState
                   ),
                 ),
                 Visibility(
-                  visible: _site == "bin" ? true : false,
+                  visible: _site1 == "bin" ? true : false,
                   child: Container(
                     margin: const EdgeInsets.only(left: 20, top: 10),
                     child: Text(
@@ -320,7 +318,7 @@ class _PhysicalInventoryByBinLocationScreenState
                   ),
                 ),
                 Visibility(
-                  visible: _site == "bin" ? true : false,
+                  visible: _site1 == "bin" ? true : false,
                   child: Center(
                     child: Container(
                       width: MediaQuery.of(context).size.width * 0.9,
@@ -349,151 +347,107 @@ class _PhysicalInventoryByBinLocationScreenState
                   ),
                 ),
                 const SizedBox(height: 10),
-                Container(
-                  alignment: Alignment.topCenter,
-                  height: MediaQuery.of(context).size.height * 0.4,
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: Colors.grey,
-                      width: 1,
+                SingleChildScrollView(
+                  child: Container(
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: Colors.blue[900]!,
+                        width: 2,
+                      ),
                     ),
-                  ),
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.vertical,
-                    child: SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: DataTable(
-                        showCheckboxColumn: false,
-                        dataRowColor: MaterialStateColor.resolveWith(
-                            (states) => Colors.grey.withOpacity(0.2)),
-                        headingRowColor: MaterialStateColor.resolveWith(
-                            (states) => Colors.orange),
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: Colors.grey,
-                            width: 1,
+                    child: PaginatedDataTable(
+                      header: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          const TextWidget(text: "TOTAL", fontSize: 16),
+                          const SizedBox(width: 5),
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.2,
+                            height: 30,
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                color: Colors.blue,
+                              ),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Center(
+                              child: TextWidget(text: total, fontSize: 16),
+                            ),
                           ),
-                        ),
-                        border: TableBorder.all(
-                          color: Colors.black,
-                          width: 1,
-                        ),
-                        columns: const [
-                          DataColumn(
-                              label: Text(
-                            'ID',
-                            style: TextStyle(color: Colors.white),
-                            textAlign: TextAlign.center,
-                          )),
-                          DataColumn(
-                              label: Text(
-                            'ITEM ID',
-                            style: TextStyle(color: Colors.white),
-                            textAlign: TextAlign.center,
-                          )),
-                          DataColumn(
-                              label: Text(
-                            'ITEM NAME',
-                            style: TextStyle(color: Colors.white),
-                            textAlign: TextAlign.center,
-                          )),
-                          DataColumn(
-                              label: Text(
-                            'INVERNTORY BY',
-                            style: TextStyle(color: Colors.white),
-                            textAlign: TextAlign.center,
-                          )),
-                          DataColumn(
-                              label: Text(
-                            'TRX DATE TIME',
-                            style: TextStyle(color: Colors.white),
-                            textAlign: TextAlign.center,
-                          )),
-                          DataColumn(
-                              label: Text(
-                            'TRX USER ID ASSIGNED',
-                            style: TextStyle(color: Colors.white),
-                            textAlign: TextAlign.center,
-                          )),
-                          DataColumn(
-                              label: Text(
-                            'TRX USER ID ASSIGNED BY',
-                            style: TextStyle(color: Colors.white),
-                            textAlign: TextAlign.center,
-                          )),
-                          DataColumn(
-                              label: Text(
-                            'QTY ON HAND',
-                            style: TextStyle(color: Colors.white),
-                            textAlign: TextAlign.center,
-                          )),
-                          DataColumn(
-                              label: Text(
-                            'QTY SCANNED',
-                            style: TextStyle(color: Colors.white),
-                          )),
-                          DataColumn(
-                              label: Text(
-                            'QTY DIFFERENCE',
-                            style: TextStyle(color: Colors.white),
-                          )),
-                          DataColumn(
-                              label: Text(
-                            'BIN LOCATION',
-                            style: TextStyle(color: Colors.white),
-                          )),
                         ],
-                        rows: filterTable.map((e) {
-                          return DataRow(onSelectChanged: (value) {}, cells: [
-                            DataCell(
-                                Text((filterTable.indexOf(e) + 1).toString())),
-                            DataCell(SelectableText(e.iTEMID ?? '')),
-                            DataCell(SelectableText(e.iTEMNAME ?? '')),
-                            DataCell(SelectableText(e.iNVENTORYBY ?? '')),
-                            DataCell(SelectableText(e.tRXDATETIME ?? '')),
-                            DataCell(SelectableText(e.tRXUSERIDASSIGNED ?? '')),
-                            DataCell(
-                                SelectableText(e.tRXUSERIDASSIGNEDBY ?? '')),
-                            DataCell(SelectableText(
-                                e.qTYONHAND.toString() == "null"
-                                    ? "0"
-                                    : e.qTYONHAND.toString())),
-                            DataCell(SelectableText(
-                                e.qTYSCANNED.toString() == "null"
-                                    ? "0"
-                                    : e.qTYSCANNED.toString())),
-                            DataCell(SelectableText(
-                                e.qTYDIFFERENCE.toString() == "null"
-                                    ? "0"
-                                    : e.qTYDIFFERENCE.toString())),
-                            DataCell(SelectableText(e.bINLOCATION ?? '')),
-                          ]);
-                        }).toList(),
                       ),
+
+                      columnSpacing: 10,
+                      horizontalMargin: 20,
+                      showCheckboxColumn: false,
+                      headingRowHeight: 30,
+                      dataRowHeight: 60,
+                      primary: true,
+                      showFirstLastButtons: true,
+                      source: StudentDataSource(filterTable, context),
+                      rowsPerPage: 3,
+                      checkboxHorizontalMargin: 10,
+                      columns: [
+                        DataColumn(
+                            label: Text(
+                          'ITEM ID',
+                          style: TextStyle(color: Colors.blue[900]!),
+                          textAlign: TextAlign.center,
+                        )),
+                        DataColumn(
+                            label: Text(
+                          'ITEM NAME',
+                          style: TextStyle(color: Colors.blue[900]!),
+                          textAlign: TextAlign.center,
+                        )),
+                        DataColumn(
+                            label: Text(
+                          'INVERNTORY BY',
+                          style: TextStyle(color: Colors.blue[900]!),
+                          textAlign: TextAlign.center,
+                        )),
+                        DataColumn(
+                            label: Text(
+                          'TRX DATE TIME',
+                          style: TextStyle(color: Colors.blue[900]!),
+                          textAlign: TextAlign.center,
+                        )),
+                        DataColumn(
+                            label: Text(
+                          'TRX USER ID ASSIGNED',
+                          style: TextStyle(color: Colors.blue[900]!),
+                          textAlign: TextAlign.center,
+                        )),
+                        DataColumn(
+                            label: Text(
+                          'TRX USER ID ASSIGNED BY',
+                          style: TextStyle(color: Colors.blue[900]!),
+                          textAlign: TextAlign.center,
+                        )),
+                        DataColumn(
+                            label: Text(
+                          'QTY ON HAND',
+                          style: TextStyle(color: Colors.blue[900]!),
+                          textAlign: TextAlign.center,
+                        )),
+                        DataColumn(
+                            label: Text(
+                          'QTY SCANNED',
+                          style: TextStyle(color: Colors.blue[900]!),
+                        )),
+                        DataColumn(
+                            label: Text(
+                          'QTY DIFFERENCE',
+                          style: TextStyle(color: Colors.blue[900]!),
+                        )),
+                        DataColumn(
+                            label: Text(
+                          'BIN LOCATION',
+                          style: TextStyle(color: Colors.blue[900]!),
+                        )),
+                      ], // Adjust the number of rows per page as needed
                     ),
-                  ),
-                ),
-                Container(
-                  margin: const EdgeInsets.only(right: 20, top: 10),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      const TextWidget(text: "TOTAL"),
-                      const SizedBox(width: 5),
-                      Container(
-                        width: MediaQuery.of(context).size.width * 0.2,
-                        height: 30,
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: Colors.blue,
-                          ),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Center(
-                          child: TextWidget(text: total),
-                        ),
-                      ),
-                    ],
                   ),
                 ),
                 Container(
@@ -627,24 +581,24 @@ class _PhysicalInventoryByBinLocationScreenState
                                 incrementQTYSCANNEDInJournalCountingOnlyCLByBinLocationController
                                     .getData(
                                   tbl1[0].tRXUSERIDASSIGNED.toString(),
-                                  tbl1[0].tRXDATETIME.toString(),
-                                  tbl1[0].bINLOCATION.toString(),
+                                  table2.trxDate.toString(),
+                                  table2.binLocation.toString(),
                                 )
                                     .then((value) {
                                   insertIntoWmsJournalCountingOnlyCLDetsController
                                       .getData(
+                                    table2.toJson(),
                                     table2.classification.toString(),
                                     table2.binLocation.toString(),
                                     value.toString(),
                                     table2.itemSerialNo.toString(),
-                                    tbl1[0],
                                     table2.itemCode.toString(),
                                     table2.itemDesc.toString(),
                                     "physicalInventoryBinLocation",
                                   )
-                                      .then((value) {
-                                    // qtyScanned increase + 1 with the same binLocation with table2
+                                      .then((val) {
                                     setState(() {
+                                      // if binLocation is contain in filterTable then qtyScanned will increase + 1
                                       filterTable[filterTable.indexWhere(
                                               (element) =>
                                                   element.bINLOCATION
@@ -653,7 +607,26 @@ class _PhysicalInventoryByBinLocationScreenState
                                                   table2.binLocation
                                                       .toString()
                                                       .trim())]
-                                          .qTYSCANNED = (int.parse(filterTable[
+                                          .qTYSCANNED = filterTable[filterTable
+                                                  .indexWhere((element) =>
+                                                      element.bINLOCATION
+                                                          .toString()
+                                                          .trim() ==
+                                                      table2.binLocation
+                                                          .toString()
+                                                          .trim())]
+                                              .qTYSCANNED! +
+                                          1;
+
+                                      print(
+                                          "Value: ${filterTable[filterTable.indexWhere((element) => element.bINLOCATION.toString().trim() == table2.binLocation.toString().trim())].qTYSCANNED}");
+
+                                      print(
+                                          "value1: ${filterTable[filterTable.indexWhere((element) => element.bINLOCATION.toString().trim() == table2.binLocation.toString().trim())].qTYSCANNED! + 1}");
+
+                                      // if bin location is contain in filterTable then qtyDifference will be calculated as qtyScanned - qtyOnHand
+                                      filterTable[filterTable.indexWhere((element) => element.bINLOCATION.toString().trim() == table2.binLocation.toString().trim())]
+                                          .qTYDIFFERENCE = filterTable[
                                                   filterTable.indexWhere(
                                                       (element) =>
                                                           element.bINLOCATION
@@ -662,23 +635,16 @@ class _PhysicalInventoryByBinLocationScreenState
                                                           table2.binLocation
                                                               .toString()
                                                               .trim())]
-                                              .qTYSCANNED
-                                              .toString()) +
-                                          1);
-
-                                      // qtyDifference will be calculated by subtracting the qtyScanned from qtyOnHand
-                                      filterTable[filterTable.indexWhere((element) =>
-                                              element.bINLOCATION.toString().trim() ==
-                                              table2.binLocation
-                                                  .toString()
-                                                  .trim())]
-                                          .qTYDIFFERENCE = (int.parse(filterTable[
-                                                  filterTable.indexWhere((element) =>
-                                                      element.bINLOCATION.toString().trim() ==
-                                                      table2.binLocation.toString().trim())]
-                                              .qTYONHAND
-                                              .toString()) -
-                                          int.parse(filterTable[filterTable.indexWhere((element) => element.bINLOCATION.toString().trim() == table2.binLocation.toString().trim())].qTYSCANNED.toString()));
+                                              .qTYONHAND! -
+                                          filterTable[filterTable.indexWhere(
+                                                  (element) =>
+                                                      element.bINLOCATION
+                                                          .toString()
+                                                          .trim() ==
+                                                      table2.binLocation
+                                                          .toString()
+                                                          .trim())]
+                                              .qTYSCANNED!;
                                     });
                                     Navigator.of(context).pop();
                                     ScaffoldMessenger.of(context).showSnackBar(
@@ -863,4 +829,55 @@ class _PhysicalInventoryByBinLocationScreenState
       ),
     );
   }
+}
+
+class StudentDataSource extends DataTableSource {
+  List<GetWmsJournalCountingOnlyCLByAssignedToUserIdModel> students;
+  BuildContext ctx;
+
+  StudentDataSource(
+    this.students,
+    this.ctx,
+  );
+
+  @override
+  DataRow? getRow(int index) {
+    if (index >= students.length) {
+      return null;
+    }
+
+    final student = students[index];
+
+    return DataRow.byIndex(
+      index: index,
+      onSelectChanged: (value) {},
+      cells: [
+        DataCell(SelectableText(student.iTEMID ?? '')),
+        DataCell(SelectableText(student.iTEMNAME ?? '')),
+        DataCell(SelectableText(student.iNVENTORYBY ?? '')),
+        DataCell(SelectableText(student.tRXDATETIME ?? '')),
+        DataCell(SelectableText(student.tRXUSERIDASSIGNED ?? '')),
+        DataCell(SelectableText(student.tRXUSERIDASSIGNEDBY ?? '')),
+        DataCell(SelectableText(student.qTYONHAND.toString() == "null"
+            ? "0"
+            : student.qTYONHAND.toString())),
+        DataCell(SelectableText(student.qTYSCANNED.toString() == "null"
+            ? "0"
+            : student.qTYSCANNED.toString())),
+        DataCell(SelectableText(student.qTYDIFFERENCE.toString() == "null"
+            ? "0"
+            : student.qTYDIFFERENCE.toString())),
+        DataCell(SelectableText(student.bINLOCATION ?? '')),
+      ],
+    );
+  }
+
+  @override
+  bool get isRowCountApproximate => false;
+
+  @override
+  int get rowCount => students.length;
+
+  @override
+  int get selectedRowCount => 0;
 }

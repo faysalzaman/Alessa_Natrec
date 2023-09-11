@@ -1,21 +1,22 @@
-// ignore_for_file: avoid_print, depend_on_referenced_packages
+// ignore_for_file: camel_case_types, depend_on_referenced_packages, avoid_print
 
-import 'package:alessa_v2/models/getMappedBarcodedsByItemCodeAndBinLocationModel.dart';
+import '../../models/getMappedBarcodedsByItemCodeAndBinLocationModel.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
 import '../../utils/Constants.dart';
 
-class BinToBinInternalTableDataController {
-  static Future<List<getMappedBarcodedsByItemCodeAndBinLocationModel>>
-      getAllTable(String location) async {
+class NewOne {
+  static Future<List<getMappedBarcodedsByItemCodeAndBinLocationModel>> getData(
+    String itemCode,
+    String binLocation,
+  ) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String token = prefs.getString('token').toString();
 
     String url =
-        "${Constants.baseUrl}getmapBarcodeDataByBinLocation?BinLocation=$location";
-    print("url: $url");
+        "${Constants.baseUrl}getMappedBarcodedsByItemCodeAndBinLocation";
 
     final uri = Uri.parse(url);
 
@@ -23,10 +24,14 @@ class BinToBinInternalTableDataController {
       "Authorization": token,
       "Host": Constants.host,
       "Accept": "application/json",
+      "itemcode": itemCode,
+      "binlocation": binLocation,
     };
 
+    print(headers);
+
     try {
-      var response = await http.get(uri, headers: headers);
+      var response = await http.post(uri, headers: headers);
 
       if (response.statusCode == 200) {
         print("Status Code: ${response.statusCode}");

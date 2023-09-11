@@ -1,8 +1,13 @@
+// ignore_for_file: sized_box_for_whitespace, unused_field, avoid_print
+
+import 'package:alessa_v2/controllers/BinToBinInternal/BinToBinInternalTableDataController.dart';
+import 'package:alessa_v2/controllers/BinToBinInternal/GetAllDistinctItemCodesFromTblMappedBarcodesController.dart';
+import 'package:alessa_v2/controllers/PickListAssigned/NewOne.dart';
+import 'package:alessa_v2/models/getMappedBarcodedsByItemCodeAndBinLocationModel.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../controllers/BinToBinFromAXAPTA/getmapBarcodeDataByItemCodeController.dart';
-import '../../controllers/BinToBinInternal/BinToBinInternalTableDataController.dart';
 import '../../controllers/BinToBinInternal/updateByPalletController.dart';
 import '../../controllers/BinToBinInternal/updateBySerialController.dart';
 import '../../models/BinToBinInternalModel.dart';
@@ -25,17 +30,16 @@ class BinToBinInternalScreen extends StatefulWidget {
 class _BinToBinInternalScreenState extends State<BinToBinInternalScreen> {
   final TextEditingController _palletIdController = TextEditingController();
   final TextEditingController _serialNumberController = TextEditingController();
-  TextEditingController _binIdController = TextEditingController();
 
   String total = "0";
   String total2 = "0";
-  List<BinToBinInternalModel> table = [];
+  List<getMappedBarcodedsByItemCodeAndBinLocationModel> table = [];
   List<BinToBinInternalModel> table2 = [];
   List<bool> isMarked = [];
 
-  List<BinToBinInternalModel> filterTable = [];
+  List<getMappedBarcodedsByItemCodeAndBinLocationModel> filterTable = [];
 
-  String _site = "By Pallet";
+  String _site = "By Serial";
 
   String userName = "";
   String userID = "";
@@ -64,6 +68,11 @@ class _BinToBinInternalScreenState extends State<BinToBinInternalScreen> {
   List<String> dropDownList2 = [];
   List<String> filterList2 = [];
 
+  final TextEditingController _searchController3 = TextEditingController();
+  String? dropDownValue3;
+  List<String> dropDownList3 = [];
+  List<String> filterList3 = [];
+
   @override
   void initState() {
     super.initState();
@@ -79,12 +88,42 @@ class _BinToBinInternalScreenState extends State<BinToBinInternalScreen> {
           });
         }
 
+        for (int i = 0; i < value.length; i++) {
+          setState(() {
+            dropDownList3.add(value[i].bIN ?? "");
+            Set<String> set = dropDownList3.toSet();
+            dropDownList3 = set.toList();
+          });
+        }
+
         setState(() {
+          dropDownList.removeWhere((element) => element == "");
+          dropDownList3.removeWhere((element) => element == "");
           dropDownValue = dropDownList[0];
+          dropDownValue3 = dropDownList3[0];
           filterList = dropDownList;
+          filterList3 = dropDownList3;
         });
 
-        Navigator.pop(context);
+        GetAllDistinctItemCodesFromTblMappedBarcodesController.getAllTable()
+            .then((value) {
+          for (int i = 0; i < value.length; i++) {
+            setState(() {
+              dropDownList2.add(value[i]);
+              Set<String> set = dropDownList2.toSet();
+              dropDownList2 = set.toList();
+            });
+          }
+
+          setState(() {
+            dropDownValue2 = dropDownList2[0];
+            filterList2 = dropDownList2;
+          });
+
+          Navigator.pop(context);
+        }).onError((error, stackTrace) {
+          Navigator.pop(context);
+        });
       }).onError((error, stackTrace) {
         Navigator.pop(context);
         setState(() {
@@ -175,49 +214,15 @@ class _BinToBinInternalScreenState extends State<BinToBinInternalScreen> {
                   ),
                 ),
               ),
+              const SizedBox(height: 10),
+
               Container(
                 margin: const EdgeInsets.only(left: 20),
                 child: const TextWidget(
-                  text: "Bin ID*",
-                  fontSize: 16,
+                  text: "Item Code*",
+                  fontSize: 13,
                 ),
               ),
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Container(
-                      margin: const EdgeInsets.only(left: 20),
-                      child: TextFormFieldWidget(
-                        controller: _binIdController,
-                        hintText: "Enter/Scan Bin ID",
-                        width: MediaQuery.of(context).size.width * 0.73,
-                        onEditingComplete: () {
-                          onSearch();
-                        },
-                      ),
-                    ),
-                    const SizedBox(width: 10),
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Colors.transparent,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: GestureDetector(
-                        onTap: () {
-                          onSearch();
-                        },
-                        child: Image.asset('assets/finder.png',
-                            width: MediaQuery.of(context).size.width * 0.15,
-                            height: 60,
-                            fit: BoxFit.cover),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 10),
               Row(
                 children: [
                   Container(
@@ -244,12 +249,6 @@ class _BinToBinInternalScreenState extends State<BinToBinInternalScreen> {
                       onChanged: (value) {
                         setState(() {
                           dropDownValue2 = value!;
-
-                          // filter the table based on search item code
-                          table = table2
-                              .where((element) =>
-                                  element.itemCode == dropDownValue2)
-                              .toList();
                         });
                       },
                       selectedItem: "Select Item Code",
@@ -282,7 +281,7 @@ class _BinToBinInternalScreenState extends State<BinToBinInternalScreen> {
                                             .contains(_searchController2.text
                                                 .toLowerCase()))
                                         .toList();
-                                    dropDownValue2 = dropDownList[0];
+                                    dropDownValue2 = dropDownList2[0];
                                   });
                                   Navigator.pop(context);
                                 },
@@ -308,7 +307,7 @@ class _BinToBinInternalScreenState extends State<BinToBinInternalScreen> {
                                               .contains(_searchController2.text
                                                   .toLowerCase()))
                                           .toList();
-                                      dropDownValue2 = filterList[0];
+                                      dropDownValue2 = filterList2[0];
                                     });
 
                                     Navigator.pop(context);
@@ -330,8 +329,267 @@ class _BinToBinInternalScreenState extends State<BinToBinInternalScreen> {
                 ],
               ),
               const SizedBox(height: 10),
+
               Container(
-                height: MediaQuery.of(context).size.height * 0.6,
+                margin: const EdgeInsets.only(left: 20),
+                child: const TextWidget(
+                  text: "Scan Bin (FROM)*",
+                  fontSize: 13,
+                ),
+              ),
+              Row(
+                children: [
+                  Container(
+                    decoration: const BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                      color: Colors.white,
+                    ),
+                    width: MediaQuery.of(context).size.width * 0.73,
+                    margin: const EdgeInsets.only(left: 20),
+                    child: DropdownSearch<String>(
+                      filterFn: (item, filter) {
+                        return item
+                            .toLowerCase()
+                            .contains(filter.toLowerCase());
+                      },
+                      enabled: true,
+                      dropdownButtonProps: const DropdownButtonProps(
+                        icon: Icon(
+                          Icons.arrow_drop_down,
+                          color: Colors.black,
+                        ),
+                      ),
+                      items: filterList3,
+                      onChanged: (value) {
+                        setState(() {
+                          dropDownValue3 = value!;
+                        });
+                      },
+                      selectedItem: dropDownValue3,
+                    ),
+                  ),
+                  Container(
+                    margin: const EdgeInsets.only(left: 10),
+                    child: IconButton(
+                      onPressed: () {
+                        // show dialog box for search
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              title: TextWidget(
+                                text: "Search",
+                                color: Colors.blue[900]!,
+                                fontSize: 15,
+                              ),
+                              content: TextFormFieldWidget(
+                                controller: _searchController3,
+                                readOnly: false,
+                                hintText: "Enter/Scan Location",
+                                width: MediaQuery.of(context).size.width * 0.9,
+                                onEditingComplete: () {
+                                  setState(() {
+                                    dropDownList3 = dropDownList3
+                                        .where((element) => element
+                                            .toLowerCase()
+                                            .contains(_searchController3.text
+                                                .toLowerCase()))
+                                        .toList();
+                                    dropDownValue3 = dropDownList3[0];
+                                  });
+                                  Navigator.pop(context);
+                                },
+                              ),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: TextWidget(
+                                    text: "Cancel",
+                                    color: Colors.blue[900]!,
+                                    fontSize: 15,
+                                  ),
+                                ),
+                                TextButton(
+                                  onPressed: () {
+                                    // filter list based on search
+                                    setState(() {
+                                      filterList3 = dropDownList3
+                                          .where((element) => element
+                                              .toLowerCase()
+                                              .contains(_searchController3.text
+                                                  .toLowerCase()))
+                                          .toList();
+                                      dropDownValue3 = filterList3[0];
+                                    });
+
+                                    Navigator.pop(context);
+                                  },
+                                  child: TextWidget(
+                                    text: "Search",
+                                    color: Colors.blue[900]!,
+                                    fontSize: 15,
+                                  ),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      },
+                      icon: const Icon(Icons.search),
+                    ),
+                  ),
+                ],
+              ),
+
+              const SizedBox(height: 10),
+              // button for get data
+              Container(
+                margin: const EdgeInsets.only(left: 20),
+                width: MediaQuery.of(context).size.width * 0.9,
+                height: 50,
+                child: ElevatedButtonWidget(
+                  title: "Search",
+                  onPressed: () {
+                    if (dropDownList2.isEmpty || dropDownList3.isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text(
+                            "Please select Item Code and Bin Location",
+                            textAlign: TextAlign.center,
+                          ),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
+                      return;
+                    }
+
+                    onSearch();
+                  },
+                ),
+              ),
+              // Container(
+              //   margin: const EdgeInsets.only(left: 20),
+              //   child: const TextWidget(
+              //     text: "Bin Location (FROM)*",
+              //     fontSize: 13,
+              //   ),
+              // ),
+              // Row(
+              //   children: [
+              //     Container(
+              //       decoration: const BoxDecoration(
+              //         borderRadius: BorderRadius.all(Radius.circular(10)),
+              //         color: Colors.white,
+              //       ),
+              //       width: MediaQuery.of(context).size.width * 0.73,
+              //       margin: const EdgeInsets.only(left: 20),
+              //       child: DropdownSearch<String>(
+              //         filterFn: (item, filter) {
+              //           return item
+              //               .toLowerCase()
+              //               .contains(filter.toLowerCase());
+              //         },
+              //         enabled: true,
+              //         dropdownButtonProps: const DropdownButtonProps(
+              //           icon: Icon(
+              //             Icons.arrow_drop_down,
+              //             color: Colors.black,
+              //           ),
+              //         ),
+              //         items: filterList3,
+              //         onChanged: (value) {
+              //           setState(() {
+              //             dropDownValue3 = value!;
+
+              //             // filter the table based on search item code
+              //             table = table2
+              //                 .where((element) =>
+              //                     element.itemCode == dropDownValue3)
+              //                 .toList();
+              //           });
+              //         },
+              //         selectedItem: "Bin Location (FROM)",
+              //       ),
+              //     ),
+              //     Container(
+              //       margin: const EdgeInsets.only(left: 10),
+              //       child: IconButton(
+              //         onPressed: () {
+              //           // show dialog box for search
+              //           showDialog(
+              //             context: context,
+              //             builder: (context) {
+              //               return AlertDialog(
+              //                 title: TextWidget(
+              //                   text: "Search",
+              //                   color: Colors.blue[900]!,
+              //                   fontSize: 15,
+              //                 ),
+              //                 content: TextFormFieldWidget(
+              //                   controller: _searchController3,
+              //                   readOnly: false,
+              //                   hintText: "Enter/Scan Item Code",
+              //                   width: MediaQuery.of(context).size.width * 0.9,
+              //                   onEditingComplete: () {
+              //                     setState(() {
+              //                       filterList3 = dropDownList3
+              //                           .where((element) => element
+              //                               .toLowerCase()
+              //                               .contains(_searchController3.text
+              //                                   .toLowerCase()))
+              //                           .toList();
+              //                       dropDownValue3 = dropDownList3[0];
+              //                     });
+              //                     Navigator.pop(context);
+              //                   },
+              //                 ),
+              //                 actions: [
+              //                   TextButton(
+              //                     onPressed: () {
+              //                       Navigator.pop(context);
+              //                     },
+              //                     child: TextWidget(
+              //                       text: "Cancel",
+              //                       color: Colors.blue[900]!,
+              //                       fontSize: 15,
+              //                     ),
+              //                   ),
+              //                   TextButton(
+              //                     onPressed: () {
+              //                       // filter list based on search
+              //                       setState(() {
+              //                         filterList2 = dropDownList3
+              //                             .where((element) => element
+              //                                 .toLowerCase()
+              //                                 .contains(_searchController3.text
+              //                                     .toLowerCase()))
+              //                             .toList();
+              //                         dropDownValue3 = filterList3[0];
+              //                       });
+
+              //                       Navigator.pop(context);
+              //                     },
+              //                     child: TextWidget(
+              //                       text: "Search",
+              //                       color: Colors.blue[900]!,
+              //                       fontSize: 15,
+              //                     ),
+              //                   ),
+              //                 ],
+              //               );
+              //             },
+              //           );
+              //         },
+              //         icon: const Icon(Icons.search),
+              //       ),
+              //     ),
+              //   ],
+              // ),
+              const SizedBox(height: 10),
+              Container(
+                height: MediaQuery.of(context).size.height * 0.45,
                 decoration: BoxDecoration(
                   border: Border.all(
                     color: Colors.grey,
@@ -339,7 +597,7 @@ class _BinToBinInternalScreenState extends State<BinToBinInternalScreen> {
                   ),
                 ),
                 child: PaginatedDataTable(
-                  rowsPerPage: 5,
+                  rowsPerPage: 3,
                   columns: const [
                     DataColumn(
                         label: Text(
@@ -507,15 +765,8 @@ class _BinToBinInternalScreenState extends State<BinToBinInternalScreen> {
                             ? "Enter/Scan Pallet ID"
                             : "Enter/Scan Serial No.",
                         width: MediaQuery.of(context).size.width * 0.73,
-                        onEditingComplete: () async {
-                          FocusScope.of(context).unfocus();
-                          Constants.showLoadingDialog(context);
-                          filterMethod().then((value) {
-                            Navigator.pop(context);
-                            setState(() {});
-                          }).onError((error, stackTrace) {
-                            Navigator.pop(context);
-                          });
+                        onEditingComplete: () {
+                          filterMethod();
                         },
                       ),
                     ),
@@ -531,7 +782,6 @@ class _BinToBinInternalScreenState extends State<BinToBinInternalScreen> {
                           Constants.showLoadingDialog(context);
                           filterMethod().then((value) {
                             Navigator.pop(context);
-                            setState(() {});
                           }).onError((error, stackTrace) {
                             Navigator.pop(context);
                           });
@@ -688,6 +938,25 @@ class _BinToBinInternalScreenState extends State<BinToBinInternalScreen> {
                         return DataRow(onSelectChanged: (value) {}, cells: [
                           DataCell(
                               Text((filterTable.indexOf(e) + 1).toString())),
+                          DataCell(Text(e.itemCode.toString())),
+                          DataCell(Text(e.itemDesc ?? "")),
+                          DataCell(Text(e.gTIN ?? "")),
+                          DataCell(Text(e.remarks ?? "")),
+                          DataCell(Text(e.user ?? "")),
+                          DataCell(Text(e.classification ?? "")),
+                          DataCell(Text(e.mainLocation ?? "")),
+                          DataCell(Text(e.binLocation ?? "")),
+                          DataCell(Text(e.intCode ?? "")),
+                          DataCell(Text(e.itemSerialNo ?? "")),
+                          DataCell(Text(e.mapDate ?? "")),
+                          DataCell(Text(e.palletCode ?? "")),
+                          DataCell(Text(e.reference ?? "")),
+                          DataCell(Text(e.sID ?? "")),
+                          DataCell(Text(e.cID ?? "")),
+                          DataCell(Text(e.pO ?? "")),
+                          DataCell(Text(e.trans.toString() == "null"
+                              ? "0"
+                              : e.trans.toString())),
                         ]);
                       }).toList(),
                     ),
@@ -825,11 +1094,14 @@ class _BinToBinInternalScreenState extends State<BinToBinInternalScreen> {
                           binLocationList
                               .add(filterTable[i].binLocation.toString());
                         }
+
                         List<String> serialNoList = [];
                         for (int i = 0; i < filterTable.length; i++) {
                           serialNoList
                               .add(filterTable[i].itemSerialNo.toString());
                         }
+
+                        setState(() {});
 
                         FocusScope.of(context).requestFocus(FocusNode());
                         Constants.showLoadingDialog(context);
@@ -871,13 +1143,14 @@ class _BinToBinInternalScreenState extends State<BinToBinInternalScreen> {
                               .updateBin(
                             binLocationList,
                             dropDownValue.toString(),
-                            _serialNumberController.text.trim(),
+                            _serialNumberController.text.toString().trim(),
                           )
                               .then((value) {
                             Navigator.pop(context);
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
                                 content: Text("Updated Successfully"),
+                                backgroundColor: Colors.green,
                               ),
                             );
                             setState(() {
@@ -885,16 +1158,18 @@ class _BinToBinInternalScreenState extends State<BinToBinInternalScreen> {
                               _serialNumberController.clear();
                               total2 = "0";
                             });
-                          }).onError((error, stackTrace) {
-                            Navigator.pop(context);
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(error
-                                    .toString()
-                                    .replaceAll("Exception:", "")),
-                              ),
-                            );
-                          });
+                          }).onError(
+                            (error, stackTrace) {
+                              Navigator.pop(context);
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(error
+                                      .toString()
+                                      .replaceAll("Exception:", "")),
+                                ),
+                              );
+                            },
+                          );
                           return;
                         }
                       },
@@ -935,6 +1210,7 @@ class _BinToBinInternalScreenState extends State<BinToBinInternalScreen> {
   }
 
   Future searchMethod() async {
+    Constants.showLoadingDialog(context);
     BinToBinInternalTableDataController.getAllTable(dropDownValue.toString())
         .then((value) {
       setState(() {
@@ -944,14 +1220,13 @@ class _BinToBinInternalScreenState extends State<BinToBinInternalScreen> {
           false,
         );
         total = table.length.toString();
+
+        _serialNumberController.clear();
+        _palletIdController.clear();
+
+        FocusScope.of(context).requestFocus(FocusNode());
       });
       Navigator.pop(context);
-    }).onError((error, stackTrace) {
-      Navigator.pop(context);
-      setState(() {
-        dropDownValue = "";
-        filterList = [];
-      });
     }).onError((error, stackTrace) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -965,37 +1240,80 @@ class _BinToBinInternalScreenState extends State<BinToBinInternalScreen> {
 
   Future filterMethod() async {
     if (_site == "By Pallet") {
-      filterTable = table
-          .where((element) =>
-              element.palletCode
-                  .toString()
-                  .toLowerCase()
-                  .contains(_palletIdController.text.trim()) ||
-              element.palletCode
-                  .toString()
-                  .toUpperCase()
-                  .contains(_palletIdController.text.trim()))
-          .toList();
+      // if pallet id is empty
+      if (_palletIdController.text.toString().trim().isEmpty) {
+        FocusScope.of(context).requestFocus(FocusNode());
+      }
+
+      // if pallet id is not contain in the list
+      if (!table
+          .map((e) => e.palletCode.toString())
+          .toList()
+          .contains(_palletIdController.text.trim())) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Pallet ID not found."),
+            backgroundColor: Colors.red,
+          ),
+        );
+        FocusScope.of(context).requestFocus(FocusNode());
+
+        return;
+      }
+
       setState(() {
+        // add data in filter table which contains the same pallet id
+        for (var data in table) {
+          if (data.palletCode.toString().trim() ==
+              _palletIdController.text.toString().trim()) {
+            filterTable.add(data);
+          }
+        }
+
         total2 = filterTable.length.toString();
+        _palletIdController.clear();
+        FocusScope.of(context).requestFocus(FocusNode());
       });
+
       return;
     }
     if (_site == "By Serial") {
-      filterTable = table
-          .where((element) =>
-              element.itemSerialNo
-                  .toString()
-                  .toLowerCase()
-                  .contains(_serialNumberController.text.trim()) ||
-              element.itemSerialNo
-                  .toString()
-                  .toUpperCase()
-                  .contains(_serialNumberController.text.trim()))
-          .toList();
+      // if serial number is empty
+      if (_serialNumberController.text.toString().trim().isEmpty) {
+        FocusScope.of(context).requestFocus(FocusNode());
+      }
+
+      // if serial no is not contain in the list
+      if (!table
+          .map((e) => e.itemSerialNo.toString())
+          .toList()
+          .contains(_serialNumberController.text.trim())) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Serial No. not found."),
+            backgroundColor: Colors.red,
+          ),
+        );
+        FocusScope.of(context).requestFocus(FocusNode());
+
+        return;
+      }
+
       setState(() {
+        // add data in filter table which contains the same serial no
+        for (var data in table) {
+          if (data.itemSerialNo.toString().trim() ==
+              _serialNumberController.text.toString().trim()) {
+            filterTable.add(data);
+          }
+        }
+
+        _serialNumberController.clear();
+
         total2 = filterTable.length.toString();
+        FocusScope.of(context).requestFocus(FocusNode());
       });
+
       return;
     }
   }
@@ -1003,14 +1321,20 @@ class _BinToBinInternalScreenState extends State<BinToBinInternalScreen> {
   void onSearch() async {
     FocusScope.of(context).requestFocus(FocusNode());
     Constants.showLoadingDialog(context);
-    BinToBinInternalTableDataController.getAllTable(
-            _binIdController.text.trim())
-        .then((value) {
+    NewOne.getData(
+      dropDownValue2.toString().trim(),
+      dropDownValue3.toString().trim(),
+    ).then((value) {
       setState(() {
-        filterList2 = value.map((e) => e.itemCode.toString()).toSet().toList();
-        print(dropDownList2);
+        // filterList2 = value.map((e) => e.itemCode.toString()).toSet().toList();
+        // filterList2.removeWhere((element) => element == "");
+
+        // filterList3 =
+        //     value.map((e) => e.binLocation.toString()).toSet().toList();
+        // filterList3.removeWhere((element) => element == "");
+
         table = value;
-        table2 = value;
+
         isMarked = List<bool>.filled(
           table.length,
           false,
@@ -1024,7 +1348,6 @@ class _BinToBinInternalScreenState extends State<BinToBinInternalScreen> {
 
       setState(() {
         table = [];
-        _binIdController.clear();
         total = "0";
       });
 
@@ -1039,7 +1362,7 @@ class _BinToBinInternalScreenState extends State<BinToBinInternalScreen> {
 }
 
 class StudentDataSource extends DataTableSource {
-  List<BinToBinInternalModel> e;
+  List<getMappedBarcodedsByItemCodeAndBinLocationModel> e;
   BuildContext ctx;
 
   StudentDataSource(
@@ -1059,23 +1382,25 @@ class StudentDataSource extends DataTableSource {
       index: index,
       onSelectChanged: (value) {},
       cells: [
-        DataCell(Text(student.itemCode ?? "")),
-        DataCell(Text(student.itemDesc ?? "")),
-        DataCell(Text(student.gTIN ?? "")),
-        DataCell(Text(student.remarks ?? "")),
-        DataCell(Text(student.user ?? "")),
-        DataCell(Text(student.classification ?? "")),
-        DataCell(Text(student.mainLocation ?? "")),
-        DataCell(Text(student.binLocation ?? "")),
-        DataCell(Text(student.intCode ?? "")),
-        DataCell(Text(student.itemSerialNo ?? "")),
-        DataCell(Text(student.mapDate ?? "")),
-        DataCell(Text(student.palletCode ?? "")),
-        DataCell(Text(student.reference ?? "")),
-        DataCell(Text(student.sID ?? "")),
-        DataCell(Text(student.cID ?? "")),
-        DataCell(Text(student.pO ?? "")),
-        DataCell(Text(student.trans.toString())),
+        DataCell(SelectableText(student.itemCode ?? "")),
+        DataCell(SelectableText(student.itemDesc ?? "")),
+        DataCell(SelectableText(student.gTIN ?? "")),
+        DataCell(SelectableText(student.remarks ?? "")),
+        DataCell(SelectableText(student.user ?? "")),
+        DataCell(SelectableText(student.classification ?? "")),
+        DataCell(SelectableText(student.mainLocation ?? "")),
+        DataCell(SelectableText(student.binLocation ?? "")),
+        DataCell(SelectableText(student.intCode ?? "")),
+        DataCell(SelectableText(student.itemSerialNo ?? "")),
+        DataCell(SelectableText(student.mapDate ?? "")),
+        DataCell(SelectableText(student.palletCode ?? "")),
+        DataCell(SelectableText(student.reference ?? "")),
+        DataCell(SelectableText(student.sID ?? "")),
+        DataCell(SelectableText(student.cID ?? "")),
+        DataCell(SelectableText(student.pO ?? "")),
+        DataCell(SelectableText(student.trans.toString() == "null"
+            ? "0"
+            : student.trans.toString())),
       ],
     );
   }

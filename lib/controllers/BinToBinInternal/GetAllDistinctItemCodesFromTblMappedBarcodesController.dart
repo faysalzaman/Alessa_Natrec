@@ -1,20 +1,18 @@
 // ignore_for_file: avoid_print, depend_on_referenced_packages
 
-import 'package:alessa_v2/models/getMappedBarcodedsByItemCodeAndBinLocationModel.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
 import '../../utils/Constants.dart';
 
-class BinToBinInternalTableDataController {
-  static Future<List<getMappedBarcodedsByItemCodeAndBinLocationModel>>
-      getAllTable(String location) async {
+class GetAllDistinctItemCodesFromTblMappedBarcodesController {
+  static Future<List<String>> getAllTable() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String token = prefs.getString('token').toString();
 
     String url =
-        "${Constants.baseUrl}getmapBarcodeDataByBinLocation?BinLocation=$location";
+        "${Constants.baseUrl}getAllDistinctItemCodesFromTblMappedBarcodes";
     print("url: $url");
 
     final uri = Uri.parse(url);
@@ -32,11 +30,8 @@ class BinToBinInternalTableDataController {
         print("Status Code: ${response.statusCode}");
 
         var data = json.decode(response.body) as List;
-        List<getMappedBarcodedsByItemCodeAndBinLocationModel> shipmentData =
-            data
-                .map((e) =>
-                    getMappedBarcodedsByItemCodeAndBinLocationModel.fromJson(e))
-                .toList();
+        List<String> shipmentData =
+            data.map((e) => e["ItemCode"].toString()).toList();
         return shipmentData;
       } else {
         print("Status Code: ${response.statusCode}");

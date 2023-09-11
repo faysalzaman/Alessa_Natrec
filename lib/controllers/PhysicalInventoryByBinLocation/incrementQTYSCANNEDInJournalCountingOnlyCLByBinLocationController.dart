@@ -6,6 +6,7 @@ import 'dart:convert';
 
 import '../../utils/Constants.dart';
 
+// IncrementQTYSCANNEDInJournalCountingOnlyCLByBinLocationModel
 class incrementQTYSCANNEDInJournalCountingOnlyCLByBinLocationController {
   static Future<int> getData(
     String TRXUSERIDASSIGNED,

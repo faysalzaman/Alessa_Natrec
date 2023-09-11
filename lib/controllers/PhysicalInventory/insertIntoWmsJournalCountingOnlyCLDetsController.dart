@@ -1,6 +1,5 @@
 // ignore_for_file: camel_case_types, depend_on_referenced_packages, non_constant_identifier_names, avoid_print
 
-import 'package:alessa_v2/models/GetWmsJournalCountingOnlyCLByAssignedToUserIdModel.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
@@ -9,11 +8,11 @@ import '../../utils/Constants.dart';
 
 class insertIntoWmsJournalCountingOnlyCLDetsController {
   static Future<void> getData(
+    Map<String, dynamic> ITEM,
     String CONFIGID,
     String BINLOCATION,
     String QTYSCANNED,
     String ITEMSERIALNO,
-    GetWmsJournalCountingOnlyCLByAssignedToUserIdModel ITEM,
     String ITEMID,
     String ITEMNAME,
     String eventName,
@@ -34,7 +33,7 @@ class insertIntoWmsJournalCountingOnlyCLDetsController {
     };
 
     final data = {
-      ...ITEM.toJson(),
+      ...ITEM,
       "CONFIGID": CONFIGID,
       "BINLOCATION": BINLOCATION,
       "QTYSCANNED": QTYSCANNED,

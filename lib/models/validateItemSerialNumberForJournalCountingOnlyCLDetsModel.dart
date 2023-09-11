@@ -45,26 +45,39 @@ class Data {
   String? sID;
   String? cID;
   String? pO;
-  int? trans;
+  num? trans;
+  num? length;
+  num? width;
+  num? height;
+  num? weight;
+  String? qrCode;
+  String? trxDate;
 
-  Data(
-      {this.itemCode,
-      this.itemDesc,
-      this.gTIN,
-      this.remarks,
-      this.user,
-      this.classification,
-      this.mainLocation,
-      this.binLocation,
-      this.intCode,
-      this.itemSerialNo,
-      this.mapDate,
-      this.palletCode,
-      this.reference,
-      this.sID,
-      this.cID,
-      this.pO,
-      this.trans});
+  Data({
+    this.itemCode,
+    this.itemDesc,
+    this.gTIN,
+    this.remarks,
+    this.user,
+    this.classification,
+    this.mainLocation,
+    this.binLocation,
+    this.intCode,
+    this.itemSerialNo,
+    this.mapDate,
+    this.palletCode,
+    this.reference,
+    this.sID,
+    this.cID,
+    this.pO,
+    this.trans,
+    this.length,
+    this.width,
+    this.height,
+    this.weight,
+    this.qrCode,
+    this.trxDate,
+  });
 
   Data.fromJson(Map<String, dynamic> json) {
     itemCode = json['ItemCode'];
@@ -84,6 +97,12 @@ class Data {
     cID = json['CID'];
     pO = json['PO'];
     trans = json['Trans'];
+    length = json['Length'];
+    width = json['Width'];
+    height = json['Height'];
+    weight = json['Weight'];
+    qrCode = json['QRCode'];
+    trxDate = json['TrxDate'];
   }
 
   Map<String, dynamic> toJson() {
@@ -105,6 +124,12 @@ class Data {
     data['CID'] = cID;
     data['PO'] = pO;
     data['Trans'] = trans;
+    data['Length'] = length;
+    data['Width'] = width;
+    data['Height'] = height;
+    data['Weight'] = weight;
+    data['QRCode'] = qrCode;
+    data['TrxDate'] = trxDate;
     return data;
   }
 }
