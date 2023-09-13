@@ -20,6 +20,8 @@ class PalletIdInquiryScreen extends StatefulWidget {
 
 class _PalletIdInquiryScreenState extends State<PalletIdInquiryScreen> {
   TextEditingController serialNoController = TextEditingController();
+  FocusNode serialNoFocusNode = FocusNode();
+
   String total = "0";
   List<GetItemInfoByItemSerialNoModel> table = [];
   List<bool> isMarked = [];
@@ -136,6 +138,7 @@ class _PalletIdInquiryScreenState extends State<PalletIdInquiryScreen> {
                     Container(
                       margin: const EdgeInsets.only(left: 20),
                       child: TextFormFieldWidget(
+                        focusNode: serialNoFocusNode,
                         hintText: "Enter/Scan Serial No.",
                         controller: serialNoController,
                         width: MediaQuery.of(context).size.width * 0.73,
@@ -166,6 +169,7 @@ class _PalletIdInquiryScreenState extends State<PalletIdInquiryScreen> {
               const SizedBox(height: 50),
               Container(
                 width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height * 0.5,
                 alignment: Alignment.topCenter,
                 child: SingleChildScrollView(
                   scrollDirection: Axis.vertical,
@@ -204,11 +208,18 @@ class _PalletIdInquiryScreenState extends State<PalletIdInquiryScreen> {
                           style: TextStyle(color: Colors.white),
                           textAlign: TextAlign.center,
                         )),
+                        DataColumn(
+                            label: Text(
+                          'Serial No.',
+                          style: TextStyle(color: Colors.white),
+                          textAlign: TextAlign.center,
+                        )),
                       ],
                       rows: table.map((e) {
                         return DataRow(onSelectChanged: (value) {}, cells: [
                           DataCell(Text(e.gTIN ?? "")),
                           DataCell(Text(e.palletCode ?? "")),
+                          DataCell(Text(e.itemSerialNo ?? "")),
                         ]);
                       }).toList(),
                     ),
@@ -224,11 +235,8 @@ class _PalletIdInquiryScreenState extends State<PalletIdInquiryScreen> {
 
   void onClick() async {
     if (serialNoController.text.trim().isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Please Enter a Serial No.")));
-      setState(() {
-        table = [];
-      });
+      // hide keyboard
+      FocusScope.of(context).requestFocus(FocusNode());
       return;
     }
     Constants.showLoadingDialog(context);
@@ -240,9 +248,9 @@ class _PalletIdInquiryScreenState extends State<PalletIdInquiryScreen> {
         total = table.length.toString();
         isMarked = List<bool>.filled(table.length, false);
         serialNoController.clear();
+        // focus back to serial no
+        FocusScope.of(context).requestFocus(serialNoFocusNode);
       });
-      // hide keyboard
-      FocusScope.of(context).requestFocus(FocusNode());
       Navigator.pop(context);
     }).onError((error, stackTrace) {
       setState(() {
