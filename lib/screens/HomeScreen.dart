@@ -104,7 +104,7 @@ class _HomeScreenState extends State<HomeScreen> {
         Get.to(() => const UnAllocatedItemsScreen1());
       },
       () {
-        Get.to(() => const PalletIdInquiryScreen());
+        Get.to(() => const PalletIdInquiryScreen1());
       },
       () {
         Get.offAll(() => const LoginScreen());

@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import '../../controllers/ItemReAllocation/ItemReAllocationTableDataController.dart';
 import '../../controllers/ItemReAllocation/SubmitItemReallocateController.dart';
 import '../../models/GetItemInfoByPalletCodeModel.dart';
@@ -73,7 +75,13 @@ class _ItemReAllocationScreenState extends State<ItemReAllocationScreen> {
                   children: <Widget>[
                     Flexible(
                       child: ListTile(
-                        title: const Text('Allocation'),
+                        title: const Text(
+                          'Allocation',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
+                          ),
+                        ),
                         leading: Radio(
                           value: "Allocation",
                           groupValue: _site,
@@ -88,7 +96,13 @@ class _ItemReAllocationScreenState extends State<ItemReAllocationScreen> {
                     ),
                     Flexible(
                       child: ListTile(
-                        title: const Text('Picking'),
+                        title: const Text(
+                          'Picking',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
+                          ),
+                        ),
                         leading: Radio(
                           value: "Picking",
                           groupValue: _site,
@@ -451,8 +465,8 @@ class _ItemReAllocationScreenState extends State<ItemReAllocationScreen> {
     }).onError((error, stackTrace) {
       Navigator.of(context).pop();
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("No data found."),
+        SnackBar(
+          content: Text(error.toString().replaceAll("Exception:", "")),
           backgroundColor: Colors.red,
         ),
       );

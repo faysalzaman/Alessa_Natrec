@@ -18,8 +18,6 @@ class updateByPalletController {
     String url =
         '${Constants.baseUrl}updateMappedBarcodesBinLocationByPalletCode';
 
-    print("url : $url");
-
     final uri = Uri.parse(url);
 
     final headers = <String, String>{
