@@ -1,3 +1,5 @@
+// ignore_for_file: sized_box_for_whitespace
+
 import 'package:alessa_v2/models/GetItemInfoByItemSerialNoModel.dart';
 import 'package:alessa_v2/screens/PalletIdInquiry/PalletIdInquiryScreen2.dart';
 import 'package:alessa_v2/widgets/ElevatedButtonWidget.dart';
@@ -274,7 +276,6 @@ class _PalletIdInquiryScreen1State extends State<PalletIdInquiryScreen1> {
                       textColor: Colors.white,
                       color: Colors.orange,
                       onPressed: () {
-                        // hide keyboard
                         FocusScope.of(context).requestFocus(FocusNode());
                         if (table.isEmpty) {
                           ScaffoldMessenger.of(context).showSnackBar(

@@ -1,12 +1,11 @@
-// ignore_for_file: use_key_in_widget_constructors, must_be_immutable, sized_box_for_whitespace, use_build_context_synchronously
+// ignore_for_file: use_key_in_widget_constructors, must_be_immutable, sized_box_for_whitespace, use_build_context_synchronously, avoid_print
 
+import 'package:alessa_v2/controllers/PalletIdInquiry/GetItemInfoByPalletCodeController.dart';
+import 'package:alessa_v2/controllers/PalletIdInquiry/UpdateMappedBarcodesByPalletCodeController.dart';
 import 'package:alessa_v2/controllers/ReturnRMA/ReturnDZones.dart';
 import 'package:alessa_v2/models/GetItemInfoByItemSerialNoModel.dart';
-import 'package:alessa_v2/screens/PalletIdInquiry/PalletIdInquiryScreen.dart';
 import 'package:alessa_v2/widgets/ElevatedButtonWidget.dart';
 import 'package:dropdown_search/dropdown_search.dart';
-
-import '../../controllers/PalletIdInquiry/PalletIdInquiryController.dart';
 
 import '../../utils/Constants.dart';
 import 'package:flutter/material.dart';
@@ -76,10 +75,9 @@ class _PalletIdInquiryScreen2State extends State<PalletIdInquiryScreen2> {
     Future.delayed(
       Duration.zero,
       () async {
+        Constants.showLoadingDialog(context);
+        var value = await ReturnDZones.getData();
         try {
-          Constants.showLoadingDialog(context);
-          var value = await ReturnDZones.getData();
-
           for (int i = 0; i < value.length; i++) {
             setState(() {
               dropDownList.add(value[i].rZONE ?? "");
@@ -91,10 +89,22 @@ class _PalletIdInquiryScreen2State extends State<PalletIdInquiryScreen2> {
             dropDownValue = dropDownList[0];
             filterList = dropDownList;
           });
+          GetItemInfoByPalletCodeController.getData(widget.palletCode)
+              .then((val) {
+            setState(() {
+              table = val;
+              total = table.length.toString();
+            });
+            Navigator.of(context).pop();
+          }).onError((error, stackTrace) {
+            Navigator.of(context).pop();
 
-          Navigator.pop(context);
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content: Text(error.toString().replaceAll("Exception:", ""))));
+          });
         } catch (e) {
           Navigator.pop(context);
+          print(e.toString());
         }
       },
     );
@@ -104,6 +114,8 @@ class _PalletIdInquiryScreen2State extends State<PalletIdInquiryScreen2> {
   void dispose() {
     super.dispose();
     palletIdController.dispose();
+    serialNoFocusNode.dispose();
+    _searchController.dispose();
   }
 
   @override
@@ -328,8 +340,7 @@ class _PalletIdInquiryScreen2State extends State<PalletIdInquiryScreen2> {
                       textColor: Colors.white,
                       color: Colors.grey,
                       onPressed: () {
-                        // go back to previous screen and replace it
-                        Get.off(() => const PalletIdInquiryScreen1());
+                        Get.back();
                       },
                     ),
                     ElevatedButtonWidget(
@@ -339,7 +350,7 @@ class _PalletIdInquiryScreen2State extends State<PalletIdInquiryScreen2> {
                       fontSize: 16,
                       textColor: Colors.white,
                       color: Colors.orange,
-                      onPressed: () {},
+                      onPressed: onTransfer,
                     ),
                   ],
                 ),
@@ -351,33 +362,41 @@ class _PalletIdInquiryScreen2State extends State<PalletIdInquiryScreen2> {
     );
   }
 
-  void onClick() async {
-    if (palletIdController.text.trim().isEmpty) {
-      // hide keyboard
-      FocusScope.of(context).requestFocus(FocusNode());
+  void onTransfer() async {
+    if (table.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text("No Data Found, Please Scan Again"),
+      ));
       return;
     }
+
+    if (dropDownValue == null || dropDownValue == "") {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text("Select/Enter a Bin Location from the DROPDOWN"),
+      ));
+      return;
+    }
+
     Constants.showLoadingDialog(context);
-    PalletIdInquiryController.getShipmentPalletizing(
-            palletIdController.text.trim())
+    UpdateMappedBarcodesByPalletCodeController.getData(
+            table, dropDownValue.toString().trim())
         .then((value) {
       setState(() {
-        table = List.generate(1, (index) => value[index]);
-        total = table.length.toString();
-        isMarked = List<bool>.filled(table.length, false);
-        palletIdController.clear();
-        // focus back to serial no
-        FocusScope.of(context).requestFocus(serialNoFocusNode);
+        palletIdController.text = "";
+        table = [];
       });
       Navigator.pop(context);
+      Get.back();
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text("“Pallet ID transfer into a new location"),
+        backgroundColor: Colors.green,
+      ));
     }).onError((error, stackTrace) {
-      setState(() {
-        palletIdController.clear();
-        FocusScope.of(context).requestFocus(serialNoFocusNode);
-      });
       Navigator.pop(context);
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text(error.toString().replaceAll("Exception:", ""))));
+        content: Text(error.toString().replaceAll("Exception:", "")),
+        backgroundColor: Colors.red,
+      ));
     });
   }
 }

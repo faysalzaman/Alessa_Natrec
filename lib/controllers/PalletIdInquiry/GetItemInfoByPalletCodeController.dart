@@ -1,20 +1,19 @@
 // ignore_for_file: camel_case_types, depend_on_referenced_packages, avoid_print
 
+import 'package:alessa_v2/models/GetItemInfoByItemSerialNoModel.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
-import '../../models/getWmsJournalMovementClByAssignedToUserIdModel.dart';
 import '../../utils/Constants.dart';
 
-class getWmsJournalMovementClByAssignedToUserIdController {
-  static Future<List<getWmsJournalMovementClByAssignedToUserIdModel>>
-      getData() async {
+class GetItemInfoByPalletCodeController {
+  static Future<List<GetItemInfoByItemSerialNoModel>> getData(
+      String palletCode) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String token = prefs.getString('token').toString();
 
-    String url =
-        "${Constants.baseUrl}getWmsJournalMovementClByAssignedToUserId";
+    String url = "${Constants.baseUrl}getItemInfoByPalletCode";
     print("url: $url");
 
     final uri = Uri.parse(url);
@@ -23,18 +22,18 @@ class getWmsJournalMovementClByAssignedToUserIdController {
       "Authorization": token,
       "Host": Constants.host,
       "Accept": "application/json",
+      "palletcode": palletCode,
     };
 
     try {
-      var response = await http.get(uri, headers: headers);
+      var response = await http.post(uri, headers: headers);
 
       if (response.statusCode == 200) {
         print("Status Code: ${response.statusCode}");
 
         var data = json.decode(response.body) as List;
-        List<getWmsJournalMovementClByAssignedToUserIdModel> shipmentData = data
-            .map((e) =>
-                getWmsJournalMovementClByAssignedToUserIdModel.fromJson(e))
+        List<GetItemInfoByItemSerialNoModel> shipmentData = data
+            .map((e) => GetItemInfoByItemSerialNoModel.fromJson(e))
             .toList();
         return shipmentData;
       } else {
