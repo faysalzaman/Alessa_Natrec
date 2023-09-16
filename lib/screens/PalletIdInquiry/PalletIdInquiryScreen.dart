@@ -303,10 +303,10 @@ class _PalletIdInquiryScreen1State extends State<PalletIdInquiryScreen1> {
 
                         Get.to(
                           () => PalletIdInquiryScreen2(
-                            grin: table[0].gTIN!,
-                            palletCode: table[0].palletCode!,
-                            serialNo: table[0].itemSerialNo!,
-                            binLocation: table[0].binLocation!,
+                            grin: table[0].gTIN ?? "",
+                            palletCode: table[0].palletCode ?? "",
+                            serialNo: table[0].itemSerialNo ?? "",
+                            binLocation: table[0].binLocation ?? "",
                           ),
                         );
                       },

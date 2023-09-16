@@ -1,8 +1,8 @@
 // ignore_for_file: use_key_in_widget_constructors, must_be_immutable, sized_box_for_whitespace, use_build_context_synchronously, avoid_print
 
+import 'package:alessa_v2/controllers/BinToBinFromAXAPTA/getmapBarcodeDataByItemCodeController.dart';
 import 'package:alessa_v2/controllers/PalletIdInquiry/GetItemInfoByPalletCodeController.dart';
 import 'package:alessa_v2/controllers/PalletIdInquiry/UpdateMappedBarcodesByPalletCodeController.dart';
-import 'package:alessa_v2/controllers/ReturnRMA/ReturnDZones.dart';
 import 'package:alessa_v2/models/GetItemInfoByItemSerialNoModel.dart';
 import 'package:alessa_v2/widgets/ElevatedButtonWidget.dart';
 import 'package:dropdown_search/dropdown_search.dart';
@@ -41,73 +41,82 @@ class _PalletIdInquiryScreen2State extends State<PalletIdInquiryScreen2> {
   List<bool> isMarked = [];
 
   final TextEditingController _searchController = TextEditingController();
-  String? dropDownValue;
-  List<String> dropDownList = [];
-  List<String> filterList = [];
+  String? dDownValue;
+  List<String> dDownList = [];
+  List<String> fltrList = [];
 
   @override
   void initState() {
     palletIdController.text = widget.palletCode;
     super.initState();
-    // Future.delayed(Duration.zero, () {
-    //   Constants.showLoadingDialog(context);
-    //   GetMapBarcodeDataByItemCodeController.getData().then((value) {
-    //     for (int i = 0; i < value.length; i++) {
-    //       setState(() {
-    //         dropDownList.add(value[i].bIN ?? "");
-    //       });
-    //     }
-
-    //     setState(() {
-    //       // convert list to set to remove duplicate values
-    //       dropDownList = dropDownList.toSet().toList();
-
-    //       dropDownList.removeWhere((element) => element == "");
-    //       dropDownValue = dropDownList[0];
-    //       filterList = dropDownList;
-    //     });
-    //     Navigator.pop(context);
-    //   }).onError((error, stackTrace) {
-    //     Navigator.pop(context);
-    //   });
-    // });
-
-    Future.delayed(
-      Duration.zero,
-      () async {
-        Constants.showLoadingDialog(context);
-        var value = await ReturnDZones.getData();
-        try {
-          for (int i = 0; i < value.length; i++) {
-            setState(() {
-              dropDownList.add(value[i].rZONE ?? "");
-              Set<String> set = dropDownList.toSet();
-              dropDownList = set.toList();
-            });
-          }
+    Future.delayed(Duration.zero, () {
+      Constants.showLoadingDialog(context);
+      GetMapBarcodeDataByItemCodeController.getData().then((value) {
+        for (int i = 0; i < value.length; i++) {
           setState(() {
-            dropDownValue = dropDownList[0];
-            filterList = dropDownList;
+            dDownList.add(value[i].bIN ?? "");
+            Set<String> set = dDownList.toSet();
+            dDownList = set.toList();
           });
-          GetItemInfoByPalletCodeController.getData(widget.palletCode)
-              .then((val) {
-            setState(() {
-              table = val;
-              total = table.length.toString();
-            });
-            Navigator.of(context).pop();
-          }).onError((error, stackTrace) {
-            Navigator.of(context).pop();
-
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                content: Text(error.toString().replaceAll("Exception:", ""))));
-          });
-        } catch (e) {
-          Navigator.pop(context);
-          print(e.toString());
         }
-      },
-    );
+        setState(() {
+          dDownValue = dDownList[0];
+          fltrList = dDownList;
+        });
+        GetItemInfoByPalletCodeController.getData(widget.palletCode)
+            .then((val) {
+          setState(() {
+            table = val;
+            total = table.length.toString();
+          });
+          Navigator.of(context).pop();
+        }).onError((error, stackTrace) {
+          Navigator.of(context).pop();
+
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text(error.toString().replaceAll("Exception:", ""))));
+        });
+      }).onError((error, stackTrace) {
+        Navigator.pop(context);
+      });
+    });
+
+    // Future.delayed(
+    //   Duration.zero,
+    //   () async {
+    //     Constants.showLoadingDialog(context);
+    //     var value = await ReturnDZones.getData();
+    //     try {
+    //       for (int i = 0; i < value.length; i++) {
+    //         setState(() {
+    //           dropDownList.add(value[i].rZONE ?? "");
+    //           Set<String> set = dropDownList.toSet();
+    //           dropDownList = set.toList();
+    //         });
+    //       }
+    //       setState(() {
+    //         dropDownValue = dropDownList[0];
+    //         filterList = dropDownList;
+    //       });
+    //       GetItemInfoByPalletCodeController.getData(widget.palletCode)
+    //           .then((val) {
+    //         setState(() {
+    //           table = val;
+    //           total = table.length.toString();
+    //         });
+    //         Navigator.of(context).pop();
+    //       }).onError((error, stackTrace) {
+    //         Navigator.of(context).pop();
+
+    //         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+    //             content: Text(error.toString().replaceAll("Exception:", ""))));
+    //       });
+    //     } catch (e) {
+    //       Navigator.pop(context);
+    //       print(e.toString());
+    //     }
+    //   },
+    // );
   }
 
   @override
@@ -244,13 +253,13 @@ class _PalletIdInquiryScreen2State extends State<PalletIdInquiryScreen2> {
                             color: Colors.black,
                           ),
                         ),
-                        items: filterList,
+                        items: fltrList,
                         onChanged: (value) {
                           setState(() {
-                            dropDownValue = value!;
+                            dDownValue = value!;
                           });
                         },
-                        selectedItem: dropDownValue,
+                        selectedItem: dDownValue,
                       ),
                     ),
                     Container(
@@ -275,13 +284,13 @@ class _PalletIdInquiryScreen2State extends State<PalletIdInquiryScreen2> {
                                       MediaQuery.of(context).size.width * 0.9,
                                   onEditingComplete: () {
                                     setState(() {
-                                      dropDownList = dropDownList
+                                      dDownList = dDownList
                                           .where((element) => element
                                               .toLowerCase()
                                               .contains(_searchController.text
                                                   .toLowerCase()))
                                           .toList();
-                                      dropDownValue = dropDownList[0];
+                                      dDownValue = dDownList[0];
                                     });
                                     Navigator.pop(context);
                                   },
@@ -301,13 +310,13 @@ class _PalletIdInquiryScreen2State extends State<PalletIdInquiryScreen2> {
                                     onPressed: () {
                                       // filter list based on search
                                       setState(() {
-                                        filterList = dropDownList
+                                        fltrList = dDownList
                                             .where((element) => element
                                                 .toLowerCase()
                                                 .contains(_searchController.text
                                                     .toLowerCase()))
                                             .toList();
-                                        dropDownValue = filterList[0];
+                                        dDownValue = fltrList[0];
                                       });
 
                                       Navigator.pop(context);
@@ -370,7 +379,7 @@ class _PalletIdInquiryScreen2State extends State<PalletIdInquiryScreen2> {
       return;
     }
 
-    if (dropDownValue == null || dropDownValue == "") {
+    if (dDownValue == null || dDownValue == "") {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text("Select/Enter a Bin Location from the DROPDOWN"),
       ));
@@ -379,7 +388,7 @@ class _PalletIdInquiryScreen2State extends State<PalletIdInquiryScreen2> {
 
     Constants.showLoadingDialog(context);
     UpdateMappedBarcodesByPalletCodeController.getData(
-            table, dropDownValue.toString().trim())
+            table, dDownValue.toString().trim())
         .then((value) {
       setState(() {
         palletIdController.text = "";
