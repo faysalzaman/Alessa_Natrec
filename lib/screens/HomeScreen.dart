@@ -2,6 +2,7 @@
 
 import 'package:alessa_v2/models/GetRolesAssignedToUserModel.dart';
 import 'package:alessa_v2/screens/BarcodeMapping/BarcodeMappingScreen.dart';
+import 'package:alessa_v2/screens/CycleCounting/CycleCountingScreen1.dart';
 import 'package:alessa_v2/screens/PalletIdInquiry/PalletIdInquiryScreen.dart';
 import 'package:alessa_v2/screens/PhysicalInverntoryByBinLocation/PhysicalInventoryByBinLocationScreen.dart';
 import 'package:alessa_v2/screens/UnAllocatedItem/UnAllocatedItemsScreen1.dart';
@@ -53,6 +54,7 @@ class _HomeScreenState extends State<HomeScreen> {
       "assets/inventory.png",
       "assets/picking.png",
       "assets/movement.png",
+      "assets/cycle-counting.png",
       "assets/profit-and-loss.png",
       "assets/allocation.png",
       "assets/receipt_management.png",
@@ -73,6 +75,7 @@ class _HomeScreenState extends State<HomeScreen> {
       "WMS Inventory",
       "Journal Movement Counting",
       "Profit and Loss",
+      "Cycle Counting Process",
       "Items Re-Allocation",
       "Un-Allocated Items",
       "Pallet ID Inquiry",
@@ -99,6 +102,9 @@ class _HomeScreenState extends State<HomeScreen> {
       },
       () {},
       () {},
+      () {
+        Get.to(() => const CycleCountingScreen1());
+      },
       () {},
       () {
         Get.to(() => const UnAllocatedItemsScreen1());
@@ -342,7 +348,7 @@ class _HomeScreenState extends State<HomeScreen> {
         );
       }
     };
-    data['functions'][14] = () {
+    data['functions'][15] = () {
       if (widget.roles
               .where((element) => element.roleName == "WMS Item Re Allocation")
               .isNotEmpty ||
@@ -709,7 +715,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             height: 50,
                           ),
                         ),
-                        title: const AutoSizeText("RMA"),
+                        title: const AutoSizeText("RETURNS"),
                       ),
                       collapsed: Container(),
                       expanded: Column(
@@ -828,6 +834,24 @@ class _HomeScreenState extends State<HomeScreen> {
                               ),
                             ),
                           ),
+                          FadeAnimation(
+                            delay: 1,
+                            child: Container(
+                              margin: const EdgeInsets.only(left: 20),
+                              child: ListTile(
+                                leading: CircleAvatar(
+                                  backgroundColor: Colors.grey[400],
+                                  child: Image.asset(
+                                    data["images"][14],
+                                    width: 50,
+                                    height: 50,
+                                  ),
+                                ),
+                                title: AutoSizeText(data["titles"][14]),
+                                onTap: data["functions"][14],
+                              ),
+                            ),
+                          ),
                         ],
                       ),
                     ),
@@ -852,24 +876,6 @@ class _HomeScreenState extends State<HomeScreen> {
                       collapsed: Container(),
                       expanded: Column(
                         children: <Widget>[
-                          FadeAnimation(
-                            delay: 1,
-                            child: Container(
-                              margin: const EdgeInsets.only(left: 20),
-                              child: ListTile(
-                                leading: CircleAvatar(
-                                  backgroundColor: Colors.grey[400],
-                                  child: Image.asset(
-                                    data["images"][14],
-                                    width: 50,
-                                    height: 50,
-                                  ),
-                                ),
-                                title: AutoSizeText(data["titles"][14]),
-                                onTap: data["functions"][14],
-                              ),
-                            ),
-                          ),
                           FadeAnimation(
                             delay: 1,
                             child: Container(
@@ -906,6 +912,24 @@ class _HomeScreenState extends State<HomeScreen> {
                               ),
                             ),
                           ),
+                          FadeAnimation(
+                            delay: 1,
+                            child: Container(
+                              margin: const EdgeInsets.only(left: 20),
+                              child: ListTile(
+                                leading: CircleAvatar(
+                                  backgroundColor: Colors.grey[400],
+                                  child: Image.asset(
+                                    data["images"][17],
+                                    width: 50,
+                                    height: 50,
+                                  ),
+                                ),
+                                title: AutoSizeText(data["titles"][17]),
+                                onTap: data["functions"][17],
+                              ),
+                            ),
+                          ),
                         ],
                       ),
                     ),
@@ -919,13 +943,13 @@ class _HomeScreenState extends State<HomeScreen> {
                       leading: CircleAvatar(
                         backgroundColor: Colors.grey[400],
                         child: Image.asset(
-                          data["images"][17],
+                          data["images"][18],
                           width: 50,
                           height: 50,
                         ),
                       ),
-                      title: AutoSizeText(data["titles"][17]),
-                      onTap: data["functions"][17],
+                      title: AutoSizeText(data["titles"][18]),
+                      onTap: data["functions"][18],
                     ),
                   ),
                   // FadeAnimation(

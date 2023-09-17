@@ -1,8 +1,9 @@
 // ignore_for_file: sized_box_for_whitespace, unrelated_type_equality_checks
 
+import 'package:alessa_v2/controllers/JournalMovement/ValidateItemSerialNumberForJournalMovementCLDetsController.dart';
 import 'package:alessa_v2/controllers/JournalMovement/insertJournalMovementCLDetsController.dart';
 import 'package:alessa_v2/controllers/JournalMovement/updateWmsJournalMovementClQtyScannedController.dart';
-import 'package:alessa_v2/models/getMappedBarcodedsByItemCodeAndBinLocationModel.dart';
+import 'package:alessa_v2/models/GetmapBarcodeDataByBinLocationModel.dart';
 import 'package:alessa_v2/models/updateWmsJournalMovementClQtyScannedModel.dart';
 import 'package:alessa_v2/widgets/TextFormField.dart';
 import 'package:dropdown_search/dropdown_search.dart';
@@ -10,7 +11,6 @@ import 'package:multi_select_flutter/dialog/multi_select_dialog_field.dart';
 import 'package:multi_select_flutter/util/multi_select_item.dart';
 import 'package:multi_select_flutter/util/multi_select_list_type.dart';
 
-import '../../screens/JournalMovement/JournalMovementScreen2.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -31,7 +31,7 @@ class JournalMovementScreen1 extends StatefulWidget {
 }
 
 class _JournalMovementScreen1State extends State<JournalMovementScreen1> {
-  TextEditingController _serialNoController = TextEditingController();
+  final TextEditingController _serialNoController = TextEditingController();
 
   String total = "0";
   String total2 = "0";
@@ -39,7 +39,7 @@ class _JournalMovementScreen1State extends State<JournalMovementScreen1> {
   List<getWmsJournalMovementClByAssignedToUserIdModel> table = [];
   List<getWmsJournalMovementClByAssignedToUserIdModel> filterTable = [];
 
-  List<getWmsJournalMovementClByAssignedToUserIdModel> table2 = [];
+  List<GetmapBarcodeDataByBinLocationModel> table2 = [];
 
   List<bool> isMarked = [];
 
@@ -65,6 +65,8 @@ class _JournalMovementScreen1State extends State<JournalMovementScreen1> {
 
   List<String> itemIdValue = [];
   List<String> itemIdList = [];
+
+  FocusNode _focusNode = FocusNode();
 
   updateWmsJournalMovementClQtyScannedModel
       updateWmsJournalMovementClQtyScannedList =
@@ -431,88 +433,178 @@ class _JournalMovementScreen1State extends State<JournalMovementScreen1> {
                   margin: const EdgeInsets.only(left: 20),
                   child: TextFormFieldWidget(
                     controller: _serialNoController,
+                    focusNode: _focusNode,
                     readOnly: false,
                     hintText: "Enter/Scan Serial No",
                     width: MediaQuery.of(context).size.width * 0.9,
                     onEditingComplete: () {
+                      if (_serialNoController.text.isEmpty) {
+                        // hide keyboard
+                        FocusScope.of(context).requestFocus(FocusNode());
+                      }
+
                       FocusScope.of(context).requestFocus(FocusNode());
                       Constants.showLoadingDialog(context);
 
-                      updateWmsJournalMovementClQtyScannedController
+                      ValidateItemSerialNumberForJournalMovementCLDetsController
                           .getData(
-                        "iTEMID",
-                        "jOURNALID",
-                        "tRXUSERIDASSIGNED",
-                      )
-                          .then((value) {
-                        setState(() {
-                          updateWmsJournalMovementClQtyScannedList = value;
-                        });
-                        InsertJournalMovementCLDetsController.getData(
-                                updateWmsJournalMovementClQtyScannedList,
-                                _serialNoController.text.trim())
-                            .then((value) {
-                          setState(
-                            () {
-                              // check if the entered serial no is not present in the
-                              if (table
-                                  .where((element) =>
-                                      element.iTEMSERIALNO.toString().trim() ==
-                                      _serialNoController.text.trim())
-                                  .toList()
-                                  .isEmpty) {
-                                Navigator.pop(context);
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: TextWidget(
-                                      text:
-                                          "Serial No. not found in the list, please a serial no from the above list.",
-                                      color: Colors.white,
-                                    ),
-                                    backgroundColor: Colors.red,
-                                  ),
-                                );
-                                return;
-                              }
-
-                              // append the selected pallet code row to the GetShipmentPalletizingList2
-                              table2.add(
-                                table.firstWhere(
-                                  (element) =>
-                                      element.iTEMSERIALNO.toString().trim() ==
-                                      _serialNoController.text.trim(),
-                                ),
-                              );
-                              // remove the selected pallet code row from the GetShipmentPalletizingList
-                              table.removeWhere(
-                                (element) =>
-                                    element.iTEMSERIALNO.toString().trim() ==
-                                    _serialNoController.text.trim(),
-                              );
-                              total2 = table2.length.toString();
-                              total = table.length.toString();
-                            },
-                          );
+                        _serialNoController.text.trim(),
+                        'validateItemSerialNumberForJournalMovementCLDets',
+                      ).then((validate) {
+                        if (filterTable
+                            .where((element) =>
+                                element.iTEMID.toString().trim() !=
+                                validate.itemCode.toString().trim())
+                            .toList()
+                            .isEmpty) {
                           Navigator.pop(context);
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
                               content: TextWidget(
-                                text: "Record Inserted Successfully.",
+                                text:
+                                    "Serial number not exist in mapped barcode.",
                                 color: Colors.white,
                               ),
-                              backgroundColor: Colors.green,
+                              backgroundColor: Colors.red,
                             ),
                           );
-                          _serialNoController.clear();
+                          return;
+                        }
+
+                        updateWmsJournalMovementClQtyScannedController
+                            .getData(
+                          filterTable
+                              .where((element) =>
+                                  element.iTEMID.toString().trim() ==
+                                  validate.itemCode.toString().trim())
+                              .toList()[0]
+                              .iTEMID
+                              .toString(),
+                          filterTable
+                              .where((element) =>
+                                  element.iTEMID.toString().trim() ==
+                                  validate.itemCode.toString().trim())
+                              .toList()[0]
+                              .jOURNALID
+                              .toString(),
+                          filterTable
+                              .where((element) =>
+                                  element.iTEMID.toString().trim() ==
+                                  validate.itemCode.toString().trim())
+                              .toList()[0]
+                              .tRXUSERIDASSIGNED
+                              .toString(),
+                        )
+                            .then((value) {
+                          setState(() {
+                            updateWmsJournalMovementClQtyScannedList = value;
+                          });
+                          InsertJournalMovementCLDetsController.getData(
+                            updateWmsJournalMovementClQtyScannedList,
+                            _serialNoController.text.trim(),
+                          ).then((value) {
+                            setState(
+                              () {
+                                // check if the entered serial no is not present in the table
+                                if (table
+                                    .where((element) =>
+                                        element.iTEMSERIALNO
+                                            .toString()
+                                            .trim() !=
+                                        _serialNoController.text.trim())
+                                    .toList()
+                                    .isEmpty) {
+                                  Navigator.pop(context);
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: TextWidget(
+                                        text:
+                                            "Serial No. not found in the list, please scan a serial no from the above list.",
+                                        color: Colors.white,
+                                      ),
+                                      backgroundColor: Colors.red,
+                                    ),
+                                  );
+                                  return;
+                                }
+
+                                // increase the qtyScanned by 1 in filterTable
+                                filterTable
+                                    .where((element) =>
+                                        element.iTEMID.toString().trim() ==
+                                        validate.itemCode.toString().trim())
+                                    .toList()[0]
+                                    .qTYSCANNED = int.parse(filterTable
+                                        .where((element) =>
+                                            element.iTEMID.toString().trim() ==
+                                            validate.itemCode.toString().trim())
+                                        .toList()[0]
+                                        .qTYSCANNED
+                                        .toString()) +
+                                    1;
+
+                                // make qtyDifference = qty - qtyScanned
+                                filterTable
+                                    .where((element) =>
+                                        element.iTEMID.toString().trim() ==
+                                        validate.itemCode.toString().trim())
+                                    .toList()[0]
+                                    .qTYDIFFERENCE = int.parse(filterTable
+                                        .where((element) =>
+                                            element.iTEMID.toString().trim() ==
+                                            validate.itemCode.toString().trim())
+                                        .toList()[0]
+                                        .qTY
+                                        .toString()) -
+                                    int.parse(filterTable
+                                        .where((element) =>
+                                            element.iTEMID.toString().trim() ==
+                                            validate.itemCode.toString().trim())
+                                        .toList()[0]
+                                        .qTYSCANNED
+                                        .toString());
+
+                                table2.add(validate);
+                                total2 = table2.length.toString();
+                              },
+                            );
+                            _serialNoController.clear();
+
+                            Navigator.pop(context);
+                            FocusScope.of(context).requestFocus(_focusNode);
+
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: TextWidget(
+                                  text: "Record Inserted Successfully.",
+                                  color: Colors.white,
+                                ),
+                                backgroundColor: Colors.green,
+                              ),
+                            );
+                          }).onError((error, stackTrace) {
+                            Navigator.pop(context);
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: TextWidget(
+                                  text: error
+                                      .toString()
+                                      .replaceAll("Exception:", ""),
+                                  color: Colors.white,
+                                  fontSize: 14,
+                                ),
+                                backgroundColor: Colors.red,
+                              ),
+                            );
+                          });
                         }).onError((error, stackTrace) {
                           Navigator.pop(context);
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: TextWidget(
-                                text: error
-                                    .toString()
-                                    .replaceAll("Exception:", ""),
+                                text: error.toString(),
                                 color: Colors.white,
+                                fontSize: 14,
                               ),
                               backgroundColor: Colors.red,
                             ),
@@ -523,8 +615,10 @@ class _JournalMovementScreen1State extends State<JournalMovementScreen1> {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             content: TextWidget(
-                              text: error.toString(),
+                              text:
+                                  error.toString().replaceAll("Exception:", ""),
                               color: Colors.white,
+                              fontSize: 14,
                             ),
                             backgroundColor: Colors.red,
                           ),
@@ -534,6 +628,207 @@ class _JournalMovementScreen1State extends State<JournalMovementScreen1> {
                   ),
                 ),
                 const SizedBox(height: 10),
+                Container(
+                  height: MediaQuery.of(context).size.height * 0.3,
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: Colors.grey,
+                      width: 1,
+                    ),
+                  ),
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.vertical,
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: DataTable(
+                        showCheckboxColumn: false,
+                        dataRowColor: MaterialStateColor.resolveWith(
+                            (states) => Colors.grey.withOpacity(0.2)),
+                        headingRowColor: MaterialStateColor.resolveWith(
+                            (states) => Colors.orange),
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Colors.grey,
+                            width: 1,
+                          ),
+                        ),
+                        border: TableBorder.all(
+                          color: Colors.black,
+                          width: 1,
+                        ),
+                        columns: const [
+                          DataColumn(
+                              label: Text(
+                            'ID',
+                            style: TextStyle(color: Colors.white),
+                            textAlign: TextAlign.center,
+                          )),
+                          DataColumn(
+                              label: Text(
+                            'Item Code',
+                            style: TextStyle(color: Colors.white),
+                          )),
+                          DataColumn(
+                              label: Text(
+                            'Item Desc',
+                            style: TextStyle(color: Colors.white),
+                          )),
+                          DataColumn(
+                              label: Text(
+                            'GTIN',
+                            style: TextStyle(color: Colors.white),
+                            textAlign: TextAlign.center,
+                          )),
+                          DataColumn(
+                              label: Text(
+                            'Remarks',
+                            style: TextStyle(color: Colors.white),
+                            textAlign: TextAlign.center,
+                          )),
+                          DataColumn(
+                              label: Text(
+                            'User',
+                            style: TextStyle(color: Colors.white),
+                            textAlign: TextAlign.center,
+                          )),
+                          DataColumn(
+                              label: Text(
+                            'Classification',
+                            style: TextStyle(color: Colors.white),
+                            textAlign: TextAlign.center,
+                          )),
+                          DataColumn(
+                              label: Text(
+                            'Main Location',
+                            style: TextStyle(color: Colors.white),
+                            textAlign: TextAlign.center,
+                          )),
+                          DataColumn(
+                              label: Text(
+                            'Bin Location',
+                            style: TextStyle(color: Colors.white),
+                            textAlign: TextAlign.center,
+                          )),
+                          DataColumn(
+                              label: Text(
+                            'Int Code',
+                            style: TextStyle(color: Colors.white),
+                            textAlign: TextAlign.center,
+                          )),
+                          DataColumn(
+                              label: Text(
+                            'Item Serial No.',
+                            style: TextStyle(color: Colors.white),
+                            textAlign: TextAlign.center,
+                          )),
+                          DataColumn(
+                            label: Text(
+                              'Map Date',
+                              style: TextStyle(color: Colors.white),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                          DataColumn(
+                            label: Text(
+                              'Pallet Code',
+                              style: TextStyle(color: Colors.white),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                          DataColumn(
+                            label: Text(
+                              'Reference',
+                              style: TextStyle(color: Colors.white),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                          DataColumn(
+                            label: Text(
+                              'S-ID',
+                              style: TextStyle(color: Colors.white),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                          DataColumn(
+                            label: Text(
+                              'C-ID',
+                              style: TextStyle(color: Colors.white),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                          DataColumn(
+                            label: Text(
+                              'PO',
+                              style: TextStyle(color: Colors.white),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                          DataColumn(
+                            label: Text(
+                              'Trans',
+                              style: TextStyle(color: Colors.white),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ],
+                        rows: table2.map((e) {
+                          return DataRow(onSelectChanged: (value) {}, cells: [
+                            DataCell(SelectableText(
+                                (table2.indexOf(e) + 1).toString())),
+                            DataCell(SelectableText(e.itemCode ?? "")),
+                            DataCell(SelectableText(e.itemDesc ?? "")),
+                            DataCell(SelectableText(e.gTIN ?? "")),
+                            DataCell(SelectableText(e.remarks ?? "")),
+                            DataCell(SelectableText(e.user ?? "")),
+                            DataCell(SelectableText(e.classification ?? "")),
+                            DataCell(SelectableText(e.mainLocation ?? "")),
+                            DataCell(SelectableText(e.binLocation ?? "")),
+                            DataCell(SelectableText(e.intCode ?? "")),
+                            DataCell(SelectableText(e.itemSerialNo ?? "")),
+                            DataCell(SelectableText(e.mapDate ?? "")),
+                            DataCell(SelectableText(e.palletCode ?? "")),
+                            DataCell(SelectableText(e.reference ?? "")),
+                            DataCell(SelectableText(e.sID ?? "")),
+                            DataCell(SelectableText(e.cID ?? "")),
+                            DataCell(SelectableText(e.pO ?? "")),
+                            DataCell(SelectableText(e.trans.toString() == "null"
+                                ? "0"
+                                : e.trans.toString())),
+                          ]);
+                        }).toList(),
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: <Widget>[
+                    const TextWidget(
+                      text: "TOTAL",
+                      fontSize: 14,
+                    ),
+                    const SizedBox(width: 5),
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.2,
+                      height: 30,
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Colors.blue,
+                        ),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Center(
+                        child: TextWidget(
+                          text: total2.toString(),
+                          fontSize: 14,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 20),
+                  ],
+                ),
+                const SizedBox(height: 20),
               ],
             ),
           ),
@@ -562,30 +857,30 @@ class StudentDataSource extends DataTableSource {
     return DataRow.byIndex(
       index: index,
       onSelectChanged: (value) {
-        Get.to(() => JournalMovementScreen2(
-              iTEMID: student.iTEMID.toString(),
-              iTEMNAME: student.iTEMNAME.toString(),
-              qTY: int.parse(student.qTY.toString()),
-              lEDGERACCOUNTIDOFFSET: student.lEDGERACCOUNTIDOFFSET.toString(),
-              jOURNALID: student.jOURNALID.toString(),
-              tRANSDATE: student.tRANSDATE.toString(),
-              iNVENTSITEID: student.iNVENTSITEID.toString(),
-              iNVENTLOCATIONID: student.iNVENTLOCATIONID.toString(),
-              cONFIGID: student.cONFIGID.toString(),
-              wMSLOCATIONID: student.wMSLOCATIONID.toString(),
-              tRXDATETIME: student.tRXDATETIME.toString(),
-              tRXUSERIDASSIGNED: student.tRXUSERIDASSIGNED.toString(),
-              tRXUSERIDASSIGNEDBY: student.tRXUSERIDASSIGNEDBY.toString(),
-              iTEMSERIALNO: student.iTEMSERIALNO.toString() == "null"
-                  ? 0
-                  : int.parse(student.iTEMSERIALNO.toString()),
-              qTYSCANNED: student.qTYSCANNED.toString() == "null"
-                  ? 0
-                  : int.parse(student.qTYSCANNED.toString()),
-              qTYDIFFERENCE: student.qTYDIFFERENCE.toString() == "null"
-                  ? 0
-                  : int.parse(student.qTYDIFFERENCE.toString()),
-            ));
+        // Get.to(() => JournalMovementScreen2(
+        //       iTEMID: student.iTEMID.toString(),
+        //       iTEMNAME: student.iTEMNAME.toString(),
+        //       qTY: int.parse(student.qTY.toString()),
+        //       lEDGERACCOUNTIDOFFSET: student.lEDGERACCOUNTIDOFFSET.toString(),
+        //       jOURNALID: student.jOURNALID.toString(),
+        //       tRANSDATE: student.tRANSDATE.toString(),
+        //       iNVENTSITEID: student.iNVENTSITEID.toString(),
+        //       iNVENTLOCATIONID: student.iNVENTLOCATIONID.toString(),
+        //       cONFIGID: student.cONFIGID.toString(),
+        //       wMSLOCATIONID: student.wMSLOCATIONID.toString(),
+        //       tRXDATETIME: student.tRXDATETIME.toString(),
+        //       tRXUSERIDASSIGNED: student.tRXUSERIDASSIGNED.toString(),
+        //       tRXUSERIDASSIGNEDBY: student.tRXUSERIDASSIGNEDBY.toString(),
+        //       iTEMSERIALNO: student.iTEMSERIALNO.toString() == "null"
+        //           ? 0
+        //           : int.parse(student.iTEMSERIALNO.toString()),
+        //       qTYSCANNED: student.qTYSCANNED.toString() == "null"
+        //           ? 0
+        //           : int.parse(student.qTYSCANNED.toString()),
+        //       qTYDIFFERENCE: student.qTYDIFFERENCE.toString() == "null"
+        //           ? 0
+        //           : int.parse(student.qTYDIFFERENCE.toString()),
+        //     ));
       },
       cells: [
         DataCell(SelectableText(student.iTEMID ?? "")),
@@ -602,26 +897,11 @@ class StudentDataSource extends DataTableSource {
         DataCell(SelectableText(student.tRXDATETIME ?? "")),
         DataCell(SelectableText(student.tRXUSERIDASSIGNED ?? "")),
         DataCell(SelectableText(student.tRXUSERIDASSIGNEDBY ?? "")),
-        DataCell(Row(
-          children: [
-            SelectableText(student.iTEMSERIALNO.toString() == "null"
-                ? ""
-                : student.iTEMSERIALNO.toString()),
-            IconButton(
-              icon: const Icon(Icons.copy),
-              onPressed: () {
-                Clipboard.setData(ClipboardData(
-                    text: student.iTEMSERIALNO.toString() == "null"
-                        ? ""
-                        : student.iTEMSERIALNO.toString()));
-                ScaffoldMessenger.of(ctx).showSnackBar(SnackBar(
-                  content: Text(
-                      "Copied ${student.iTEMSERIALNO.toString() == "null" ? "" : student.iTEMSERIALNO.toString()}"),
-                ));
-              },
-            ),
-          ],
-        )),
+        DataCell(
+          SelectableText(student.iTEMSERIALNO.toString() == "null"
+              ? ""
+              : student.iTEMSERIALNO.toString()),
+        ),
         DataCell(SelectableText(student.qTYSCANNED.toString() == "null"
             ? "0"
             : student.qTYSCANNED.toString())),

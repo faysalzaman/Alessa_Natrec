@@ -66,10 +66,8 @@ class _JournalMovementScreen2State extends State<JournalMovementScreen2> {
   List<String> serialNoList = [];
   List<bool> isMarked = [];
 
-  List<getMappedBarcodedsByItemCodeAndBinLocationModel>
-      GetShipmentPalletizingList = [];
-  List<getMappedBarcodedsByItemCodeAndBinLocationModel>
-      GetShipmentPalletizingList2 = [];
+  List<getMappedBarcodedsByItemCodeAndBinLocationModel> table = [];
+  List<getMappedBarcodedsByItemCodeAndBinLocationModel> table2 = [];
 
   updateWmsJournalMovementClQtyScannedModel
       updateWmsJournalMovementClQtyScannedList =
@@ -194,14 +192,14 @@ class _JournalMovementScreen2State extends State<JournalMovementScreen2> {
                                   dropDownValue.toString(),
                                 ).then((value) {
                                   setState(() {
-                                    GetShipmentPalletizingList = value;
+                                    table = value;
                                     Navigator.pop(context);
                                     result = value.length.toString();
                                   });
                                 }).onError((error, stackTrace) {
                                   Navigator.pop(context);
                                   setState(() {
-                                    GetShipmentPalletizingList = [];
+                                    table = [];
                                     result = "0";
                                   });
                                   ScaffoldMessenger.of(context)
@@ -456,11 +454,10 @@ class _JournalMovementScreen2State extends State<JournalMovementScreen2> {
                           ),
                         ),
                       ],
-                      rows: GetShipmentPalletizingList.map((e) {
+                      rows: table.map((e) {
                         return DataRow(onSelectChanged: (value) {}, cells: [
                           DataCell(SelectableText(
-                              (GetShipmentPalletizingList.indexOf(e) + 1)
-                                  .toString())),
+                              (table.indexOf(e) + 1).toString())),
                           DataCell(SelectableText(e.itemCode ?? "")),
                           DataCell(SelectableText(e.itemDesc ?? "")),
                           DataCell(SelectableText(e.gTIN ?? "")),
@@ -630,11 +627,11 @@ class _JournalMovementScreen2State extends State<JournalMovementScreen2> {
                                   .then((value) {
                                 setState(
                                   () {
-                                    // check if the entered serial no is not present in the GetShipmentPalletizingList
-                                    if (GetShipmentPalletizingList.where(
-                                            (element) =>
-                                                element.itemSerialNo ==
-                                                _serialNoController.text.trim())
+                                    // check if the entered serial no is not present in the list
+                                    if (table
+                                        .where((element) =>
+                                            element.itemSerialNo ==
+                                            _serialNoController.text.trim())
                                         .toList()
                                         .isEmpty) {
                                       Navigator.pop(context);
@@ -653,23 +650,21 @@ class _JournalMovementScreen2State extends State<JournalMovementScreen2> {
                                     }
 
                                     // append the selected pallet code row to the GetShipmentPalletizingList2
-                                    GetShipmentPalletizingList2.add(
-                                      GetShipmentPalletizingList.firstWhere(
+                                    table2.add(
+                                      table.firstWhere(
                                         (element) =>
                                             element.itemSerialNo ==
                                             _serialNoController.text.trim(),
                                       ),
                                     );
                                     // remove the selected pallet code row from the GetShipmentPalletizingList
-                                    GetShipmentPalletizingList.removeWhere(
+                                    table.removeWhere(
                                       (element) =>
                                           element.itemSerialNo ==
                                           _serialNoController.text.trim(),
                                     );
-                                    result2 = GetShipmentPalletizingList2.length
-                                        .toString();
-                                    result = GetShipmentPalletizingList.length
-                                        .toString();
+                                    result2 = table2.length.toString();
+                                    result = table.length.toString();
                                   },
                                 );
                                 Navigator.pop(context);
@@ -853,11 +848,9 @@ class _JournalMovementScreen2State extends State<JournalMovementScreen2> {
                           ),
                         ),
                       ],
-                      rows: GetShipmentPalletizingList2.map((e) {
+                      rows: table2.map((e) {
                         return DataRow(onSelectChanged: (value) {}, cells: [
-                          DataCell(Text(
-                              (GetShipmentPalletizingList2.indexOf(e) + 1)
-                                  .toString())),
+                          DataCell(Text((table2.indexOf(e) + 1).toString())),
                           DataCell(Text(e.itemCode ?? "")),
                           DataCell(Text(e.itemDesc ?? "")),
                           DataCell(Text(e.gTIN ?? "")),
