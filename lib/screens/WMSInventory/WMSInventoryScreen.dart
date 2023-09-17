@@ -201,108 +201,6 @@ class _WMSInventoryScreenState extends State<WMSInventoryScreen> {
                     ],
                   ),
                 ),
-                // Container(
-                //   margin: const EdgeInsets.only(left: 20),
-                //   child: Text(
-                //     "Search",
-                //     style: TextStyle(
-                //       fontSize: 16,
-                //       fontWeight: FontWeight.bold,
-                //       color: Colors.blue[900]!,
-                //     ),
-                //   ),
-                // ),
-                // SingleChildScrollView(
-                //   scrollDirection: Axis.horizontal,
-                //   child: Row(
-                //     mainAxisAlignment: MainAxisAlignment.start,
-                //     children: [
-                //       Container(
-                //         margin: const EdgeInsets.only(left: 20),
-                //         child: TextFormFieldWidget(
-                //           hintText: "Search item...",
-                //           controller: _searchController,
-                //           width: MediaQuery.of(context).size.width * 0.73,
-                //           onEditingComplete: () {
-                //             FocusScope.of(context).unfocus();
-                //             Constants.showLoadingDialog(context);
-                //             getAllTblMappedBarcodesController
-                //                 .getData(_searchController.text.trim())
-                //                 .then((value) {
-                //               setState(() {
-                //                 itemName = "${value[0].iTEMNAME}";
-                //                 itemID = "${value[0].iTEMID}";
-                //                 itemGroupId = "${value[0].iTEMGROUPID}";
-                //                 groupName = "${value[0].gROUPNAME}";
-                //               });
-                //               Navigator.of(context).pop();
-                //             }).onError((error, stackTrace) {
-                //               ScaffoldMessenger.of(context).showSnackBar(
-                //                 SnackBar(
-                //                   content: Text(error
-                //                       .toString()
-                //                       .replaceAll("Exception:", "")),
-                //                 ),
-                //               );
-                //               Navigator.of(context).pop();
-                //             });
-                //           },
-                //         ),
-                //       ),
-                //       const SizedBox(width: 10),
-                //       Container(
-                //         decoration: BoxDecoration(
-                //           color: Colors.transparent,
-                //           borderRadius: BorderRadius.circular(20),
-                //         ),
-                //         child: GestureDetector(
-                //           onTap: () {
-                //             FocusScope.of(context).unfocus();
-                //             Constants.showLoadingDialog(context);
-                //             getAllTblMappedBarcodesController
-                //                 .getData(_searchController.text.trim())
-                //                 .then((value) {
-                //               // if item is already in the list then dont add it again
-                //               if (table.any((element) =>
-                //                   element.iTEMID == value[0].iTEMID)) {
-                //                 ScaffoldMessenger.of(context).showSnackBar(
-                //                   const SnackBar(
-                //                     content: Text("Item already exists!"),
-                //                   ),
-                //                 );
-                //                 Navigator.of(context).pop();
-                //                 return;
-                //               }
-                //               setState(() {
-                //                 itemName = "${value[0].iTEMNAME}";
-                //                 itemID = "${value[0].iTEMID}";
-                //                 itemGroupId = "${value[0].iTEMGROUPID}";
-                //                 groupName = "${value[0].gROUPNAME}";
-
-                //                 // append the new entry BinToBinJournalList
-                //                 table.add(value[0]);
-                //               });
-                //               Navigator.of(context).pop();
-                //             }).onError((error, stackTrace) {
-                //               ScaffoldMessenger.of(context).showSnackBar(
-                //                 SnackBar(
-                //                   content: Text(error
-                //                       .toString()
-                //                       .replaceAll("Exception:", "")),
-                //                 ),
-                //               );
-                //               Navigator.of(context).pop();
-                //             });
-                //           },
-                //           child: Image.asset('assets/finder.png',
-                //               width: MediaQuery.of(context).size.width * 0.15,
-                //               height: 60,
-                //               fit: BoxFit.cover),
-                //         ),
-                //       ),
-                //     ],
-                //   ),
-                // ),
                 const SizedBox(height: 10),
                 RadioListTile(
                   title: const Text("Filter By Item Code"),
@@ -329,7 +227,6 @@ class _WMSInventoryScreenState extends State<WMSInventoryScreen> {
                   },
                 ),
                 const SizedBox(height: 10),
-
                 gender == "bin"
                     ? Column(
                         mainAxisAlignment: MainAxisAlignment.start,
@@ -633,7 +530,6 @@ class _WMSInventoryScreenState extends State<WMSInventoryScreen> {
                           ),
                         ],
                       ),
-
                 const SizedBox(height: 10),
                 SingleChildScrollView(
                   child: Container(
