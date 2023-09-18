@@ -578,37 +578,16 @@ class _JournalMovementScreen1State extends State<JournalMovementScreen1> {
                                 content: TextWidget(
                                   text: "Record Inserted Successfully.",
                                   color: Colors.white,
+                                  fontSize: 14,
                                 ),
                                 backgroundColor: Colors.green,
                               ),
                             );
                           }).onError((error, stackTrace) {
                             Navigator.pop(context);
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: TextWidget(
-                                  text: error
-                                      .toString()
-                                      .replaceAll("Exception:", ""),
-                                  color: Colors.white,
-                                  fontSize: 14,
-                                ),
-                                backgroundColor: Colors.red,
-                              ),
-                            );
                           });
                         }).onError((error, stackTrace) {
                           Navigator.pop(context);
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: TextWidget(
-                                text: error.toString(),
-                                color: Colors.white,
-                                fontSize: 14,
-                              ),
-                              backgroundColor: Colors.red,
-                            ),
-                          );
                         });
                       }).onError((error, stackTrace) {
                         Navigator.pop(context);

@@ -374,7 +374,7 @@ class _PalletIdInquiryScreen2State extends State<PalletIdInquiryScreen2> {
   void onTransfer() async {
     if (table.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text("No Data Found, Please Scan Again"),
+        content: Text("No Data Found on the list, Please Scan Again"),
       ));
       return;
     }

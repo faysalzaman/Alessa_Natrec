@@ -584,31 +584,9 @@ class _ProfitAndLossScreen1State extends State<ProfitAndLossScreen1> {
                             );
                           }).onError((error, stackTrace) {
                             Navigator.pop(context);
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: TextWidget(
-                                  text: error
-                                      .toString()
-                                      .replaceAll("Exception:", ""),
-                                  color: Colors.white,
-                                  fontSize: 14,
-                                ),
-                                backgroundColor: Colors.red,
-                              ),
-                            );
                           });
                         }).onError((error, stackTrace) {
                           Navigator.pop(context);
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: TextWidget(
-                                text: error.toString(),
-                                color: Colors.white,
-                                fontSize: 14,
-                              ),
-                              backgroundColor: Colors.red,
-                            ),
-                          );
                         });
                       }).onError((error, stackTrace) {
                         Navigator.pop(context);
