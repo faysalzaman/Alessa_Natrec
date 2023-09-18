@@ -534,7 +534,7 @@ class _JournalMovementScreen1State extends State<JournalMovementScreen1> {
                                         element.iTEMID.toString().trim() ==
                                         validate.itemCode.toString().trim())
                                     .toList()[0]
-                                    .qTYSCANNED = int.parse(filterTable
+                                    .qTYSCANNED = double.parse(filterTable
                                         .where((element) =>
                                             element.iTEMID.toString().trim() ==
                                             validate.itemCode.toString().trim())
@@ -549,14 +549,14 @@ class _JournalMovementScreen1State extends State<JournalMovementScreen1> {
                                         element.iTEMID.toString().trim() ==
                                         validate.itemCode.toString().trim())
                                     .toList()[0]
-                                    .qTYDIFFERENCE = int.parse(filterTable
+                                    .qTYDIFFERENCE = double.parse(filterTable
                                         .where((element) =>
                                             element.iTEMID.toString().trim() ==
                                             validate.itemCode.toString().trim())
                                         .toList()[0]
                                         .qTY
                                         .toString()) -
-                                    int.parse(filterTable
+                                    double.parse(filterTable
                                         .where((element) =>
                                             element.iTEMID.toString().trim() ==
                                             validate.itemCode.toString().trim())

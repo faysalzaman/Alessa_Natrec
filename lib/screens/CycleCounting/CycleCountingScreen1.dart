@@ -129,7 +129,7 @@ class _CycleCountingScreen1State extends State<CycleCountingScreen1> {
             onPressed: () {
               Get.back();
             },
-            title: "Journal Movement".toUpperCase(),
+            title: "Cycle Counting".toUpperCase(),
             actions: [
               GestureDetector(
                 onTap: () {
@@ -533,7 +533,7 @@ class _CycleCountingScreen1State extends State<CycleCountingScreen1> {
                                         element.iTEMID.toString().trim() ==
                                         validate.itemCode.toString().trim())
                                     .toList()[0]
-                                    .qTYSCANNED = int.parse(filterTable
+                                    .qTYSCANNED = double.parse(filterTable
                                         .where((element) =>
                                             element.iTEMID.toString().trim() ==
                                             validate.itemCode.toString().trim())
@@ -548,14 +548,14 @@ class _CycleCountingScreen1State extends State<CycleCountingScreen1> {
                                         element.iTEMID.toString().trim() ==
                                         validate.itemCode.toString().trim())
                                     .toList()[0]
-                                    .qTYDIFFERENCE = int.parse(filterTable
+                                    .qTYDIFFERENCE = double.parse(filterTable
                                         .where((element) =>
                                             element.iTEMID.toString().trim() ==
                                             validate.itemCode.toString().trim())
                                         .toList()[0]
                                         .qTY
                                         .toString()) -
-                                    int.parse(filterTable
+                                    double.parse(filterTable
                                         .where((element) =>
                                             element.iTEMID.toString().trim() ==
                                             validate.itemCode.toString().trim())

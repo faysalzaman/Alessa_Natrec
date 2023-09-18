@@ -27,7 +27,7 @@ class updateWmsJournalMovementClQtyScannedModel {
 class UpdatedRow {
   String? iTEMID;
   String? iTEMNAME;
-  int? qTY;
+  num? qTY;
   String? lEDGERACCOUNTIDOFFSET;
   String? jOURNALID;
   String? tRANSDATE;
@@ -39,8 +39,8 @@ class UpdatedRow {
   String? tRXUSERIDASSIGNED;
   String? tRXUSERIDASSIGNEDBY;
   String? iTEMSERIALNO;
-  int? qTYSCANNED;
-  int? qTYDIFFERENCE;
+  num? qTYSCANNED;
+  num? qTYDIFFERENCE;
 
   UpdatedRow(
       {this.iTEMID,

@@ -130,7 +130,7 @@ class _ProfitAndLossScreen1State extends State<ProfitAndLossScreen1> {
             onPressed: () {
               Get.back();
             },
-            title: "Journal Movement".toUpperCase(),
+            title: "Profit And Loss".toUpperCase(),
             actions: [
               GestureDetector(
                 onTap: () {
@@ -528,13 +528,13 @@ class _ProfitAndLossScreen1State extends State<ProfitAndLossScreen1> {
                                   return;
                                 }
 
-                                // increase the qtyScanned by 1 in filterTable
+// increase the qtyScanned by 1 in filterTable
                                 filterTable
                                     .where((element) =>
                                         element.iTEMID.toString().trim() ==
                                         validate.itemCode.toString().trim())
                                     .toList()[0]
-                                    .qTYSCANNED = int.parse(filterTable
+                                    .qTYSCANNED = double.parse(filterTable
                                         .where((element) =>
                                             element.iTEMID.toString().trim() ==
                                             validate.itemCode.toString().trim())
@@ -549,14 +549,14 @@ class _ProfitAndLossScreen1State extends State<ProfitAndLossScreen1> {
                                         element.iTEMID.toString().trim() ==
                                         validate.itemCode.toString().trim())
                                     .toList()[0]
-                                    .qTYDIFFERENCE = int.parse(filterTable
+                                    .qTYDIFFERENCE = double.parse(filterTable
                                         .where((element) =>
                                             element.iTEMID.toString().trim() ==
                                             validate.itemCode.toString().trim())
                                         .toList()[0]
                                         .qTY
                                         .toString()) -
-                                    int.parse(filterTable
+                                    double.parse(filterTable
                                         .where((element) =>
                                             element.iTEMID.toString().trim() ==
                                             validate.itemCode.toString().trim())
