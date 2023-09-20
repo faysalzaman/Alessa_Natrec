@@ -213,7 +213,8 @@ class _ProfitAndLossScreen1State extends State<ProfitAndLossScreen1> {
                         // filter the filterTable by journalIdValue
                         filterTable = table
                             .where((element) =>
-                                element.jOURNALID == journalIdValue)
+                                element.jOURNALID.toString() ==
+                                journalIdValue.toString())
                             .toList();
                         total = filterTable.length.toString();
                       });
@@ -247,8 +248,8 @@ class _ProfitAndLossScreen1State extends State<ProfitAndLossScreen1> {
                         itemIdValue = values;
                         setState(() {
                           filterTable = table
-                              .where((element) => itemIdValue
-                                  .contains(element.iTEMID.toString()))
+                              .where((element) =>
+                                  itemIdValue.contains(element.iTEMID))
                               .toList();
                           total = filterTable.length.toString();
 
@@ -436,7 +437,12 @@ class _ProfitAndLossScreen1State extends State<ProfitAndLossScreen1> {
                     hintText: "Enter/Scan Serial No",
                     width: MediaQuery.of(context).size.width * 0.9,
                     onEditingComplete: () {
-                      if (_serialNoController.text.isEmpty) {
+                      String serialNo = _serialNoController.text
+                          .trim()
+                          .toString()
+                          .replaceAll("", "");
+
+                      if (serialNo.isEmpty) {
                         // hide keyboard
                         FocusScope.of(context).requestFocus(FocusNode());
                       }
@@ -446,7 +452,7 @@ class _ProfitAndLossScreen1State extends State<ProfitAndLossScreen1> {
 
                       ValidateItemSerialNumberForJournalMovementCLDetsController
                           .getData(
-                        _serialNoController.text.trim(),
+                        serialNo.trim(),
                         'validateItemSerialNumberForJournalProfitLostCLDets',
                       ).then((validate) {
                         if (filterTable
@@ -454,7 +460,7 @@ class _ProfitAndLossScreen1State extends State<ProfitAndLossScreen1> {
                                 element.iTEMID.toString().trim() !=
                                 validate.itemCode.toString().trim())
                             .toList()
-                            .isEmpty) {
+                            .isNotEmpty) {
                           Navigator.pop(context);
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
@@ -462,6 +468,7 @@ class _ProfitAndLossScreen1State extends State<ProfitAndLossScreen1> {
                                 text:
                                     "Serial number not exist in mapped barcode.",
                                 color: Colors.white,
+                                fontSize: 14,
                               ),
                               backgroundColor: Colors.red,
                             ),
@@ -500,7 +507,7 @@ class _ProfitAndLossScreen1State extends State<ProfitAndLossScreen1> {
                           insertJournalProfitLostClDetsController
                               .getData(
                             updateWmsJournalMovementClQtyScannedList,
-                            _serialNoController.text.trim(),
+                            serialNo.trim(),
                           )
                               .then((value) {
                             setState(
@@ -511,7 +518,7 @@ class _ProfitAndLossScreen1State extends State<ProfitAndLossScreen1> {
                                         element.iTEMSERIALNO
                                             .toString()
                                             .trim() !=
-                                        _serialNoController.text.trim())
+                                        serialNo.trim())
                                     .toList()
                                     .isEmpty) {
                                   Navigator.pop(context);

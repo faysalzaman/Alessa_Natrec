@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
@@ -7,7 +9,8 @@ import '../../utils/Constants.dart';
 
 class GetSerialTableController {
   static Future<List<GetShipmentReceivedTableModel>> getAllTable(
-      String serialNo) async {
+    String serialNo,
+  ) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String token = prefs.getString('token').toString();
 
@@ -16,12 +19,13 @@ class GetSerialTableController {
     print("url: $url");
 
     final uri = Uri.parse(url);
+    final encodeSerial = Uri.encodeComponent(serialNo);
 
     final headers = <String, String>{
       "Authorization": token,
       "Host": Constants.host,
       "Accept": "application/json",
-      "itemserialno": serialNo
+      "itemserialno": encodeSerial,
     };
 
     try {

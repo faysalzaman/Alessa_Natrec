@@ -46,6 +46,7 @@ class TextFormFieldWidget extends StatelessWidget {
       width: width ?? MediaQuery.of(context).size.width * 0.9,
       height: height ?? 50,
       child: TextFormField(
+        maxLength: null,
         focusNode: focusNode,
         autofocus: autofocus ?? false,
         readOnly: readOnly ?? false,

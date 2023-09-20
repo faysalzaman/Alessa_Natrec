@@ -21,10 +21,10 @@ class BinToBinAxaptaScreen extends StatefulWidget {
 }
 
 class _BinToBinAxaptaScreenState extends State<BinToBinAxaptaScreen> {
-  TextEditingController _transferController = TextEditingController();
+  final TextEditingController _transferController = TextEditingController();
   String total = "0";
 
-  List<GetAxaptaTableDataModel> GetShipmentPalletizingList = [];
+  List<GetAxaptaTableDataModel> table = [];
   List<bool> isMarked = [];
 
   String userName = "";
@@ -272,7 +272,7 @@ class _BinToBinAxaptaScreenState extends State<BinToBinAxaptaScreen> {
                           textAlign: TextAlign.center,
                         )),
                       ],
-                      rows: GetShipmentPalletizingList.map((e) {
+                      rows: table.map((e) {
                         return DataRow(
                             onSelectChanged: (value) async {
                               // qty transfer is equal or greater than qty received
@@ -303,8 +303,7 @@ class _BinToBinAxaptaScreenState extends State<BinToBinAxaptaScreen> {
                                 }
                                 Navigator.of(context).pop();
                                 setState(() {
-                                  isMarked[GetShipmentPalletizingList.indexOf(
-                                      e)] = value!;
+                                  isMarked[table.indexOf(e)] = value!;
                                 });
                                 Get.to(
                                   () => BinToBinAxapta2Screen(
@@ -335,9 +334,7 @@ class _BinToBinAxaptaScreenState extends State<BinToBinAxaptaScreen> {
                               }
                             },
                             cells: [
-                              DataCell(Text(
-                                  (GetShipmentPalletizingList.indexOf(e) + 1)
-                                      .toString())),
+                              DataCell(Text((table.indexOf(e) + 1).toString())),
                               DataCell(Text(e.tRANSFERID ?? "")),
                               DataCell(Text(e.tRANSFERSTATUS.toString())),
                               DataCell(Text(e.iNVENTLOCATIONIDFROM ?? "")),
@@ -389,10 +386,9 @@ class _BinToBinAxaptaScreenState extends State<BinToBinAxaptaScreen> {
         .then((value) {
       Navigator.of(context).pop();
       setState(() {
-        GetShipmentPalletizingList = value;
-        isMarked = List<bool>.generate(
-            GetShipmentPalletizingList.length, (index) => false);
-        total = GetShipmentPalletizingList.length.toString();
+        table = value;
+        isMarked = List<bool>.generate(table.length, (index) => false);
+        total = table.length.toString();
       });
     }).onError((error, stackTrace) {
       Navigator.of(context).pop();

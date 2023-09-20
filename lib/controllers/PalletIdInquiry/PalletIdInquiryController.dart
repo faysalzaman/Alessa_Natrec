@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print, depend_on_referenced_packages
+
 import '../../models/GetItemInfoByItemSerialNoModel.dart';
 import '../../utils/Constants.dart';
 import 'package:http/http.dart' as http;
@@ -15,12 +17,13 @@ class PalletIdInquiryController {
     print("url: $url");
 
     final uri = Uri.parse(url);
+    final encodeSerial = Uri.encodeComponent(id);
 
     final headers = <String, String>{
       "Authorization": token,
       "Host": Constants.host,
       "Accept": "application/json",
-      "itemserialno": id,
+      "itemserialno": encodeSerial,
     };
 
     try {

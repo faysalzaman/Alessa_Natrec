@@ -674,14 +674,6 @@ class _WMSInventoryScreenState extends State<WMSInventoryScreen> {
                         gender == "bin" ? "Bin Location" : "Item Id",
                       )
                           .then((value) {
-                        Get.back();
-
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text("Assigned Successfully"),
-                            backgroundColor: Colors.green,
-                          ),
-                        );
                         setState(() {
                           table.clear();
                           selectedRow.clear();
@@ -696,6 +688,14 @@ class _WMSInventoryScreenState extends State<WMSInventoryScreen> {
                           itemNoAndDiscList.clear();
                           total = "0";
                         });
+                        Get.back();
+
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text("Assigned Successfully"),
+                            backgroundColor: Colors.green,
+                          ),
+                        );
                       }).onError((error, stackTrace) {
                         Get.back();
                         ScaffoldMessenger.of(context).showSnackBar(

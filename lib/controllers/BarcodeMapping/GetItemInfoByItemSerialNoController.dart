@@ -12,12 +12,13 @@ class GetItemInfoByItemSerialNoController {
     print("url: $url");
 
     final uri = Uri.parse(url);
+    final encodeSerial = Uri.encodeComponent(itemserialno);
 
     final headers = <String, String>{
       "Authorization": token,
       "Host": Constants.host,
       "Accept": "application/json",
-      "itemserialno": itemserialno,
+      "itemserialno": encodeSerial,
     };
 
     try {

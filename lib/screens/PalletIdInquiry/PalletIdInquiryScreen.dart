@@ -329,8 +329,8 @@ class _PalletIdInquiryScreen1State extends State<PalletIdInquiryScreen1> {
     }
     Constants.showLoadingDialog(context);
     PalletIdInquiryController.getShipmentPalletizing(
-            serialNoController.text.trim())
-        .then((value) {
+      serialNoController.text.trim(),
+    ).then((value) {
       setState(() {
         table = List.generate(1, (index) => value[index]);
         total = table.length.toString();
