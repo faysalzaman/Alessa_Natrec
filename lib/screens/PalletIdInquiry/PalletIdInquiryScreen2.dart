@@ -205,6 +205,12 @@ class _PalletIdInquiryScreen2State extends State<PalletIdInquiryScreen2> {
                       )),
                       DataColumn(
                           label: Text(
+                        'Item Code',
+                        style: TextStyle(color: Colors.black),
+                        textAlign: TextAlign.center,
+                      )),
+                      DataColumn(
+                          label: Text(
                         'Item Serial No.',
                         style: TextStyle(color: Colors.black),
                         textAlign: TextAlign.center,
@@ -433,6 +439,7 @@ class PaginatedTable extends DataTableSource {
       cells: [
         DataCell(SelectableText(student.gTIN ?? "")),
         DataCell(SelectableText(student.palletCode ?? "")),
+        DataCell(SelectableText(student.itemCode ?? "")),
         DataCell(SelectableText(student.itemSerialNo ?? "")),
         DataCell(SelectableText(student.binLocation ?? "")),
       ],

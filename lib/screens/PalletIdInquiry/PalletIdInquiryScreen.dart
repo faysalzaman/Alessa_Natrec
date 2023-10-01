@@ -223,6 +223,12 @@ class _PalletIdInquiryScreen1State extends State<PalletIdInquiryScreen1> {
                           )),
                           DataColumn(
                               label: Text(
+                            'Item Code',
+                            style: TextStyle(color: Colors.white),
+                            textAlign: TextAlign.center,
+                          )),
+                          DataColumn(
+                              label: Text(
                             'Serial No.',
                             style: TextStyle(color: Colors.white),
                             textAlign: TextAlign.center,
@@ -238,6 +244,7 @@ class _PalletIdInquiryScreen1State extends State<PalletIdInquiryScreen1> {
                           return DataRow(onSelectChanged: (value) {}, cells: [
                             DataCell(SelectableText(e.gTIN ?? "")),
                             DataCell(SelectableText(e.palletCode ?? "")),
+                            DataCell(SelectableText(e.itemCode ?? "")),
                             DataCell(SelectableText(e.itemSerialNo ?? "")),
                             DataCell(SelectableText(e.binLocation ?? "")),
                           ]);
@@ -330,6 +337,10 @@ class _PalletIdInquiryScreen1State extends State<PalletIdInquiryScreen1> {
 
     print("Old Serial No: ${serialNoController.text.trim()}");
     var serialNo = serialNoController.text.trim().replaceAll("", "");
+    serialNo.replaceAll("char(29)", "");
+    serialNo.replaceAll("Char(29)", "");
+    serialNo.replaceAll("CHAR(29)", "");
+
     print("New Serial No: $serialNo");
     Constants.showLoadingDialog(context);
     PalletIdInquiryController.getShipmentPalletizing(serialNo).then((value) {
