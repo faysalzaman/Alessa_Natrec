@@ -1,4 +1,4 @@
-// ignore_for_file: sized_box_for_whitespace
+// ignore_for_file: sized_box_for_whitespace, avoid_print
 
 import 'package:alessa_v2/models/GetItemInfoByItemSerialNoModel.dart';
 import 'package:alessa_v2/screens/PalletIdInquiry/PalletIdInquiryScreen2.dart';
@@ -327,10 +327,12 @@ class _PalletIdInquiryScreen1State extends State<PalletIdInquiryScreen1> {
       FocusScope.of(context).requestFocus(FocusNode());
       return;
     }
+
+    print("Old Serial No: ${serialNoController.text.trim()}");
+    var serialNo = serialNoController.text.trim().replaceAll("", "");
+    print("New Serial No: $serialNo");
     Constants.showLoadingDialog(context);
-    PalletIdInquiryController.getShipmentPalletizing(
-      serialNoController.text.trim(),
-    ).then((value) {
+    PalletIdInquiryController.getShipmentPalletizing(serialNo).then((value) {
       setState(() {
         table = List.generate(1, (index) => value[index]);
         total = table.length.toString();

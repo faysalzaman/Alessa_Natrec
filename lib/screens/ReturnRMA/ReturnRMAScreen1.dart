@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_final_fields, sized_box_for_whitespace
+// ignore_for_file: prefer_final_fields, sized_box_for_whitespace, unrelated_type_equality_checks
 
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -355,7 +355,12 @@ class _ReturnRMAScreen1State extends State<ReturnRMAScreen1> {
                               onSelectChanged: (value) {
                                 Get.to(() => ReturnRMAScreen2(
                                       cONFIGID: e.cONFIGID.toString(),
-                                      eXPECTEDRETQTY: recQty,
+                                      eXPECTEDRETQTY: int.parse(e.eXPECTEDRETQTY
+                                                  .toString()) ==
+                                              "null"
+                                          ? 0
+                                          : int.parse(
+                                              e.eXPECTEDRETQTY.toString()),
                                       iNVENTLOCATIONID:
                                           e.iNVENTLOCATIONID.toString(),
                                       iNVENTSITEID: e.iNVENTSITEID.toString(),
