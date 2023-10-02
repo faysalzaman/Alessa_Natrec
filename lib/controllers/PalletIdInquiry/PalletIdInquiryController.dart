@@ -8,16 +8,15 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class PalletIdInquiryController {
   static Future<List<GetItemInfoByItemSerialNoModel>> getShipmentPalletizing(
-      String id) async {
+      String serialNo) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String token = prefs.getString('token').toString();
 
     String url = "${Constants.baseUrl}getItemInfoByItemSerialNo";
-
     print("url: $url");
 
     final uri = Uri.parse(url);
-    final encodeSerial = Uri.encodeComponent(id);
+    final encodeSerial = Uri.encodeComponent(serialNo);
 
     final headers = <String, String>{
       "Authorization": token,

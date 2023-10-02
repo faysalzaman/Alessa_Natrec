@@ -335,20 +335,19 @@ class _PalletIdInquiryScreen1State extends State<PalletIdInquiryScreen1> {
       return;
     }
 
-    print("Old Serial No: ${serialNoController.text.trim()}");
-    var serialNo = serialNoController.text.trim().replaceAll("", "");
-    serialNo.replaceAll("char(29)", "");
-    serialNo.replaceAll("Char(29)", "");
-    serialNo.replaceAll("CHAR(29)", "");
+    // print("Old Serial No: ${serialNoController.text.trim()}");
+    // var serialNo = serialNoController.text.trim().replaceAll("", "");
+    // serialNo.replaceAll("char(29)", "");
+    // serialNo.replaceAll("Char(29)", "");
+    // serialNo.replaceAll("CHAR(29)", "");
+    // print("New Serial No: $serialNo");
 
-    print("New Serial No: $serialNo");
     Constants.showLoadingDialog(context);
-    PalletIdInquiryController.getShipmentPalletizing(serialNo).then((value) {
+    PalletIdInquiryController.getShipmentPalletizing(
+            serialNoController.text.trim())
+        .then((value) {
       setState(() {
-        table = List.generate(1, (index) => value[index]);
-        total = table.length.toString();
-        isMarked = List<bool>.filled(table.length, false);
-        // focus back to serial no
+        table = value;
         FocusScope.of(context).requestFocus(serialNoFocusNode);
       });
       Navigator.pop(context);
