@@ -1,4 +1,7 @@
+// ignore_for_file: sized_box_for_whitespace, avoid_print, unrelated_type_equality_checks
+
 import 'package:alessa_v2/controllers/BarcodeMapping/GetItemInfoByItemSerialNoController.dart';
+import 'package:alessa_v2/models/GetItemInfoByItemSerialNoModel.dart';
 import 'package:alessa_v2/models/getInventTableWMSDataByItemIdOrItemNameModel.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:dropdown_search/dropdown_search.dart';
@@ -116,6 +119,8 @@ class _BarcodeMappingScreenState extends State<BarcodeMappingScreen> {
   List<getInventTableWMSDataByItemIdOrItemNameModel> itemList = [];
   String dValue = '';
   List<String> dList = [];
+
+  List<GetItemInfoByItemSerialNoModel> itemInfoList = [];
 
   @override
   Widget build(BuildContext context) {
@@ -321,40 +326,65 @@ class _BarcodeMappingScreenState extends State<BarcodeMappingScreen> {
                       GetItemInfoByItemSerialNoController.getData(
                               _serialNoController.text.trim())
                           .then((value) {
-                        if (value == 200) {
-                          showDiologMethod(
-                            context,
-                            "Item Serial No. Already Exists",
-                            () {
-                              FocusScope.of(context)
-                                  .requestFocus(gtinFocusNode);
-                            },
-                            () {
-                              _serialNoController.clear();
-                              FocusScope.of(context).requestFocus(focusNode);
-                            },
-                          ).show();
-                        }
-                        if (value == 404) {
-                          FocusScope.of(context).requestFocus(gtinFocusNode);
-                          return;
-                        }
+                        itemInfoList = value;
+
+                        showDiologMethod(
+                          context,
+                          "Item Serial No. Already Exists",
+                          () {
+                            _gtinController.text =
+                                itemInfoList[0].gTIN.toString();
+                            dropDownValue =
+                                itemInfoList[0].classification.toString();
+                            _manufacturingController.text =
+                                itemInfoList[0].mapDate.toString();
+                            _qrCodeController.text =
+                                itemInfoList[0].qrCode.toString();
+                            _binLocationController.text =
+                                itemInfoList[0].binLocation.toString();
+                            _referenceController.text =
+                                itemInfoList[0].reference.toString();
+                            _lengthController.text =
+                                itemInfoList[0].length.toString() == "null"
+                                    ? "0"
+                                    : itemInfoList[0].length.toString();
+                            _widthController.text =
+                                itemInfoList[0].width == "null"
+                                    ? "0"
+                                    : itemInfoList[0].width.toString();
+                            _heightController.text =
+                                itemInfoList[0].height == "null"
+                                    ? "0"
+                                    : itemInfoList[0].height.toString();
+                            _weightController.text =
+                                itemInfoList[0].weight == "null"
+                                    ? "0"
+                                    : itemInfoList[0].weight.toString();
+                            FocusScope.of(context).requestFocus(gtinFocusNode);
+                          },
+                          () {
+                            _serialNoController.clear();
+                            FocusScope.of(context).requestFocus(focusNode);
+                          },
+                        ).show();
                       }).onError((error, stackTrace) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(
-                              "Error: $error".replaceAll("Exception:", ""),
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.red,
-                              ),
-                            ),
-                            backgroundColor: Colors.white,
-                            duration: const Duration(seconds: 3),
-                          ),
-                        );
+                        FocusScope.of(context).requestFocus(gtinFocusNode);
                         return;
+                        // ScaffoldMessenger.of(context).showSnackBar(
+                        //   SnackBar(
+                        //     content: Text(
+                        //       "Error: $error".replaceAll("Exception:", ""),
+                        //       style: const TextStyle(
+                        //         fontSize: 16,
+                        //         fontWeight: FontWeight.bold,
+                        //         color: Colors.red,
+                        //       ),
+                        //     ),
+                        //     backgroundColor: Colors.white,
+                        //     duration: const Duration(seconds: 3),
+                        //   ),
+                        // );
+                        // return;
                       });
                     },
                   ),

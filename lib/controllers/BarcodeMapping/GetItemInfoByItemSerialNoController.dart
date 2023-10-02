@@ -1,12 +1,16 @@
 // ignore_for_file: avoid_print, depend_on_referenced_packages
 
+import 'dart:convert';
+
+import 'package:alessa_v2/models/GetItemInfoByItemSerialNoModel.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../utils/Constants.dart';
 
 class GetItemInfoByItemSerialNoController {
-  static Future<int> getData(String itemserialno) async {
+  static Future<List<GetItemInfoByItemSerialNoModel>> getData(
+      String itemserialno) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String token = prefs.getString('token').toString();
 
@@ -28,12 +32,13 @@ class GetItemInfoByItemSerialNoController {
 
       if (response.statusCode == 200) {
         print("Status Code: ${response.statusCode}");
-        int msg = response.statusCode;
-        return msg;
+        var data = json.decode(response.body) as List;
+        List<GetItemInfoByItemSerialNoModel> list = data
+            .map((e) => GetItemInfoByItemSerialNoModel.fromJson(e))
+            .toList();
+        return list;
       } else if (response.statusCode == 404) {
-        print("Status Code: ${response.statusCode}");
-        int msg = response.statusCode;
-        return msg;
+        throw Exception(response.body);
       } else {
         throw Exception(response.body);
       }
