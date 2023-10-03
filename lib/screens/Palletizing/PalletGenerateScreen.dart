@@ -1,3 +1,5 @@
+// ignore_for_file: non_constant_identifier_names, use_key_in_widget_constructors, sized_box_for_whitespace
+
 import 'package:alessa_v2/controllers/BinToBinFromAXAPTA/getmapBarcodeDataByItemCodeController.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 
@@ -613,9 +615,10 @@ class _PalletGenerateScreenState extends State<PalletGenerateScreen> {
                     }
                     Constants.showLoadingDialog(context);
                     GenerateAndUpdatePalletIdController
-                            .generateAndUpdatePalletId(
-                                serialNoList, dropDownValue.toString())
-                        .then(
+                        .generateAndUpdatePalletId(
+                      serialNoList,
+                      dropDownValue.toString(),
+                    ).then(
                       (value) {
                         Navigator.pop(context);
 
@@ -701,12 +704,10 @@ class _PalletGenerateScreenState extends State<PalletGenerateScreen> {
     }).onError((error, stackTrace) {
       Navigator.pop(context);
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(error.toString().replaceAll("Exception:", "")),
-          duration: const Duration(seconds: 2),
-        ),
-      );
+      setState(() {
+        serialNoList.add(_serialNoController.text.toString());
+        _serialNoController.clear();
+      });
       FocusScope.of(context).requestFocus(focusNode);
     });
   }

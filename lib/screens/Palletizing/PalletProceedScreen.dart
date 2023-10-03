@@ -1,3 +1,5 @@
+// ignore_for_file: non_constant_identifier_names
+
 import '../../screens/Palletizing/PalletGenerateScreen.dart';
 import '../../utils/Constants.dart';
 import 'package:dropdown_search/dropdown_search.dart';

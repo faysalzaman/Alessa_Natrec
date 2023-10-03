@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print, camel_case_types, depend_on_referenced_packages
+
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -19,6 +21,7 @@ class insertIntoMappedBarcodeOrUpdateBySerialNoController {
     double height,
     double weight,
     String manufacturingDate,
+    String mainLocation,
   ) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String token = prefs.getString('token').toString();
@@ -50,7 +53,8 @@ class insertIntoMappedBarcodeOrUpdateBySerialNoController {
       "width": width,
       "height": height,
       "weight": weight,
-      "trxdate": manufacturingDate
+      "trxdate": manufacturingDate,
+      "mainlocation": mainLocation
     };
 
     print("Body: ${jsonEncode(body)}");

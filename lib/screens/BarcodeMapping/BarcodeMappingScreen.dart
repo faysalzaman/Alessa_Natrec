@@ -25,6 +25,8 @@ Map<String, dynamic> selectedRow = {};
 RxList<dynamic> markedList = [].obs;
 
 class BarcodeMappingScreen extends StatefulWidget {
+  const BarcodeMappingScreen({super.key});
+
   @override
   State<BarcodeMappingScreen> createState() => _BarcodeMappingScreenState();
 }
@@ -360,7 +362,29 @@ class _BarcodeMappingScreenState extends State<BarcodeMappingScreen> {
                                 itemInfoList[0].weight == "null"
                                     ? "0"
                                     : itemInfoList[0].weight.toString();
+                            _searchController.text =
+                                itemInfoList[0].itemCode.toString();
                             FocusScope.of(context).requestFocus(gtinFocusNode);
+                            getAllTblMappedBarcodesController
+                                .getData(itemInfoList[0].itemCode.toString())
+                                .then((val) {
+                              setState(() {
+                                itemList = val;
+                                for (var element in itemList) {
+                                  String temp =
+                                      "${element.iTEMID} - ${element.iTEMNAME}";
+                                  dList.add(temp);
+                                }
+                              });
+                            });
+                            setState(() {
+                              itemID = itemInfoList[0].itemCode.toString();
+                              itemName = itemInfoList[0].itemDesc.toString();
+                              dList = [
+                                "${itemInfoList[0].itemCode ?? ""} - ${itemInfoList[0].itemDesc ?? ""}"
+                              ];
+                              dValue = dList[0].toString();
+                            });
                           },
                           () {
                             _serialNoController.clear();
@@ -652,8 +676,7 @@ class _BarcodeMappingScreenState extends State<BarcodeMappingScreen> {
                     width: MediaQuery.of(context).size.width * 0.9,
                     title: "Save",
                     onPressed: () {
-                      if (_searchController.text.trim() == "" ||
-                          _serialNoController.text.trim() == "" ||
+                      if (_serialNoController.text.trim() == "" ||
                           _gtinController.text.trim() == "" ||
                           dropDownValue == "Select Config" ||
                           _binLocationController.text.trim() == "" ||
@@ -686,6 +709,7 @@ class _BarcodeMappingScreenState extends State<BarcodeMappingScreen> {
                         double.parse(_heightController.text.trim()),
                         double.parse(_weightController.text.trim()),
                         _manufacturingController.text.trim(),
+                        _binLocationController.text.trim().substring(0, 2),
                       )
                           .then((value) {
                         Get.back();
@@ -696,22 +720,7 @@ class _BarcodeMappingScreenState extends State<BarcodeMappingScreen> {
                           ),
                         );
                         setState(() {
-                          // _gtinController.clear();
-                          // _binLocationController.clear();
                           _serialNoController.clear();
-                          // _manufacturingController.clear();
-                          // _qrCodeController.clear();
-                          // _referenceController.clear();
-                          // _searchController.clear();
-                          // _lengthController.clear();
-                          // _widthController.clear();
-                          // _heightController.clear();
-                          // _weightController.clear();
-
-                          // itemID = "";
-                          // itemName = "";
-                          // itemGroupId = "";
-                          // groupName = "";
                         });
                         UpdateStockMasterDataController.insertShipmentData(
                           itemID,
