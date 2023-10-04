@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_print
+// ignore_for_file: avoid_print, non_constant_identifier_names
 
 import 'dart:convert';
 
@@ -15,7 +15,7 @@ class InsertShipmentReceivedDataController {
     String iTEMNAME,
     String ITEMID,
     String PURCHID,
-    int CLASSIFICATION,
+    String CLASSIFICATION,
     String SERIALNUM,
     String RCVDCONFIGID,
     String RCVD_DATE,

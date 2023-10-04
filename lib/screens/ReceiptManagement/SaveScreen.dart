@@ -1,4 +1,8 @@
+// ignore_for_file: use_key_in_widget_constructors
+
+import 'package:alessa_v2/controllers/Palletization/GenerateAndUpdatePalletIdController.dart';
 import 'package:alessa_v2/controllers/WareHouseOperationController/InsetManyIntoMappedBarcodeNewController.dart';
+import 'package:awesome_dialog/awesome_dialog.dart';
 
 import '../../controllers/WareHouseOperationController/GenerateSerialNumberforRecevingController.dart';
 import '../../controllers/WareHouseOperationController/InsertShipmentReceivedData.dart';
@@ -86,6 +90,8 @@ class _SaveScreenState extends State<SaveScreen> {
   List<String> serialNoList = [];
   List<String> configList = [];
   List<String> remarksList = [];
+
+  int lengthOfSerialNo = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -190,6 +196,16 @@ class _SaveScreenState extends State<SaveScreen> {
                               children: [
                                 TextWidget(
                                   text: "Received*\n$RCQTY",
+                                  fontSize: 15,
+                                  color: Colors.white,
+                                  textAlign: TextAlign.center,
+                                ),
+                              ],
+                            ),
+                            Column(
+                              children: [
+                                TextWidget(
+                                  text: "Pallet*\n${serialNoList.length}",
                                   fontSize: 15,
                                   color: Colors.white,
                                   textAlign: TextAlign.center,
@@ -329,15 +345,15 @@ class _SaveScreenState extends State<SaveScreen> {
                       widget.itemName,
                       widget.itemId,
                       widget.purchId,
-                      0,
+                      dropdownValue.toString(),
                       _serialNoController.text,
-                      dropdownValue,
+                      dropdownValue.toString().toString(),
                       DateTime.now().toString(),
                       widget.gtin,
                       widget.rZone,
                       DateTime.now().toString(),
                       "",
-                      "",
+                      "AZ-W01-Z001-A0001",
                       _remarksController.text,
                       int.parse(widget.qty.toString()),
                       widget.length,
@@ -347,8 +363,10 @@ class _SaveScreenState extends State<SaveScreen> {
                     ).then((value) {
                       setState(() {
                         serialNoList.add(_serialNoController.text);
-                        configList.add(dropdownValue);
+                        configList.add(dropdownValue.toString());
                         remarksList.add(_remarksController.text);
+
+                        lengthOfSerialNo = serialNoList.length;
 
                         RCQTY = RCQTY + 1;
 
@@ -365,11 +383,11 @@ class _SaveScreenState extends State<SaveScreen> {
                             .getData(
                           widget.itemId,
                           widget.itemName,
-                          "0",
-                          "",
+                          dropdownValue.toString(),
+                          "AZ",
                           _serialNoController.text.trim(),
                           DateTime.now().toString(),
-                          "",
+                          "AZ-W01-Z001-A0001",
                           widget.gtin,
                           _remarksController.text.trim(),
                           "",
@@ -452,94 +470,149 @@ class _SaveScreenState extends State<SaveScreen> {
                 ),
               ),
               const SizedBox(height: 10),
-              Container(
-                margin: const EdgeInsets.only(left: 20, top: 10),
-                child: ElevatedButtonWidget(
-                  title: "Generate Serial No.",
-                  fontSize: 18,
-                  color: Colors.orange[100],
-                  width: MediaQuery.of(context).size.width * 0.9,
-                  height: 50,
-                  onPressed: () {
-                    if (RCQTY >= widget.qty) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content:
-                              Text("Sorry! The Remaining Quantity is Zero."),
-                          backgroundColor: Colors.red,
-                          duration: Duration(seconds: 2),
-                        ),
-                      );
-                      return;
-                    }
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  // generate serial no button
+                  Container(
+                    child: ElevatedButtonWidget(
+                      title: "Generate Serial No.",
+                      fontSize: 13,
+                      color: Colors.orange[100],
+                      width: MediaQuery.of(context).size.width * 0.4,
+                      height: 50,
+                      onPressed: () {
+                        if (RCQTY >= widget.qty) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text(
+                                  "Sorry! The Remaining Quantity is Zero."),
+                              backgroundColor: Colors.red,
+                              duration: Duration(seconds: 2),
+                            ),
+                          );
+                          return;
+                        }
 
-                    GenerateSerialNumberforRecevingController.generateSerialNo(
-                      widget.itemId,
-                    ).then(
-                      (value) {
-                        Constants.showLoadingDialog(context);
-                        FocusScope.of(context).unfocus();
-                        InsertShipmentReceivedDataController.insertShipmentData(
-                          widget.shipmentId,
-                          widget.containerId,
-                          '',
-                          widget.itemName,
+                        GenerateSerialNumberforRecevingController
+                            .generateSerialNo(
                           widget.itemId,
-                          widget.purchId,
-                          0,
-                          value,
-                          dropdownValue,
-                          DateTime.now().toString(),
-                          widget.gtin,
-                          widget.rZone,
-                          DateTime.now().toString(),
-                          "",
-                          "",
-                          _remarksController.text,
-                          int.parse(widget.qty.toString()),
-                          widget.length,
-                          widget.width,
-                          widget.height,
-                          widget.weight,
-                        ).then((val) {
-                          setState(() {
-                            serialNoList.add(value);
-                            configList.add(dropdownValue);
-                            remarksList.add(_remarksController.text);
-
-                            RCQTY = RCQTY + 1;
-                          });
-                          UpdateStockMasterDataController.insertShipmentData(
-                            widget.itemId,
-                            widget.length,
-                            widget.width,
-                            widget.height,
-                            widget.weight,
-                          ).then((vl) {
-                            insertManyIntoMappedBarcodeNewController
-                                .getData(
-                              widget.itemId,
+                        ).then(
+                          (value) {
+                            Constants.showLoadingDialog(context);
+                            FocusScope.of(context).unfocus();
+                            InsertShipmentReceivedDataController
+                                .insertShipmentData(
+                              widget.shipmentId,
+                              widget.containerId,
+                              '',
                               widget.itemName,
-                              "0",
-                              "",
+                              widget.itemId,
+                              widget.purchId,
+                              dropdownValue.toString(),
                               value,
+                              dropdownValue.toString(),
+                              DateTime.now().toString(),
+                              widget.gtin,
+                              widget.rZone,
                               DateTime.now().toString(),
                               "",
-                              widget.gtin,
-                              _remarksController.text.trim(),
-                              "",
-                              widget.shipmentId,
-                              widget.purchId,
-                              widget.containerId,
-                              widget.qty.toString(),
-                              widget.length.toString(),
-                              widget.width.toString(),
-                              widget.height.toString(),
-                              widget.weight.toString(),
-                            )
-                                .then((value) {
-                              Navigator.pop(context);
-                            }).onError((error, stackTrace) {
+                              "AZ-W01-Z001-A0001",
+                              _remarksController.text,
+                              int.parse(widget.qty.toString()),
+                              widget.length,
+                              widget.width,
+                              widget.height,
+                              widget.weight,
+                            ).then((val) {
+                              setState(() {
+                                serialNoList.add(value);
+                                configList.add(dropdownValue);
+                                remarksList.add(_remarksController.text);
+
+                                RCQTY = RCQTY + 1;
+                              });
+                              UpdateStockMasterDataController
+                                  .insertShipmentData(
+                                widget.itemId,
+                                widget.length,
+                                widget.width,
+                                widget.height,
+                                widget.weight,
+                              ).then((vl) {
+                                insertManyIntoMappedBarcodeNewController
+                                    .getData(
+                                  widget.itemId,
+                                  widget.itemName,
+                                  dropdownValue.toString(),
+                                  "AZ",
+                                  value,
+                                  DateTime.now().toString(),
+                                  "AZ-W01-Z001-A0001",
+                                  widget.gtin,
+                                  _remarksController.text.trim(),
+                                  "",
+                                  widget.shipmentId,
+                                  widget.purchId,
+                                  widget.containerId,
+                                  widget.qty.toString(),
+                                  widget.length.toString(),
+                                  widget.width.toString(),
+                                  widget.height.toString(),
+                                  widget.weight.toString(),
+                                )
+                                    .then((value) {
+                                  Navigator.pop(context);
+                                }).onError((error, stackTrace) {
+                                  setState(() {
+                                    _serialNoController.clear();
+                                    serialNoList.clear();
+                                    configList.clear();
+                                    remarksList.clear();
+                                  });
+                                  Navigator.pop(context);
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(error
+                                          .toString()
+                                          .replaceAll("Exception:", "")),
+                                    ),
+                                  );
+                                });
+                              }).onError((error, stackTrace) {
+                                setState(() {
+                                  _serialNoController.clear();
+                                  serialNoList.clear();
+                                  configList.clear();
+                                  remarksList.clear();
+                                });
+                                Navigator.pop(context);
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(error
+                                        .toString()
+                                        .replaceAll("Exception:", "")),
+                                  ),
+                                );
+                              });
+                            }).onError(
+                              (error, stackTrace) {
+                                setState(() {
+                                  _serialNoController.clear();
+                                  serialNoList.clear();
+                                  configList.clear();
+                                  remarksList.clear();
+                                });
+                                Navigator.pop(context);
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(error
+                                        .toString()
+                                        .replaceAll("Exception:", "")),
+                                  ),
+                                );
+                              },
+                            ).onError((error, stackTrace) {
                               setState(() {
                                 _serialNoController.clear();
                                 serialNoList.clear();
@@ -555,59 +628,79 @@ class _SaveScreenState extends State<SaveScreen> {
                                 ),
                               );
                             });
-                          }).onError((error, stackTrace) {
+                          },
+                        );
+                      },
+                    ),
+                  ),
+                  // generate pallet code button
+                  Container(
+                    child: ElevatedButtonWidget(
+                      title: "Generate Pallet Code",
+                      fontSize: 13,
+                      color: Colors.orange[100],
+                      width: MediaQuery.of(context).size.width * 0.4,
+                      height: 50,
+                      onPressed: () {
+                        // if (RCQTY >= widget.qty) {
+                        //   ScaffoldMessenger.of(context).showSnackBar(
+                        //     const SnackBar(
+                        //       content:
+                        //           Text("Sorry! The Remaining Quantity is Zero."),
+                        //       backgroundColor: Colors.red,
+                        //       duration: Duration(seconds: 2),
+                        //     ),
+                        //   );
+                        //   return;
+                        // }
+
+                        if (serialNoList.isEmpty) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text(
+                                  "Sorry! Please Generate Serial Number First."),
+                              backgroundColor: Colors.red,
+                              duration: Duration(seconds: 2),
+                            ),
+                          );
+                          return;
+                        }
+
+                        Constants.showLoadingDialog(context);
+                        GenerateAndUpdatePalletIdController
+                            .generateAndUpdatePalletId(
+                          serialNoList,
+                          dropdownValue.toString(),
+                        ).then(
+                          (value) {
+                            Navigator.pop(context);
+
+                            showDiologMethod(context, value).show();
+
                             setState(() {
-                              _serialNoController.clear();
                               serialNoList.clear();
                               configList.clear();
                               remarksList.clear();
+
+                              lengthOfSerialNo = 0;
                             });
-                            Navigator.pop(context);
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(error
-                                    .toString()
-                                    .replaceAll("Exception:", "")),
-                              ),
-                            );
-                          });
-                        }).onError(
-                          (error, stackTrace) {
-                            setState(() {
-                              _serialNoController.clear();
-                              serialNoList.clear();
-                              configList.clear();
-                              remarksList.clear();
-                            });
-                            Navigator.pop(context);
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(error
-                                    .toString()
-                                    .replaceAll("Exception:", "")),
-                              ),
-                            );
                           },
                         ).onError((error, stackTrace) {
-                          setState(() {
-                            _serialNoController.clear();
-                            serialNoList.clear();
-                            configList.clear();
-                            remarksList.clear();
-                          });
                           Navigator.pop(context);
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text(error
                                   .toString()
                                   .replaceAll("Exception:", "")),
+                              duration: const Duration(seconds: 2),
                             ),
                           );
                         });
+                        FocusScope.of(context).unfocus();
                       },
-                    );
-                  },
-                ),
+                    ),
+                  ),
+                ],
               ),
               const SizedBox(height: 10),
               Container(
@@ -719,6 +812,17 @@ class _SaveScreenState extends State<SaveScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  AwesomeDialog showDiologMethod(BuildContext context, List<dynamic> value) {
+    return AwesomeDialog(
+      context: context,
+      dialogType: DialogType.success,
+      animType: AnimType.rightSlide,
+      title: value[1].toString(),
+      desc: value[0].toString(),
+      btnOkOnPress: () {},
     );
   }
 }
