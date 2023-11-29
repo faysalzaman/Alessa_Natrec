@@ -1,5 +1,3 @@
-import 'package:alessa_v2/screens/testing.dart';
-
 import '../../screens/SplashScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
